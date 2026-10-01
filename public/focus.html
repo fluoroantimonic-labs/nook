@@ -35,30 +35,6 @@
     --thumb-bg: #ffffff;
     --switch-track: rgba(255,255,255,0.25);
   }
-  /* Dark-text theme: white chrome inverts to dark on lightened glass */
-  html.theme-dark {
-    --text: #181a2e;
-    --text-soft: rgba(24,26,46,0.82);
-    --text-dim: rgba(24,26,46,0.55);
-    --glass-bg: rgba(255,255,255,0.55);
-    --glass-bg-strong: rgba(255,255,255,0.72);
-    --glass-border: rgba(255,255,255,0.65);
-    --glass-shadow: 0 8px 32px rgba(0,0,0,0.14);
-    --pill-active-bg: rgba(30,32,50,0.92);
-    --pill-active-text: #ffffff;
-    --accent: #e0883a;
-    --ring-track: rgba(0,0,0,0.12);
-    --slider-track: rgba(0,0,0,0.16);
-    --thumb-bg: #2b2d42;
-    --switch-track: rgba(0,0,0,0.18);
-  }
-  html.theme-dark body { text-shadow: 0 1px 6px rgba(255,255,255,0.35); }
-  /* Veil lightens scenes so dark text stays readable in dark-text mode */
-  #veil {
-    position: fixed; inset: 0; z-index: 1; pointer-events: none;
-    background: rgba(255,255,255,0); transition: background .5s ease;
-  }
-  html.theme-dark #veil { background: rgba(255,255,255,0.4); }
   /* Film-grain noise overlay for a tactile, lo-fi feel */
   #grain {
     position: fixed; inset: 0; z-index: 8; pointer-events: none;
@@ -77,9 +53,8 @@
     pointer-events: none; z-index: -1; filter: blur(20px);
     transition: opacity .8s ease;
   }
-  html.theme-dark .timer-spotlight { background: radial-gradient(circle, rgba(255,250,230,0.5) 0%, rgba(255,250,230,0.18) 40%, transparent 70%); }
   @media (prefers-color-scheme: dark) {
-    :root:not(.theme-dark) { --glass-bg: rgba(255,255,255,0.10); --glass-bg-strong: rgba(255,255,255,0.14); }
+    :root { --glass-bg: rgba(255,255,255,0.10); --glass-bg-strong: rgba(255,255,255,0.14); }
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -479,9 +454,6 @@
   .panel {
     box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.22), inset 0 -1px 0 rgba(0,0,0,0.08);
   }
-  html.theme-dark .panel {
-    box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.5), inset 0 -1px 0 rgba(0,0,0,0.05);
-  }
 
   /* Task list */
   .task-input-row { display: flex; gap: 8px; margin-bottom: 10px; }
@@ -640,13 +612,10 @@
   .music-head { display: flex; gap: 12px; align-items: center; }
   .music-head .music-info { flex: 1; }
   .album-art {
-    width: 54px; height: 54px; border-radius: 50%; flex-shrink: 0;
+    width: 56px; height: 56px; border-radius: var(--radius-md); flex-shrink: 0;
     position: relative; overflow: hidden;
     box-shadow: 0 4px 14px rgba(0,0,0,0.25);
-    animation: spin 8s linear infinite; animation-play-state: paused;
   }
-  .album-art.playing { animation-play-state: running; }
-  .album-art::before { content: ''; position: absolute; top: 50%; left: 50%; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: rgba(20,20,30,0.85); box-shadow: inset 0 0 0 2px rgba(255,255,255,0.25); z-index: 2; }
   .album-art::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.35), transparent 50%); }
   /* Music visualizer bars */
   .music-viz { display: flex; align-items: flex-end; gap: 2px; height: 16px; margin-left: auto; }
@@ -658,28 +627,30 @@
   .music-viz span:nth-child(4) { animation-delay: 0.1s; }
   @keyframes vizBar { 0%,100% { height: 25%; } 50% { height: 100%; } }
   .music-info { flex: 1; min-width: 0; }
-  .music-title { font-size: 0.9rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .music-artist { font-size: 0.74rem; opacity: 0.7; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .music-tag { display: inline-block; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.1em; background: rgba(255,255,255,0.18); padding: 1px 7px; border-radius: var(--radius-pill); margin-top: 3px; }
-  .progress-row { margin-top: 10px; }
-  .progress-bar { height: 4px; background: rgba(255,255,255,0.2); border-radius: var(--radius-pill); overflow: hidden; cursor: pointer; }
-  .progress-fill { height: 100%; background: var(--text); width: 0%; border-radius: var(--radius-pill); transition: width .2s linear; }
-  .time-row { display: flex; justify-content: space-between; font-size: 0.64rem; opacity: 0.7; margin-top: 4px; font-variant-numeric: tabular-nums; }
-  .music-controls { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 10px; }
-  .music-btn { width: 34px; height: 34px; border-radius: var(--radius-pill); display: flex; align-items: center; justify-content: center; transition: background .15s, transform .12s; }
-  .music-btn:hover { background: rgba(255,255,255,0.14); }
+  .music-title { font-size: 0.92rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .music-artist { font-size: 0.74rem; opacity: 0.6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .progress-row { margin-top: 12px; }
+  .time-row { display: flex; justify-content: space-between; font-size: 0.62rem; opacity: 0.55; margin-bottom: 5px; font-variant-numeric: tabular-nums; }
+  .progress-bar { height: 3px; background: rgba(255,255,255,0.15); border-radius: var(--radius-pill); overflow: hidden; cursor: pointer; }
+  .progress-fill { height: 100%; background: var(--text); width: 0%; border-radius: var(--radius-pill); transition: width .25s linear; }
+  .music-controls { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 12px; }
+  .music-btn { width: 32px; height: 32px; border-radius: var(--radius-pill); display: flex; align-items: center; justify-content: center; transition: background .15s, transform .12s; opacity: 0.7; }
+  .music-btn:hover { background: rgba(255,255,255,0.12); opacity: 1; }
   .music-btn:active { transform: scale(0.9); }
   .music-btn svg { width: 18px; height: 18px; }
-  .music-btn.play { width: 40px; height: 40px; background: rgba(255,255,255,0.95); }
-  .music-btn.play svg { color: #2b2d42; width: 20px; height: 20px; }
-  .volume-row { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
-  .volume-row svg { width: 16px; height: 16px; opacity: 0.8; flex-shrink: 0; }
-  .volume-slider { flex: 1; -webkit-appearance: none; appearance: none; height: 4px; background: var(--slider-track); border-radius: var(--radius-pill); outline: none; }
-  .volume-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--thumb-bg); cursor: pointer; box-shadow: 0 1px 6px rgba(0,0,0,0.35), 0 0 0 0 rgba(255,209,102,0.4); transition: box-shadow .15s; }
-  .volume-slider:hover::-webkit-slider-thumb { box-shadow: 0 1px 6px rgba(0,0,0,0.35), 0 0 0 5px rgba(255,209,102,0.18); }
-  .volume-slider::-moz-range-thumb { width: 14px; height: 14px; border: none; border-radius: 50%; background: var(--thumb-bg); cursor: pointer; }
+  .music-btn.play { width: 46px; height: 46px; background: #ede4d8; opacity: 1; box-shadow: 0 4px 14px rgba(0,0,0,0.2); }
+  .music-btn.play:hover { background: #f5ede2; }
+  .music-btn.play svg { color: #3d3529; width: 22px; height: 22px; }
+  .music-btn.active { opacity: 1; color: var(--accent); }
+  .music-btn.active svg { color: var(--accent); }
+  .volume-row { display: flex; align-items: center; gap: 8px; margin-top: 12px; }
+  .volume-row svg { width: 16px; height: 16px; opacity: 0.6; flex-shrink: 0; }
+  .volume-slider { flex: 1; -webkit-appearance: none; appearance: none; height: 6px; background: var(--slider-track); border-radius: var(--radius-pill); outline: none; }
+  .volume-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: #ede4d8; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.3); transition: transform .15s; }
+  .volume-slider:hover::-webkit-slider-thumb { transform: scale(1.15); }
+  .volume-slider::-moz-range-thumb { width: 16px; height: 16px; border: none; border-radius: 50%; background: #ede4d8; cursor: pointer; }
 
-  /* Ambient mixer panel */
+  /* Ambient mixer panel — hidden by default, toggled via btn-ambient */
   .ambient-mixer {
     position: fixed; bottom: calc(16px + var(--safe-bottom)); right: calc(20px + var(--safe-right));
     width: 252px; max-width: calc(100vw - 40px); z-index: 6;
@@ -687,7 +658,10 @@
     backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
     border-radius: var(--radius-lg); box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.22), inset 0 -1px 0 rgba(0,0,0,0.08);
     padding: 12px 14px; color: var(--text);
+    opacity: 0; pointer-events: none; transform: translateY(10px) scale(0.97);
+    transition: opacity .3s ease, transform .3s cubic-bezier(.34,1.2,.5,1);
   }
+  .ambient-mixer.open { opacity: 1; pointer-events: auto; transform: translateY(0) scale(1); }
   .amb-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; padding: 0 2px; }
   .amb-title { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.85; }
   .amb-count { font-size: 0.66rem; opacity: 0.6; font-variant-numeric: tabular-nums; }
@@ -890,7 +864,7 @@
   #celebrate { position: fixed; inset: 0; z-index: 41; pointer-events: none; overflow: hidden; }
   .confetti { position: absolute; width: 8px; height: 8px; top: -20px; opacity: 0; animation: confettiFall 2.4s cubic-bezier(.3,.6,.5,1) forwards; }
   @keyframes confettiFall { 0% { opacity: 1; transform: translateY(0) rotate(0deg); } 100% { opacity: 0; transform: translateY(105vh) rotate(720deg); } }
-  .celebrate-banner { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0.8); z-index: 42; opacity: 0; transition: all .5s cubic-bezier(.34,1.56,.64,1); pointer-events: none; text-align: center; }
+  .celebrate-banner { position: fixed; top: 22%; left: 50%; transform: translate(-50%,-50%) scale(0.8); z-index: 42; opacity: 0; transition: all .5s cubic-bezier(.34,1.56,.64,1); pointer-events: none; text-align: center; }
   .celebrate-banner.show { opacity: 1; transform: translate(-50%,-50%) scale(1); }
   .celebrate-banner h2 { font-family: var(--font-logo); font-size: 3rem; font-weight: 700; text-shadow: 0 4px 20px rgba(0,0,0,0.3); }
   .celebrate-banner p { font-size: 0.9rem; opacity: 0.85; margin-top: 6px; }
@@ -1045,9 +1019,8 @@
       <button class="icon-btn" id="btn-zen" data-tip="Zen mode (Z)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
       </button>
-      <button class="icon-btn" id="btn-theme" data-tip="Toggle theme (T)">
-        <svg id="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
-        <svg id="theme-icon-sun" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      <button class="icon-btn" id="btn-ambient" data-tip="Ambient mixer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a4 4 0 0 1 1-7 6 6 0 0 1 11.5 1.5A4.5 4.5 0 0 1 18 16"/><path d="M8 19v2M12 17v4M16 19v2"/></svg>
       </button>
       <button class="icon-btn" id="btn-journal" data-tip="Focus journal">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
@@ -1164,20 +1137,22 @@
 
 <!-- MUSIC PLAYER -->
 <div class="music-player">
-    <div class="music-head">
+  <div class="music-head">
     <div class="album-art" id="album-art"></div>
     <div class="music-info">
       <div class="music-title" id="music-title">Rainy Day Dreams</div>
       <div class="music-artist" id="music-artist">lo-fi generator</div>
-      <span class="music-tag">lo-fi</span>
     </div>
     <div class="music-viz" id="music-viz"><span></span><span></span><span></span><span></span></div>
   </div>
   <div class="progress-row">
-    <div class="progress-bar" id="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
     <div class="time-row"><span id="cur-time">0:00</span><span id="tot-time">3:00</span></div>
+    <div class="progress-bar" id="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
   </div>
   <div class="music-controls">
+    <button class="music-btn" id="music-shuffle" title="Shuffle">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="m15 15 6 6"/><path d="M4 4l5 5"/></svg>
+    </button>
     <button class="music-btn" id="music-prev" title="Previous">
       <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="19 20 9 12 19 4 19 20"/><rect x="5" y="4" width="2" height="16"/></svg>
     </button>
@@ -1187,6 +1162,9 @@
     </button>
     <button class="music-btn" id="music-next" title="Next">
       <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 4 15 12 5 20 5 4"/><rect x="17" y="4" width="2" height="16"/></svg>
+    </button>
+    <button class="music-btn" id="music-repeat" title="Repeat">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>
     </button>
   </div>
   <div class="volume-row">
@@ -1355,14 +1333,6 @@
       <div class="m-row">
         <div class="m-label">Long break every <small>focus sessions (then break doubles)</small></div>
         <input type="number" id="long-break-every" min="2" max="8" value="3" style="width:64px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);border-radius:10px;padding:6px 8px;color:#fff;text-align:center" />
-      </div>
-    </div>
-
-    <div class="m-section">
-      <h3>Appearance</h3>
-      <div class="preset-row">
-        <button class="preset-btn" data-theme="light">☀ Light text</button>
-        <button class="preset-btn" data-theme="dark">🌙 Dark text</button>
       </div>
     </div>
 
@@ -1582,7 +1552,9 @@ let musicState = {
   startedAt: 0,      // audio time when current track started
   pos: 0,            // seconds into track
   scheduler: null,
-  activeNodes: []
+  activeNodes: [],
+  shuffle: false,
+  repeat: false
 };
 
 function startMusic() {
@@ -1653,10 +1625,17 @@ function scheduleLoop() {
   // Position check for track end
   const elapsed = ac.currentTime - musicState.startedAt;
   if (elapsed >= t.totalSec) {
-    // auto-advance
+    // auto-advance — respect repeat/shuffle
     stopMusic();
     musicState.pos = 0;
-    musicState.trackIdx = (musicState.trackIdx + 1) % TRACKS.length;
+    if (musicState.repeat) {
+      // keep same track, restart
+    } else if (musicState.shuffle) {
+      let next; do { next = Math.floor(Math.random() * TRACKS.length); } while (next === musicState.trackIdx && TRACKS.length > 1);
+      musicState.trackIdx = next;
+    } else {
+      musicState.trackIdx = (musicState.trackIdx + 1) % TRACKS.length;
+    }
     updateMusicTrackInfo();
     startMusic();
     return;
@@ -2504,8 +2483,6 @@ function openSettings() {
   $('breathing-toggle').checked = state.store.breathingEnabled !== false;
   $('auto-start').checked = state.store.autoStart !== false;
   $('long-break-every').value = state.store.longBreakEvery || 3;
-  // theme segmented highlight
-  document.querySelectorAll('[data-theme]').forEach(b => b.classList.toggle('active', b.dataset.theme === (state.store.theme || 'light')));
   $('embed-input').value = state.store.embedUrl || '';
   $('embed-frame').src = state.store.embedUrl || '';
   $('embed-frame').classList.toggle('show', !!state.store.embedUrl);
@@ -2606,17 +2583,6 @@ function toggleZen() {
   document.body.classList.toggle('distraction-free');
 }
 
-/* ---------- THEME ---------- */
-function applyTheme(theme){
-  state.store.theme = theme; saveStore();
-  document.documentElement.classList.toggle('theme-dark', theme === 'dark');
-  const moon = $('theme-icon-moon'), sun = $('theme-icon-sun');
-  if (moon) moon.classList.toggle('hidden', theme === 'dark');
-  if (sun) sun.classList.toggle('hidden', theme !== 'dark');
-  document.querySelectorAll('[data-theme]').forEach(b => b.classList.toggle('active', b.dataset.theme === theme));
-}
-function toggleTheme(){ applyTheme((state.store.theme === 'dark') ? 'light' : 'dark'); }
-
 /* ---------- FOCUS QUOTES ---------- */
 const QUOTES = [
   'Small steps every day add up to big results.',
@@ -2659,7 +2625,6 @@ const SHORTCUTS = [
   { key:'M', desc:'Play / pause music' },
   { key:'N', desc:'Next music track' },
   { key:'B', desc:'Next background scene' },
-  { key:'T', desc:'Toggle light / dark text' },
   { key:'F', desc:'Toggle fullscreen' },
   { key:'Z', desc:'Toggle distraction-free mode' },
   { key:'⌘K', desc:'Open command palette' },
@@ -2917,7 +2882,6 @@ const CMDK_COMMANDS = [
   { label:'Play / pause music', key:'M', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>', run: ()=> musicState.playing ? stopMusic() : startMusic() },
   { label:'Next music track', key:'N', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>', run: ()=> nextTrack(1) },
   { label:'Next background scene', key:'B', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/></svg>', run: nextScene },
-  { label:'Toggle light / dark text', key:'T', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>', run: toggleTheme },
   { label:'Toggle fullscreen', key:'F', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>', run: toggleFullscreen },
   { label:'Toggle zen mode', key:'Z', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/></svg>', run: toggleZen },
   { label:'Open settings', key:'', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"/></svg>', run: openSettings },
@@ -2983,7 +2947,7 @@ function bindEvents() {
   $('btn-scene').onclick = nextScene;
   $('btn-fullscreen').onclick = toggleFullscreen;
   $('btn-zen').onclick = toggleZen;
-  $('btn-theme').onclick = toggleTheme;
+  $('btn-ambient').onclick = () => $('ambient-mixer').classList.toggle('open');
   $('btn-help').onclick = toggleHelp;
   $('btn-journal').onclick = openJournal;
   $('journal-close').onclick = closeJournal;
@@ -3025,6 +2989,8 @@ function bindEvents() {
   $('music-play').onclick = () => { musicState.playing ? stopMusic() : startMusic(); };
   $('music-prev').onclick = () => nextTrack(-1);
   $('music-next').onclick = () => nextTrack(1);
+  $('music-shuffle').onclick = () => { musicState.shuffle = !musicState.shuffle; $('music-shuffle').classList.toggle('active', musicState.shuffle); };
+  $('music-repeat').onclick = () => { musicState.repeat = !musicState.repeat; $('music-repeat').classList.toggle('active', musicState.repeat); };
   $('progress-bar').onclick = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const pct = (e.clientX - rect.left) / rect.width;
@@ -3064,8 +3030,7 @@ function bindEvents() {
   $('reflect-skip').onclick = hideReflection;
   $('reflect-save').onclick = saveReflection;
   $('reflect-overlay').onclick = (e) => { if (e.target.id === 'reflect-overlay') hideReflection(); };
-  // theme segmented buttons (live preview)
-  document.querySelectorAll('[data-theme]').forEach(b => b.onclick = () => applyTheme(b.dataset.theme));
+  // theme segmented buttons removed (dark mode dropped)
   // embed
   $('embed-input').oninput = (e) => {
     const url = e.target.value.trim();
@@ -3105,7 +3070,6 @@ function bindEvents() {
     else if (k === 'm') { musicState.playing ? stopMusic() : startMusic(); }
     else if (k === 'n') nextTrack(1);
     else if (k === 'b') nextScene();
-    else if (k === 't') toggleTheme();
     else if (k === 'f') toggleFullscreen();
     else if (k === 'z') toggleZen();
     else if (k === 'd') toggleBrainPanel();
@@ -3130,7 +3094,6 @@ function bindEvents() {
 /* ---------- INIT ---------- */
 function init() {
   $('volume').value = state.store.volume;
-  applyTheme(state.store.theme || 'light');
   buildAmbientMixer();
   buildAmbientPresets();
   buildShortcutList();

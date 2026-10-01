@@ -3,8 +3,8 @@
 ## Project Overview
 A single-file HTML/CSS/JS focus & study app inspired by studywithme.io, served via a Next.js 16 project. The actual app lives at `public/focus.html` (fully self-contained — only Google Fonts loaded externally) and is embedded full-viewport via `src/app/page.tsx` (server component rendering an iframe with `allow="autoplay; fullscreen; encrypted-media"` + `allowFullScreen`).
 
-## Current Project Status (Phase 12 — COMPLETE)
-The app is **fully functional and verified** via agent-browser (desktop + mobile/iPhone 14 emulation). All core requirements plus Phases 2–12 of enhancements are implemented and working:
+## Current Project Status (Phase 13 — FINALIZED)
+The app is **fully functional and verified** via agent-browser. All core requirements plus Phases 2–12 of enhancements plus Phase 13 user-requested finalization changes are implemented and working:
 
 ### Implemented Features
 - **Timer**: 3 pill modes (Deep Focus 90 / Break 20 / Quick 40, all editable). End-timestamp timing (accurate in background tabs). Auto-cycle deep→break→quick→break→deep. Auto-start toggle. Chime on session end (Web Audio bell chord). Tab-title countdown (`▶ 89:58 · Sunny Meadow · focus`). Spacebar toggle. Goal/progress SVG ring around the timer.
@@ -31,8 +31,31 @@ The app is **fully functional and verified** via agent-browser (desktop + mobile
 ### Bug Fixed During Verification
 - Tab title showed "undefined" for the scene name — `currentSceneClass()` returned the data-name string but was used to index `SCENE_NAMES`. Renamed to `currentSceneName()` and used the value directly. Verified: title now "▶ 24:58 · Sunny Meadow · focus".
 
-## Current Goals / Completed
-Phase 1 (core) + Phase 2 (user-requested) + Phase 3 (QA fixes + styling) + Phase 4 (micro-interactions + mindfulness) + Phase 5 (segmented control + ambient theming + timeline) + Phase 6 (ambient presets + bokeh + vinyl + visualizer + task-linkage + focus gauge) + Phase 7 (celebration + live badge + distraction dim + typography) + Phase 8 (achievements + heatmap + command palette) + Phase 9 (brain dump + live clock + stats ticker + glass consistency) + Phase 10 (binaural beats + data backup + refinements) + Phase 11 (session reflection + binaural freqs + custom presets) + Phase 12 (insights panel + mood analytics) are all **complete and verified**.
+### Phase 13 — Finalization: Dark Mode Removal, Music Redesign, Ambient Toggle, Celebration Fix (DONE)
+User requested: remove dark mode + replace its toggle with an ambient mixer toggle, redesign music UI to match reference, fix celebration banner overlap, finalize professionally. All browser-verified.
+
+#### Changes (4)
+1. **Removed dark mode** — deleted all `html.theme-dark` CSS (theme variables, veil, panel shadows, spotlight), the `applyTheme`/`toggleTheme` JS functions, the Appearance section in Settings, the `T` keyboard shortcut, the theme command in the command palette, and the theme entry in the shortcuts list. The app is now light-mode only (white text on cozy scenes).
+2. **Replaced theme toggle with ambient mixer toggle** — the `btn-theme` button is now `btn-ambient` (cloud+rain icon). Clicking it toggles the `.ambient-mixer` panel's `.open` class (the panel is now hidden by default with `opacity:0; pointer-events:none` and animates in with a spring transition when `.open` is added). Verified: click opens (opacity=1), click again closes.
+3. **Redesigned music player UI** — matching the reference image:
+   - **Squircle album art** (56×56, 16px border-radius) replacing the vinyl circle + center hole + spin animation.
+   - **5-button control row**: shuffle → prev → play → next → repeat (matching the reference layout).
+   - **Cream play button** (`#ede4d8`, 46px circle, dark icon `#3d3529`) — the only accented control, with a drop shadow.
+   - **Thin progress bar** (3px) with time labels ABOVE it (not below) — `0:00 ... 3:00`.
+   - **Thicker volume slider** (6px) with a prominent cream thumb (`#ede4d8`, 16px) that scales on hover.
+   - Removed the "lo-fi" tag pill.
+   - Added shuffle + repeat state to musicState + wired the auto-advance logic to respect them.
+   - Verified: shuffle + repeat toggle active state (accent color); play toggles pause icon.
+4. **Fixed celebration banner overlap** — moved the `.celebrate-banner` from `top: 50%` (which overlapped the timer) to `top: 22%` (above the timer ring). Verified: banner at 176px, timer at 170px — banner appears above the timer without overlap.
+
+#### Verification Results (agent-browser)
+- **No theme button**: `btn-theme` gone, `btn-ambient` present.
+- **Ambient toggle**: click → `open=true, opacity=1`; click → `open=false`.
+- **Music**: play toggles pause icon; shuffle → `active=true`; repeat → `active=true`.
+- **Album art**: `border-radius=16px` (squircle, not vinyl `50%`).
+- **Celebration**: banner `top=22%` (176px), timer at 170px — no overlap.
+- **Appearance section**: removed (no `[data-theme]` elements).
+- ESLint clean; no runtime errors in dev.log.
 
 ### Phase 12 — Insights Panel & Mood Analytics (DONE)
 QA confirmed the app was stable (reflection prompt, binaural freqs, timer accurate, command palette 14 items). Vision-model feedback drove a new insights panel with mood/time analytics. All browser-verified.
