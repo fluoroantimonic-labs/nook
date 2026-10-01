@@ -315,7 +315,7 @@
   /* Timer center */
   .timer-wrap {
     flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 14px; min-height: 0; padding: 8px 0;
+    gap: 10px; min-height: 0; padding: 4px 0; overflow: visible;
   }
   .focusing-label {
     font-size: 0.92rem; font-weight: 400; color: var(--text-soft);
@@ -331,14 +331,14 @@
   .focusing-label b { font-weight: 600; }
 
   .ring-wrap { position: relative; display: flex; align-items: center; justify-content: center; }
-  .ring-svg { width: clamp(260px, 38vw, 380px); height: clamp(260px, 38vw, 380px); transform: rotate(-90deg); filter: drop-shadow(0 4px 30px rgba(0,0,0,0.15)); transition: filter .5s ease; }
+  .ring-svg { width: clamp(200px, 28vw, 280px); height: clamp(200px, 28vw, 280px); transform: rotate(-90deg); filter: drop-shadow(0 4px 30px rgba(0,0,0,0.15)); transition: filter .5s ease; }
   .ring-svg.idle { animation: ringBreathe 4.5s ease-in-out infinite; }
   @keyframes ringBreathe { 0%,100% { transform: rotate(-90deg) scale(1); opacity: 0.96; } 50% { transform: rotate(-90deg) scale(1.015); opacity: 1; } }
   .ring-track { fill: none; stroke: var(--ring-track); stroke-width: 5; }
   .ring-progress { fill: none; stroke: url(#ringGrad); stroke-width: 7; stroke-linecap: round; transition: stroke-dashoffset .5s linear; filter: drop-shadow(0 0 8px rgba(255,209,102,0.6)); }
   .timer-text {
     position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-    font-size: clamp(3.2rem, 11vw, 6.5rem); font-weight: 700; letter-spacing: 0.01em;
+    font-size: clamp(2.8rem, 9vw, 5rem); font-weight: 700; letter-spacing: 0.01em;
     font-variant-numeric: tabular-nums; line-height: 1;
     text-shadow: 0 2px 20px rgba(0,0,0,0.18);
   }
@@ -355,13 +355,13 @@
   .stats-ticker .sep { opacity: 0.4; margin: 0 8px; }
 
   /* Brain-dump scratchpad button */
-  .brain-btn { position: fixed; bottom: calc(16px + var(--safe-bottom)); left: 50%; transform: translateX(-50%); z-index: 6; display: flex; align-items: center; gap: 7px; font-size: 0.74rem; padding: 9px 16px; border-radius: var(--radius-pill); background: var(--glass-bg-strong); border: 1px solid var(--glass-border); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.2); color: var(--text-soft); transition: all .2s ease; }
+  .brain-btn { position: fixed; bottom: calc(80px + var(--safe-bottom)); left: 50%; transform: translateX(-50%); z-index: 4; display: flex; align-items: center; gap: 7px; font-size: 0.74rem; padding: 7px 14px; border-radius: var(--radius-pill); background: var(--glass-bg-strong); border: 1px solid var(--glass-border); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.2); color: var(--text-soft); transition: all .2s ease; }
   .brain-btn:hover { transform: translateX(-50%) translateY(-2px); color: var(--text); background: var(--glass-bg-strong); box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.3), 0 0 16px rgba(255,209,102,0.15); }
   .brain-btn svg { width: 16px; height: 16px; transition: transform .3s ease; }
   .brain-btn:hover svg { transform: rotate(-8deg) scale(1.1); }
   .brain-btn .brain-count { background: var(--accent); color: #2b2d42; font-size: 0.6rem; font-weight: 700; border-radius: 10px; padding: 1px 6px; min-width: 16px; text-align: center; }
   /* Brain dump panel */
-  .brain-panel { position: fixed; bottom: 70px; left: 50%; transform: translateX(-50%) translateY(10px); z-index: 6; width: 360px; max-width: calc(100vw - 32px); background: var(--glass-bg-strong); border: 1px solid var(--glass-border); backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px); border-radius: var(--radius-lg); box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.22); padding: 14px; opacity: 0; pointer-events: none; transition: all .25s cubic-bezier(.34,1.2,.5,1); }
+  .brain-panel { position: fixed; bottom: 130px; left: 50%; transform: translateX(-50%) translateY(10px); z-index: 4; width: 360px; max-width: calc(100vw - 32px); background: var(--glass-bg-strong); border: 1px solid var(--glass-border); backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px); border-radius: var(--radius-lg); box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.22); padding: 14px; opacity: 0; pointer-events: none; transition: all .25s cubic-bezier(.34,1.2,.5,1); }
   .brain-panel.show { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
   .brain-panel h4 { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.85; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
   .brain-panel h4 svg { width: 14px; height: 14px; }
@@ -393,11 +393,11 @@
   .ctrl-btn:active { transform: scale(0.92); transition: transform .08s ease; }
   .ctrl-btn svg { width: 24px; height: 24px; transition: transform .2s ease; }
   .ctrl-btn.primary {
-    width: 72px; height: 72px; background: linear-gradient(180deg, #fff, #f0f0f0); border-color: rgba(255,255,255,0.95);
+    width: 62px; height: 62px; background: linear-gradient(180deg, #fff, #f0f0f0); border-color: rgba(255,255,255,0.95);
     box-shadow: 0 8px 30px rgba(0,0,0,0.25), inset 0 2px 0 rgba(255,255,255,0.8), inset 0 -2px 0 rgba(0,0,0,0.06);
   }
-  .ctrl-btn.primary svg { width: 30px; height: 30px; color: #2b2d42; }
-  .ctrl-btn.primary:active svg { width: 26px; height: 26px; }
+  .ctrl-btn.primary svg { width: 26px; height: 26px; color: #2b2d42; }
+  .ctrl-btn.primary:active svg { width: 22px; height: 22px; }
   /* Running state: play button takes on the warm focus glow */
   .ctrl-btn.primary.running {
     background: linear-gradient(180deg, var(--accent), #ff9a56);
@@ -2955,9 +2955,7 @@ function bindEvents() {
   });
   // auto-start
   $('auto-start').onchange = (e) => { state.store.autoStart = e.target.checked; saveStore(); };
-  // tasks
-  $('task-add').onclick = addTask;
-  $('task-input').onkeydown = (e) => { if (e.key === 'Enter') addTask(); };
+  // tasks removed — task-add/task-input no longer in DOM
   // music
   $('music-play').onclick = () => { musicState.playing ? stopMusic() : startMusic(); };
   $('music-prev').onclick = () => nextTrack(-1);
@@ -3090,7 +3088,7 @@ function init() {
   // music
   updateMusicTrackInfo();
   // render
-  renderTasks(); renderStats();
+  renderStats();
   bindEvents();
 }
 init();
