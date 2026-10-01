@@ -368,7 +368,7 @@
     text-shadow: 0 2px 20px rgba(0,0,0,0.18);
   }
   .timer-text .sep { opacity: 0.6; margin: 0 0.02em; }
-  .mode-label { font-size: 0.8rem; font-weight: 500; opacity: 0.85; letter-spacing: 0.18em; text-transform: uppercase; display: flex; align-items: center; gap: 10px; }
+  .mode-label { font-size: 0.8rem; font-weight: 600; opacity: 0.9; letter-spacing: 0.2em; text-transform: uppercase; display: flex; align-items: center; gap: 10px; }
   .session-counter { font-size: 0.66rem; opacity: 0.6; background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: var(--radius-pill); letter-spacing: 0.04em; }
   .quote { font-size: 0.85rem; font-weight: 400; font-style: italic; opacity: 0; max-width: 460px; text-align: center; line-height: 1.5; min-height: 1.4em; transition: opacity .6s ease; letter-spacing: 0.01em; }
   .quote.show { opacity: 0.78; }
@@ -381,8 +381,9 @@
 
   /* Brain-dump scratchpad button */
   .brain-btn { position: fixed; bottom: calc(16px + var(--safe-bottom)); left: 50%; transform: translateX(-50%); z-index: 6; display: flex; align-items: center; gap: 7px; font-size: 0.74rem; padding: 9px 16px; border-radius: var(--radius-pill); background: var(--glass-bg-strong); border: 1px solid var(--glass-border); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.2); color: var(--text-soft); transition: all .2s ease; }
-  .brain-btn:hover { transform: translateX(-50%) translateY(-2px); color: var(--text); background: var(--glass-bg-strong); }
-  .brain-btn svg { width: 16px; height: 16px; }
+  .brain-btn:hover { transform: translateX(-50%) translateY(-2px); color: var(--text); background: var(--glass-bg-strong); box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.3), 0 0 16px rgba(255,209,102,0.15); }
+  .brain-btn svg { width: 16px; height: 16px; transition: transform .3s ease; }
+  .brain-btn:hover svg { transform: rotate(-8deg) scale(1.1); }
   .brain-btn .brain-count { background: var(--accent); color: #2b2d42; font-size: 0.6rem; font-weight: 700; border-radius: 10px; padding: 1px 6px; min-width: 16px; text-align: center; }
   /* Brain dump panel */
   .brain-panel { position: fixed; bottom: 70px; left: 50%; transform: translateX(-50%) translateY(10px); z-index: 6; width: 360px; max-width: calc(100vw - 32px); background: var(--glass-bg-strong); border: 1px solid var(--glass-border); backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px); border-radius: var(--radius-lg); box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.22); padding: 14px; opacity: 0; pointer-events: none; transition: all .25s cubic-bezier(.34,1.2,.5,1); }
@@ -565,6 +566,17 @@
   .ach.unlocked { opacity: 1; background: rgba(255,209,102,0.15); border-color: rgba(255,209,102,0.4); }
   .ach svg { width: 13px; height: 13px; color: var(--text-dim); }
   .ach.unlocked svg { color: var(--accent); }
+
+  /* Binaural beats toggle in ambient mixer */
+  .binaural-row { display: flex; align-items: center; gap: 8px; padding: 5px 0 3px; margin-top: 6px; border-top: 1px solid rgba(255,255,255,0.1); }
+  .binaural-row .amb-toggle { min-width: 96px; }
+  .binaural-freq { font-size: 0.66rem; opacity: 0.6; font-variant-numeric: tabular-nums; }
+
+  /* Export / import data buttons */
+  .data-row { display: flex; gap: 8px; margin-top: 6px; }
+  .data-btn { flex: 1; padding: 9px; border-radius: var(--radius-sm); font-size: 0.78rem; font-weight: 500; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: var(--text-soft); transition: all .15s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .data-btn:hover { background: rgba(255,255,255,0.18); color: var(--text); }
+  .data-btn svg { width: 14px; height: 14px; }
 
   /* Command palette (Ctrl/Cmd+K) */
   .cmdk-overlay { position: fixed; inset: 0; z-index: 44; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); display: flex; align-items: flex-start; justify-content: center; padding-top: 14vh; opacity: 0; pointer-events: none; transition: opacity .2s ease; }
@@ -1281,6 +1293,16 @@
       <iframe class="embed-frame" id="embed-frame" allow="autoplay; encrypted-media" allowfullscreen></iframe>
     </div>
 
+    <div class="m-section">
+      <h3>Data backup</h3>
+      <div class="data-row">
+        <button class="data-btn" id="data-export"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Export</button>
+        <button class="data-btn" id="data-import"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Import</button>
+        <button class="data-btn" id="data-reset" style="color:#ff8a8a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> Reset</button>
+      </div>
+      <input type="file" id="data-import-file" accept="application/json" class="hidden" />
+    </div>
+
     <div class="modal-footer">
       <button class="btn-ghost" id="settings-cancel">Cancel</button>
       <button class="btn-primary" id="settings-save">Save</button>
@@ -1620,7 +1642,8 @@ const AMB_SVG = {
   birds: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7h.01"/><path d="M3.4 18H12a8 8 0 0 0 8-8V7"/><path d="M9.8 7.4a2 2 0 0 0-1.7 2.8l.9 1.8a2 2 0 0 1-1.7 2.8H5"/></svg>',
   cafe:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/></svg>',
   thunder:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 16.9A5 5 0 0 0 18 7h-1.26a8 8 0 1 0-11.62 9"/><polyline points="13 11 9 17 15 17 11 23"/></svg>',
-  stream:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 2c1.5 3 1.5 5 0 7S5.5 13 7 15s2.5 2 2 5"/><path d="M12 2c1.5 3 1.5 5 0 7s-1.5 4 0 6 2.5 2 2 5"/><path d="M17 2c1.5 3 1.5 5 0 7s-1.5 4 0 6 2.5 2 2 5"/></svg>'
+  stream:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 2c1.5 3 1.5 5 0 7S5.5 13 7 15s2.5 2 2 5"/><path d="M12 2c1.5 3 1.5 5 0 7s-1.5 4 0 6 2.5 2 2 5"/><path d="M17 2c1.5 3 1.5 5 0 7s-1.5 4 0 6 2.5 2 2 5"/></svg>',
+  binaural:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h2l2-7 4 14 4-12 2 9 2-4h2"/></svg>'
 };
 const AMBIENT_SOUNDS = {
   rain:    { label:'Rain',      vol:0.55, build: buildRain,    color:'#5ba8e0', glow:'rgba(91,168,224,0.45)' },
@@ -1630,7 +1653,8 @@ const AMBIENT_SOUNDS = {
   birds:   { label:'Birds',     vol:0.45, build: buildBirds,   color:'#8ed67a', glow:'rgba(142,214,122,0.45)' },
   cafe:    { label:'Café',      vol:0.55, build: buildCafe,    color:'#d4a06a', glow:'rgba(212,160,106,0.45)' },
   thunder: { label:'Thunder',   vol:0.70, build: buildThunder, color:'#9b8ad4', glow:'rgba(155,138,212,0.5)' },
-  stream:  { label:'Stream',    vol:0.50, build: buildStream,  color:'#6ad4c4', glow:'rgba(106,212,196,0.45)' }
+  stream:  { label:'Stream',    vol:0.50, build: buildStream,  color:'#6ad4c4', glow:'rgba(106,212,196,0.45)' },
+  binaural:{ label:'Binaural',  vol:0.40, build: buildBinaural,color:'#c98ba0', glow:'rgba(201,139,160,0.45)' }
 };
 let ambientNodes = {};
 function makeNoiseBuffer() {
@@ -1649,6 +1673,20 @@ function buildBirds(ac,out){ let alive=true; let to=null; function chirp(){ if(!
 function buildCafe(ac,out){ const n=ac.createBufferSource(); n.buffer=makeNoiseBuffer(); n.loop=true; const lp=ac.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=420; const murmur=ac.createGain(); murmur.gain.value=0.7; const lfo=ac.createOscillator(); lfo.frequency.value=0.2; const lg=ac.createGain(); lg.gain.value=0.2; lfo.connect(lg); lg.connect(murmur.gain); lfo.start(); n.connect(lp); lp.connect(murmur); murmur.connect(out); n.start(); let alive=true; function clink(){ if(!alive)return; const t=ac.currentTime; const o=ac.createOscillator(); o.type='triangle'; o.frequency.value=2400+Math.random()*1200; const g=ac.createGain(); g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.06,t+0.005); g.gain.exponentialRampToValueAtTime(0.0001,t+0.15); o.connect(g); g.connect(out); o.start(t); o.stop(t+0.16); setTimeout(clink,4000+Math.random()*8000); } clink(); return {stop:()=>{alive=false;try{n.stop()}catch(e){};try{lfo.stop()}catch(e){}}}; }
 function buildThunder(ac,out){ let alive=true; let to=null; function rumble(){ if(!alive)return; const t=ac.currentTime; const n=ac.createBufferSource(); n.buffer=makeNoiseBuffer(); n.loop=false; const lp=ac.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=120; const g=ac.createGain(); const dur=2+Math.random()*3; g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.9,t+0.4); g.gain.linearRampToValueAtTime(0.5,t+dur*0.6); g.gain.exponentialRampToValueAtTime(0.0001,t+dur); n.connect(lp); lp.connect(g); g.connect(out); n.start(t); n.stop(t+dur+0.1); to=setTimeout(rumble,8000+Math.random()*16000); } to=setTimeout(rumble,2000+Math.random()*4000); return {stop:()=>{alive=false;clearTimeout(to);}}; }
 function buildStream(ac,out){ const n=ac.createBufferSource(); n.buffer=makeNoiseBuffer(); n.loop=true; const hp=ac.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=1200; const bp=ac.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=3000; bp.Q.value=0.6; const inner=ac.createGain(); inner.gain.value=0.5; const lfo=ac.createOscillator(); lfo.frequency.value=7; const lg=ac.createGain(); lg.gain.value=0.25; lfo.connect(lg); lg.connect(inner.gain); lfo.start(); n.connect(hp); hp.connect(bp); bp.connect(inner); inner.connect(out); n.start(); return {stop:()=>{try{n.stop()}catch(e){};try{lfo.stop()}catch(e){}}}; }
+function buildBinaural(ac,out){
+  // Binaural beats: two sine oscillators at slightly different frequencies (200Hz base + ~10Hz beat = alpha-range focus).
+  // Left ear gets base, right ear gets base+beat. Headphones recommended for the effect.
+  const base = 200; const beat = 10;
+  const left = ac.createOscillator(); left.type='sine'; left.frequency.value=base;
+  const right = ac.createOscillator(); right.type='sine'; right.frequency.value=base+beat;
+  const merger = ac.createChannelMerger(2);
+  const lg = ac.createGain(); lg.gain.value=0.5; const rg = ac.createGain(); rg.gain.value=0.5;
+  left.connect(lg); lg.connect(merger,0,0);
+  right.connect(rg); rg.connect(merger,0,1);
+  merger.connect(out);
+  left.start(); right.start();
+  return {stop:()=>{try{left.stop()}catch(e){};try{right.stop()}catch(e){}}};
+}
 function updateAmbientCount(){ const n=Object.keys(ambientNodes).length; const el=$('amb-count'); if(el) el.textContent = n + ' on'; }
 function toggleAmbient(type){
   buildMaster(); const ac=ensureAudio(); if(!ac) return;
@@ -1834,6 +1872,36 @@ function deleteBrainDump(id){
   saveStore(); renderBrainDump();
 }
 function toggleBrainPanel(){ $('brain-panel').classList.toggle('show'); if($('brain-panel').classList.contains('show')) $('brain-input').focus(); }
+/* Data export / import / reset */
+function exportData(){
+  try {
+    const blob = new Blob([JSON.stringify(state.store, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'focus-app-backup-' + new Date().toISOString().slice(0,10) + '.json';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch(e) { console.warn('export failed', e); }
+}
+function importDataFromFile(file){
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      state.store = Object.assign(defaultStore(), data);
+      saveStore();
+      alert('Data imported. Reloading…');
+      location.reload();
+    } catch(err) { alert('Import failed: invalid file.'); }
+  };
+  reader.readAsText(file);
+}
+function resetAllData(){
+  if (!confirm('Reset all data? This clears all sessions, tasks, journal, streaks, and settings. This cannot be undone.')) return;
+  try { localStorage.removeItem(STORE_KEY); } catch(e){}
+  location.reload();
+}
 function startTimer() {
   if (state.running) return;
   ensureAudio(); buildMaster();
@@ -2666,7 +2734,8 @@ const CMDK_COMMANDS = [
   { label:'Open settings', key:'', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"/></svg>', run: openSettings },
   { label:'Open focus journal', key:'', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>', run: openJournal },
   { label:'Show keyboard shortcuts', key:'?', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>', run: toggleHelp },
-  { label:'Open brain dump', key:'D', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/></svg>', run: toggleBrainPanel }
+  { label:'Open brain dump', key:'D', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/></svg>', run: toggleBrainPanel },
+  { label:'Export data backup', key:'', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>', run: exportData }
 ];
 let cmdkSel = 0, cmdkFiltered = [];
 function openCmdk(){
@@ -2737,6 +2806,11 @@ function bindEvents() {
   $('brain-input').addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); addBrainDump(e.target.value); e.target.value=''; }
   });
+  // data backup
+  $('data-export').onclick = exportData;
+  $('data-import').onclick = () => $('data-import-file').click();
+  $('data-import-file').onchange = (e) => importDataFromFile(e.target.files[0]);
+  $('data-reset').onclick = resetAllData;
   // breathing exercise
   $('breath-skip').onclick = hideBreathing;
   $('breath-overlay').onclick = (e) => { if (e.target.id === 'breath-overlay') hideBreathing(); };

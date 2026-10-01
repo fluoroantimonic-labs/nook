@@ -3,8 +3,8 @@
 ## Project Overview
 A single-file HTML/CSS/JS focus & study app inspired by studywithme.io, served via a Next.js 16 project. The actual app lives at `public/focus.html` (fully self-contained — only Google Fonts loaded externally) and is embedded full-viewport via `src/app/page.tsx` (server component rendering an iframe with `allow="autoplay; fullscreen; encrypted-media"` + `allowFullScreen`).
 
-## Current Project Status (Phase 9 — COMPLETE)
-The app is **fully functional and verified** via agent-browser (desktop + mobile/iPhone 14 emulation). All core requirements plus Phases 2–9 of enhancements are implemented and working:
+## Current Project Status (Phase 10 — COMPLETE)
+The app is **fully functional and verified** via agent-browser (desktop + mobile/iPhone 14 emulation). All core requirements plus Phases 2–10 of enhancements are implemented and working:
 
 ### Implemented Features
 - **Timer**: 3 pill modes (Deep Focus 90 / Break 20 / Quick 40, all editable). End-timestamp timing (accurate in background tabs). Auto-cycle deep→break→quick→break→deep. Auto-start toggle. Chime on session end (Web Audio bell chord). Tab-title countdown (`▶ 89:58 · Sunny Meadow · focus`). Spacebar toggle. Goal/progress SVG ring around the timer.
@@ -32,7 +32,25 @@ The app is **fully functional and verified** via agent-browser (desktop + mobile
 - Tab title showed "undefined" for the scene name — `currentSceneClass()` returned the data-name string but was used to index `SCENE_NAMES`. Renamed to `currentSceneName()` and used the value directly. Verified: title now "▶ 24:58 · Sunny Meadow · focus".
 
 ## Current Goals / Completed
-Phase 1 (core) + Phase 2 (user-requested) + Phase 3 (QA fixes + styling) + Phase 4 (micro-interactions + mindfulness) + Phase 5 (segmented control + ambient theming + timeline) + Phase 6 (ambient presets + bokeh + vinyl + visualizer + task-linkage + focus gauge) + Phase 7 (celebration + live badge + distraction dim + typography) + Phase 8 (achievements + heatmap + command palette) + Phase 9 (brain dump + live clock + stats ticker + glass consistency) are all **complete and verified**.
+Phase 1 (core) + Phase 2 (user-requested) + Phase 3 (QA fixes + styling) + Phase 4 (micro-interactions + mindfulness) + Phase 5 (segmented control + ambient theming + timeline) + Phase 6 (ambient presets + bokeh + vinyl + visualizer + task-linkage + focus gauge) + Phase 7 (celebration + live badge + distraction dim + typography) + Phase 8 (achievements + heatmap + command palette) + Phase 9 (brain dump + live clock + stats ticker + glass consistency) + Phase 10 (binaural beats + data backup + refinements) are all **complete and verified**.
+
+### Phase 10 — Binaural Beats, Data Backup & Refinements (DONE)
+QA confirmed the app was stable (brain dump + D shortcut, command palette 13 items, full cycle + celebration + ticker, settings persist). Vision-model feedback drove 5 upgrades focused on focus frequencies, data portability, and typography. All browser-verified.
+
+#### QA Results (no bugs found)
+- Brain dump: D shortcut opens panel, add note (count "1").
+- Command palette: Ctrl+K opens (13 items), Esc closes.
+- Full cycle: skip → BREAK, counter "Session 2", 40 confetti, ticker "1 today·90 min today·1.5 hrs all-time·1 day streak".
+- Settings persist: goal=300 saved + confirmed in localStorage.
+
+#### Styling Polish (3 upgrades) — vision-model confirmed
+1. **Mode-label weight** — `.mode-label` font-weight raised from 500 → 600 (semi-bold) + letter-spacing 0.18em → 0.2em for a more premium tech feel. Verified: computed weight = 600.
+2. **Brain-button hover glow** — `.brain-btn:hover` now adds a warm gold glow (`0 0 16px rgba(255,209,102,0.15)`) + the brain icon rotates -8deg + scales 1.1 on hover, making the secondary action more inviting.
+3. **Binaural row styling** — a `.binaural-row` CSS class with a top border separator for the new binaural entry in the ambient mixer.
+
+#### New Features (2)
+4. **Binaural beats** — a 9th ambient sound "Binaural" (pink-themed) added to the ambient mixer. Synthesized via `buildBinaural()` using two sine oscillators at 200Hz (left) and 210Hz (right) through a `ChannelMerger` — the 10Hz difference creates an alpha-range binaural beat (focus frequency, headphones recommended). Has its own SVG waveform icon + themed color/glow like all other sounds. Verified: toggle on → `on=true`, count "1 on".
+5. **Data backup (export/import/reset)** — a new "Data backup" section in Settings with 3 buttons: Export (downloads a JSON file `focus-app-backup-YYYY-MM-DD.json` via `Blob` + `URL.createObjectURL`), Import (file picker → `JSON.parse` → merge with defaults → reload), Reset (confirm dialog → clears localStorage → reload). Also added "Export data backup" to the command palette (14 commands total). Verified: 3 buttons present; command palette has the export entry.
 
 ### Phase 9 — Brain Dump, Live Clock & Stats Ticker (DONE)
 QA confirmed the app was stable (command palette 12 items, timer accurate 89:59→89:57, 9 topbar buttons with tooltips, settings complete, tasks add/check work). Vision-model feedback drove 6 upgrades focused on ambient info, distraction capture, and glass cohesion. All browser-verified.
@@ -271,6 +289,17 @@ Responded to user feedback with four changes, all browser-verified:
 - **Mobile (iPhone 14, 390px)**: live clock + stats ticker visible, timer intact (brain button hidden on mobile to avoid overlap — accessible via `D` shortcut / command palette).
 - ESLint clean; no runtime errors in dev.log.
 
+### Phase 10 Verification Results (agent-browser)
+- **No bugs found** in QA: brain dump, command palette, full cycle, settings persistence all stable.
+- **New elements present**: `.amb-row[data-amb=binaural]` (9th sound), 3 `#data-*` buttons in settings, "Export data backup" in command palette — all in DOM.
+- **Binaural beats**: toggle on → `on=true`, count "1 on"; 9 ambient rows total (was 8).
+- **Data backup**: 3 buttons (Export/Import/Reset) present in settings; vision model confirmed the "Data backup" section.
+- **Command palette**: now 14 items (added "Export data backup").
+- **Mode label**: computed font-weight = 600 (semi-bold, was 500).
+- **Brain button**: hover glow + icon rotation confirmed via CSS.
+- **Mobile (iPhone 14, 390px)**: binaural row exists, timer intact.
+- ESLint clean; no runtime errors in dev.log.
+
 ## Unresolved Issues / Risks / Next-Phase Recommendations
 - **No known bugs.** App is stable across desktop + mobile, light + dark themes.
 - **Potential enhancements for future phases** (for the recurring webDevReview cron):
@@ -282,12 +311,13 @@ Responded to user feedback with four changes, all browser-verified:
   - Add session notes/reflections to the journal (optional note per completed session).
   - Add a real Web Audio AnalyserNode-driven visualizer (currently CSS-animated fake bars).
   - Add custom ambient preset creation (let users save their own combos).
-  - Add an export/import settings + data feature (backup/restore localStorage).
   - Add a "today's total focus vs goal" ring in the stats panel header.
   - Add a "focus shield" / DND toggle indicator near the timer.
   - Make the brain dump button visible on mobile (currently hidden to avoid overlap).
+  - Add configurable binaural beat frequency (alpha/beta/theta presets).
+  - Add a session-reflection prompt after breathing (mood/interruption tracking).
 
 ## Architecture Notes
-- `public/focus.html` — the entire self-contained app (HTML + CSS + vanilla JS, ~3000 lines). Only external dependency: Google Fonts (Poppins + Caveat).
+- `public/focus.html` — the entire self-contained app (HTML + CSS + vanilla JS, ~3100 lines). Only external dependency: Google Fonts (Poppins + Caveat).
 - `src/app/page.tsx` — server component, renders a full-viewport `<iframe src="/focus.html">` so the single-file constraint is preserved while remaining previewable at `/`.
 - No Next.js API routes, no database, no external images/audio — fully client-side.
