@@ -120,18 +120,17 @@
     content: ''; position: absolute; background: rgba(255,255,255,0.92); border-radius: 50%;
   }
 
-  /* Golden Hour */
+  /* Golden Hour — sun moved to bottom-left corner so it doesn't block the timer */
   .scene-golden {
     background:
-      radial-gradient(ellipse 80% 50% at 50% 75%, rgba(255,200,120,0.6), transparent 70%),
-      radial-gradient(ellipse 50% 30% at 50% 55%, rgba(255,160,80,0.35), transparent 70%),
+      radial-gradient(ellipse 70% 45% at 18% 85%, rgba(255,200,120,0.5), transparent 70%),
       linear-gradient(180deg, #ffb347 0%, #ff9a56 30%, #ff7e6b 55%, #c95d8a 78%, #6b4a8b 100%);
   }
   .scene-golden .sun {
-    position: absolute; bottom: 28%; left: 50%; transform: translateX(-50%);
-    width: 180px; height: 180px; border-radius: 50%;
+    position: absolute; bottom: 14%; left: 8%;
+    width: 120px; height: 120px; border-radius: 50%;
     background: radial-gradient(circle, #fff3c4 0%, #ffd166 45%, rgba(255,180,80,0) 75%);
-    box-shadow: 0 0 140px 60px rgba(255,180,80,0.5), 0 0 260px 100px rgba(255,140,70,0.22);
+    box-shadow: 0 0 100px 40px rgba(255,180,80,0.4), 0 0 200px 80px rgba(255,140,70,0.18);
   }
   .scene-golden .hill.back { left: -30%; background: linear-gradient(180deg, #c8794e, #8a4a3a); height: 30%; bottom: 0; opacity: 0.8; }
   .scene-golden .hill.front { right: -40%; background: linear-gradient(180deg, #a85e3e, #5e3528); height: 24%; bottom: 0; }
