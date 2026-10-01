@@ -3,8 +3,8 @@
 ## Project Overview
 A single-file HTML/CSS/JS focus & study app inspired by studywithme.io, served via a Next.js 16 project. The actual app lives at `public/focus.html` (fully self-contained — only Google Fonts loaded externally) and is embedded full-viewport via `src/app/page.tsx` (server component rendering an iframe with `allow="autoplay; fullscreen; encrypted-media"` + `allowFullScreen`).
 
-## Current Project Status (Phase 6 — COMPLETE)
-The app is **fully functional and verified** via agent-browser (desktop + mobile/iPhone 14 emulation). All core requirements plus Phases 2–6 of enhancements are implemented and working:
+## Current Project Status (Phase 7 — COMPLETE)
+The app is **fully functional and verified** via agent-browser (desktop + mobile/iPhone 14 emulation). All core requirements plus Phases 2–7 of enhancements are implemented and working:
 
 ### Implemented Features
 - **Timer**: 3 pill modes (Deep Focus 90 / Break 20 / Quick 40, all editable). End-timestamp timing (accurate in background tabs). Auto-cycle deep→break→quick→break→deep. Auto-start toggle. Chime on session end (Web Audio bell chord). Tab-title countdown (`▶ 89:58 · Sunny Meadow · focus`). Spacebar toggle. Goal/progress SVG ring around the timer.
@@ -32,7 +32,27 @@ The app is **fully functional and verified** via agent-browser (desktop + mobile
 - Tab title showed "undefined" for the scene name — `currentSceneClass()` returned the data-name string but was used to index `SCENE_NAMES`. Renamed to `currentSceneName()` and used the value directly. Verified: title now "▶ 24:58 · Sunny Meadow · focus".
 
 ## Current Goals / Completed
-Phase 1 (core) + Phase 2 (user-requested) + Phase 3 (QA fixes + styling) + Phase 4 (micro-interactions + mindfulness) + Phase 5 (segmented control + ambient theming + timeline) + Phase 6 (ambient presets + bokeh + vinyl + visualizer + task-linkage + focus gauge) are all **complete and verified**.
+Phase 1 (core) + Phase 2 (user-requested) + Phase 3 (QA fixes + styling) + Phase 4 (micro-interactions + mindfulness) + Phase 5 (segmented control + ambient theming + timeline) + Phase 6 (ambient presets + bokeh + vinyl + visualizer + task-linkage + focus gauge) + Phase 7 (celebration + live badge + distraction dim + typography) are all **complete and verified**.
+
+### Phase 7 — Celebration, Live Badge & Distraction Dim (DONE)
+QA confirmed the app was stable (cycle works, scene auto-rotation works, all settings sections present). Vision-model feedback drove 7 upgrades focused on session feedback, ambient life, and refined typography. All browser-verified.
+
+#### QA Results (no bugs found)
+- Full cycle: deep→break→quick→break (skip×3) works.
+- Scene auto-rotation: Sunny Meadow → Golden Hour after 62s (1-min interval).
+- Settings: 5 presets, 3 duration fields, 7 scene thumbs, all toggles present.
+- Help overlay (10 shortcuts), Journal modal (empty state) both work.
+
+#### Styling Polish (3 upgrades) — vision-model confirmed
+1. **Live-session badge** — a pill below the logo showing "Idle" (dim dot) when paused and "In session" (pulsing gold dot, 1.6s `livePulse`) when running. Toggles via `updateLiveBadge()` on every render.
+2. **Styled timer colon** — the `:` separator in the timer is now wrapped in a `.sep` span with reduced opacity (0.6), giving a refined typographic hierarchy (numbers stay bold, colon recedes).
+3. **Refined quote + task placeholder** — quote opacity lowered to 0.55 (a "whisper" rather than competing for attention); task input placeholder changed from "Add a task…" to the more engaging "What are you working on?".
+
+#### New Features (4)
+4. **Session-complete celebration** — on every session end, a confetti burst (40 pieces in 6 themed colors, mix of circles + squares, randomized delays/durations on a 2.4s `confettiFall`) fires across the screen, plus a centered banner ("Session complete!" + "N min focused — beautiful work. Keep the momentum." for focus; "Break over" + "Refreshed and ready." for breaks). Banner shows for 2.6s; confetti cleans up after 3s. Verified: 40 confetti + banner shown on skip.
+5. **Session counter** — a pill next to the mode label showing "Session N" (where N = today's completed focus sessions + 1). `updateSessionCounter()` reads today's stats + renders in setMode + renderStats. Verified: "Session 1" → "Session 2" after a focus session (focusCount=1).
+6. **Distraction dim** — when the tab loses focus/visibility during a running session, the topbar + side panels + music player + ambient mixer dim to 25% opacity (0.8s transition) while the timer spotlight intensifies, reducing peripheral distraction. Removed on focus return. `setupDistractionDim()` listens to `visibilitychange` + `blur`/`focus`. Verified: `dimmed` class added on blur during running, removed on focus.
+7. **Mode-label session context** — the mode label now flex-displays the mode text + the session counter pill inline, giving "DEEP FOCUS · Session 1" context.
 
 ### Phase 6 — Ambient Presets, Bokeh Depth, Vinyl & Task Linkage (DONE)
 QA confirmed the app was stable (timer accurate, tab title updates, music+ambient play together, tasks work). Vision-model feedback drove 7 upgrades focused on ambient depth, music vitality, and task-timer linkage. All browser-verified.
@@ -178,6 +198,19 @@ Responded to user feedback with four changes, all browser-verified:
 - **Mobile (iPhone 14, 390px)**: bokeh (5 orbs), shortcut hint visible, music player accessible, no overflow.
 - ESLint clean; no runtime errors in dev.log.
 
+### Phase 7 Verification Results (agent-browser)
+- **No bugs found** in QA: cycle works, scene auto-rotation works, all settings sections present.
+- **New elements present**: `#live-badge`, `#session-counter`, `#celebrate`, `#celebrate-banner`, `.timer-text .sep` — all in DOM.
+- **Live badge**: "Idle" (dim dot) → "In session" (pulsing gold dot, `on` class) when timer starts; back to "Idle" on pause.
+- **Styled colon**: `.timer-text .sep` present (opacity 0.6).
+- **Celebration**: on skip → 40 confetti pieces + banner "Session complete!" shown; confetti cleans up after 3s.
+- **Session counter**: "Session 1" → "Session 2" after a focus session (focusCount=1).
+- **Distraction dim**: `body.dimmed` added on window blur during running session; removed on focus.
+- **Task placeholder**: "What are you working on?".
+- **Visual (vision model)**: confirmed live-session badge "IN SESSION" with pulsing dot, styled dimmer colon, session counter pill.
+- **Mobile (iPhone 14, 390px)**: live badge + session counter present, timer intact.
+- ESLint clean; no runtime errors in dev.log.
+
 ## Unresolved Issues / Risks / Next-Phase Recommendations
 - **No known bugs.** App is stable across desktop + mobile, light + dark themes.
 - **Potential enhancements for future phases** (for the recurring webDevReview cron):
@@ -189,8 +222,10 @@ Responded to user feedback with four changes, all browser-verified:
   - Add session notes/reflections to the journal (optional note per completed session).
   - Add a real Web Audio AnalyserNode-driven visualizer (currently CSS-animated fake bars).
   - Add custom ambient preset creation (let users save their own combos).
+  - Add a "today's total focus vs goal" ring in the stats panel header.
+  - Add a achievements/milestones system (e.g. "First 10 sessions", "5-day streak").
 
 ## Architecture Notes
-- `public/focus.html` — the entire self-contained app (HTML + CSS + vanilla JS, ~2550 lines). Only external dependency: Google Fonts (Poppins + Caveat).
+- `public/focus.html` — the entire self-contained app (HTML + CSS + vanilla JS, ~2700 lines). Only external dependency: Google Fonts (Poppins + Caveat).
 - `src/app/page.tsx` — server component, renders a full-viewport `<iframe src="/focus.html">` so the single-file constraint is preserved while remaining previewable at `/`.
 - No Next.js API routes, no database, no external images/audio — fully client-side.
