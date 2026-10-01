@@ -277,6 +277,10 @@
   .brand { display: flex; flex-direction: column; line-height: 1; position: relative; }
   .brand .logo { font-family: var(--font-logo); font-size: clamp(2rem, 4.5vw, 3rem); font-weight: 700; letter-spacing: 0.5px; text-shadow: 0 2px 12px rgba(0,0,0,0.3); }
   .brand .sub { font-size: 0.62rem; letter-spacing: 0.32em; text-transform: uppercase; opacity: 0.8; margin-top: 2px; padding-left: 4px; }
+  /* Live clock widget under the logo */
+  .live-clock { font-size: 0.72rem; font-weight: 500; opacity: 0.7; margin-top: 6px; margin-left: 4px; padding-left: 14px; position: relative; font-variant-numeric: tabular-nums; letter-spacing: 0.04em; }
+  .live-clock::before { content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid var(--text-soft); }
+  .live-clock .clock-date { opacity: 0.65; margin-left: 6px; }
   /* Live session badge next to logo */
   .live-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 0.6rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; background: rgba(255,255,255,0.12); border: 1px solid var(--glass-border); padding: 3px 10px 3px 8px; border-radius: var(--radius-pill); margin-top: 6px; margin-left: 4px; width: fit-content; opacity: 0.55; transition: opacity .3s ease; }
   .live-badge.on { opacity: 1; background: rgba(255,209,102,0.18); border-color: rgba(255,209,102,0.4); }
@@ -369,6 +373,37 @@
   .quote { font-size: 0.85rem; font-weight: 400; font-style: italic; opacity: 0; max-width: 460px; text-align: center; line-height: 1.5; min-height: 1.4em; transition: opacity .6s ease; letter-spacing: 0.01em; }
   .quote.show { opacity: 0.78; }
 
+  /* Stats ticker — a compact live summary below the quote */
+  .stats-ticker { font-size: 0.68rem; opacity: 0; max-width: 520px; text-align: center; min-height: 1.2em; transition: opacity .5s ease; letter-spacing: 0.02em; font-variant-numeric: tabular-nums; }
+  .stats-ticker.show { opacity: 0.55; }
+  .stats-ticker b { font-weight: 600; opacity: 0.9; }
+  .stats-ticker .sep { opacity: 0.4; margin: 0 8px; }
+
+  /* Brain-dump scratchpad button */
+  .brain-btn { position: fixed; bottom: calc(16px + var(--safe-bottom)); left: 50%; transform: translateX(-50%); z-index: 6; display: flex; align-items: center; gap: 7px; font-size: 0.74rem; padding: 9px 16px; border-radius: var(--radius-pill); background: var(--glass-bg-strong); border: 1px solid var(--glass-border); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.2); color: var(--text-soft); transition: all .2s ease; }
+  .brain-btn:hover { transform: translateX(-50%) translateY(-2px); color: var(--text); background: var(--glass-bg-strong); }
+  .brain-btn svg { width: 16px; height: 16px; }
+  .brain-btn .brain-count { background: var(--accent); color: #2b2d42; font-size: 0.6rem; font-weight: 700; border-radius: 10px; padding: 1px 6px; min-width: 16px; text-align: center; }
+  /* Brain dump panel */
+  .brain-panel { position: fixed; bottom: 70px; left: 50%; transform: translateX(-50%) translateY(10px); z-index: 6; width: 360px; max-width: calc(100vw - 32px); background: var(--glass-bg-strong); border: 1px solid var(--glass-border); backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px); border-radius: var(--radius-lg); box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.22); padding: 14px; opacity: 0; pointer-events: none; transition: all .25s cubic-bezier(.34,1.2,.5,1); }
+  .brain-panel.show { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
+  .brain-panel h4 { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.85; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .brain-panel h4 svg { width: 14px; height: 14px; }
+  .brain-input { width: 100%; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); border-radius: var(--radius-sm); padding: 8px 12px; color: var(--text); font-size: 0.82rem; outline: none; resize: vertical; min-height: 60px; max-height: 160px; font-family: inherit; }
+  .brain-input::placeholder { color: var(--text-dim); }
+  .brain-input:focus { border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.2); }
+  .brain-list { margin-top: 8px; max-height: 180px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.3) transparent; display: flex; flex-direction: column; gap: 4px; }
+  .brain-list::-webkit-scrollbar { width: 5px; }
+  .brain-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.25); border-radius: 3px; }
+  .brain-item { display: flex; align-items: flex-start; gap: 8px; padding: 6px 9px; background: rgba(255,255,255,0.07); border-radius: var(--radius-sm); font-size: 0.78rem; line-height: 1.35; animation: taskSlideIn .3s cubic-bezier(.34,1.56,.64,1); }
+  .brain-item .bi-text { flex: 1; word-break: break-word; }
+  .brain-item .bi-del { opacity: 0.4; padding: 2px; flex-shrink: 0; transition: opacity .15s; }
+  .brain-item:hover .bi-del { opacity: 0.8; }
+  .brain-item .bi-del:hover { opacity: 1; }
+  .brain-item .bi-del svg { width: 12px; height: 12px; }
+  .brain-empty { font-size: 0.76rem; opacity: 0.45; text-align: center; padding: 10px 0; }
+  .brain-hint { font-size: 0.62rem; opacity: 0.45; margin-top: 6px; text-align: center; }
+
   .controls { display: flex; align-items: center; gap: 16px; }
   .ctrl-btn {
     width: 54px; height: 54px; border-radius: var(--radius-pill);
@@ -380,7 +415,7 @@
   }
   .ctrl-btn:hover { background: var(--glass-bg-strong); transform: translateY(-2px); box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.25), 0 6px 20px rgba(0,0,0,0.18); }
   .ctrl-btn:active { transform: scale(0.92); transition: transform .08s ease; }
-  .ctrl-btn svg { width: 22px; height: 22px; transition: transform .2s ease; }
+  .ctrl-btn svg { width: 24px; height: 24px; transition: transform .2s ease; }
   .ctrl-btn.primary {
     width: 72px; height: 72px; background: linear-gradient(180deg, #fff, #f0f0f0); border-color: rgba(255,255,255,0.95);
     box-shadow: 0 8px 30px rgba(0,0,0,0.25), inset 0 2px 0 rgba(255,255,255,0.8), inset 0 -2px 0 rgba(0,0,0,0.06);
@@ -417,11 +452,13 @@
   .switch input:checked + .slider { background: var(--accent); }
   .switch input:checked + .slider::before { transform: translateX(16px); }
 
-  /* Side panels */
+  /* Side panels — standardized glass depth */
+  .panel, .music-player, .ambient-mixer {
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  }
   .panel {
-    background: var(--glass-bg); border: 1px solid var(--glass-border);
-    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
-    border-radius: var(--radius-lg); box-shadow: var(--glass-shadow);
+    background: var(--glass-bg-strong); border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg); box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.22), inset 0 -1px 0 rgba(0,0,0,0.08);
     padding: 16px;
   }
   .panel-title { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.9; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
@@ -621,9 +658,9 @@
   .ambient-mixer {
     position: fixed; bottom: calc(16px + var(--safe-bottom)); right: calc(20px + var(--safe-right));
     width: 252px; max-width: calc(100vw - 40px); z-index: 6;
-    background: var(--glass-bg); border: 1px solid var(--glass-border);
-    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
-    border-radius: var(--radius-lg); box-shadow: var(--glass-shadow);
+    background: var(--glass-bg-strong); border: 1px solid var(--glass-border);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border-radius: var(--radius-lg); box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.22), inset 0 -1px 0 rgba(0,0,0,0.08);
     padding: 12px 14px; color: var(--text);
   }
   .amb-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; padding: 0 2px; }
@@ -926,6 +963,7 @@
     <div class="brand">
       <span class="logo">study with me</span>
       <span class="sub">cozy focus space</span>
+      <div class="live-clock" id="live-clock"></div>
       <span class="live-badge" id="live-badge"><span class="dot"></span><span id="live-badge-text">Idle</span></span>
     </div>
     <div class="modes" id="modes">
@@ -986,6 +1024,7 @@
     <div class="mode-label" id="mode-label"><span id="mode-label-text">DEEP FOCUS</span><span class="session-counter" id="session-counter">Session 1</span></div>
     <div class="cycle-dots" id="cycle-dots"></div>
     <div class="quote" id="quote"></div>
+    <div class="stats-ticker" id="stats-ticker"></div>
     <div class="controls">
       <button class="ctrl-btn" id="btn-reset" title="Reset">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
@@ -1105,6 +1144,19 @@
 <button class="icon-btn exit-df" id="exit-zen" title="Exit zen mode">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.9" y1="4.9" x2="19.1" y2="19.1"/></svg>
 </button>
+
+<!-- BRAIN DUMP SCRATCHPAD -->
+<button class="brain-btn" id="brain-btn" data-tip="Brain dump">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg>
+  <span>Brain dump</span>
+  <span class="brain-count" id="brain-count" style="display:none">0</span>
+</button>
+<div class="brain-panel" id="brain-panel">
+  <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/></svg> Brain dump</h4>
+  <textarea class="brain-input" id="brain-input" placeholder="Jot down a quick thought… (Enter to save, Shift+Enter for newline)"></textarea>
+  <div class="brain-list" id="brain-list"></div>
+  <div class="brain-hint">Capture distractions without leaving your flow.</div>
+</div>
 
 <input type="file" id="wallpaper-input" accept="image/*" class="hidden" />
 
@@ -1278,7 +1330,8 @@ function defaultStore() {
     journal: [],
     focusCount: 0,
     breathingEnabled: true,
-    longBreakEvery: 3
+    longBreakEvery: 3,
+    brainDump: []
   };
 }
 
@@ -1731,6 +1784,56 @@ function setupDistractionDim(){
   window.addEventListener('blur', () => { if (state.running) document.body.classList.add('dimmed'); });
   window.addEventListener('focus', () => document.body.classList.remove('dimmed'));
 }
+/* Live clock — updates every second under the logo */
+function startLiveClock(){
+  const el = $('live-clock'); if(!el) return;
+  function tick(){
+    const d = new Date();
+    const h = d.getHours().toString().padStart(2,'0');
+    const m = d.getMinutes().toString().padStart(2,'0');
+    const day = d.toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'});
+    el.innerHTML = h+':'+m+'<span class="clock-date">'+day+'</span>';
+  }
+  tick(); setInterval(tick, 1000);
+}
+/* Stats ticker — a compact live summary below the quote */
+function updateStatsTicker(){
+  const el = $('stats-ticker'); if(!el) return;
+  const k = todayKey();
+  const today = state.store.sessions[k] || { count: 0, mins: 0 };
+  let allMins = 0, allCount = 0;
+  Object.values(state.store.sessions||{}).forEach(s => { allMins += s.mins; allCount += s.count; });
+  const streak = state.store.streak || 0;
+  el.innerHTML = '<b>'+today.count+'</b> today<span class="sep">·</span><b>'+today.mins+'</b> min today<span class="sep">·</span><b>'+(allMins/60).toFixed(1)+'</b> hrs all-time<span class="sep">·</span><b>'+streak+'</b> day streak';
+  el.classList.add('show');
+}
+/* Brain dump scratchpad */
+function renderBrainDump(){
+  const list = $('brain-list'); if(!list) return;
+  const notes = state.store.brainDump || [];
+  const count = $('brain-count');
+  if (count) { count.textContent = notes.length; count.style.display = notes.length > 0 ? 'inline-block' : 'none'; }
+  if (notes.length === 0) { list.innerHTML = '<div class="brain-empty">No quick notes yet.</div>'; return; }
+  list.innerHTML = notes.map(n =>
+    '<div class="brain-item"><span class="bi-text"></span><button class="bi-del" data-id="'+n.id+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>'
+  ).join('');
+  list.querySelectorAll('.brain-item').forEach((el, i) => {
+    el.querySelector('.bi-text').textContent = notes[i].text;
+    el.querySelector('.bi-del').onclick = () => deleteBrainDump(notes[i].id);
+  });
+}
+function addBrainDump(text){
+  text = (text||'').trim(); if(!text) return;
+  if (!state.store.brainDump) state.store.brainDump = [];
+  state.store.brainDump.unshift({ id: 'b'+Date.now(), text: text.slice(0,300) });
+  if (state.store.brainDump.length > 50) state.store.brainDump.length = 50;
+  saveStore(); renderBrainDump();
+}
+function deleteBrainDump(id){
+  state.store.brainDump = (state.store.brainDump||[]).filter(n => n.id !== id);
+  saveStore(); renderBrainDump();
+}
+function toggleBrainPanel(){ $('brain-panel').classList.toggle('show'); if($('brain-panel').classList.contains('show')) $('brain-input').focus(); }
 function startTimer() {
   if (state.running) return;
   ensureAudio(); buildMaster();
@@ -1871,6 +1974,7 @@ function renderStats() {
   renderHeatmap();
   renderAchievements();
   updateSessionCounter();
+  updateStatsTicker();
 }
 function renderWeeklyChart() {
   const chart = $('weekly-chart');
@@ -2317,6 +2421,7 @@ const SHORTCUTS = [
   { key:'F', desc:'Toggle fullscreen' },
   { key:'Z', desc:'Toggle distraction-free mode' },
   { key:'⌘K', desc:'Open command palette' },
+  { key:'D', desc:'Open brain dump' },
   { key:'?', desc:'Show this shortcuts panel' }
 ];
 function buildShortcutList(){
@@ -2560,7 +2665,8 @@ const CMDK_COMMANDS = [
   { label:'Toggle zen mode', key:'Z', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/></svg>', run: toggleZen },
   { label:'Open settings', key:'', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"/></svg>', run: openSettings },
   { label:'Open focus journal', key:'', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>', run: openJournal },
-  { label:'Show keyboard shortcuts', key:'?', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>', run: toggleHelp }
+  { label:'Show keyboard shortcuts', key:'?', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>', run: toggleHelp },
+  { label:'Open brain dump', key:'D', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/></svg>', run: toggleBrainPanel }
 ];
 let cmdkSel = 0, cmdkFiltered = [];
 function openCmdk(){
@@ -2626,6 +2732,11 @@ function bindEvents() {
   $('journal-modal').onclick = (e) => { if (e.target.id === 'journal-modal') closeJournal(); };
   $('journal-clear').onclick = () => { state.store.journal = []; state.store.focusCount = 0; saveStore(); renderJournal(); };
   $('help-overlay').onclick = (e) => { if (e.target.id === 'help-overlay') toggleHelp(); };
+  // brain dump
+  $('brain-btn').onclick = toggleBrainPanel;
+  $('brain-input').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); addBrainDump(e.target.value); e.target.value=''; }
+  });
   // breathing exercise
   $('breath-skip').onclick = hideBreathing;
   $('breath-overlay').onclick = (e) => { if (e.target.id === 'breath-overlay') hideBreathing(); };
@@ -2717,6 +2828,7 @@ function bindEvents() {
     else if (k === 't') toggleTheme();
     else if (k === 'f') toggleFullscreen();
     else if (k === 'z') toggleZen();
+    else if (k === 'd') toggleBrainPanel();
     else if (e.key === '?' || (e.shiftKey && k === '/')) { e.preventDefault(); toggleHelp(); }
   });
   // command palette input + click-outside
@@ -2747,12 +2859,14 @@ function init() {
   startQuotes();
   startParallax();
   setupDistractionDim();
+  startLiveClock();
   // restore durations into mode defaults
   setMode('deep', false);
   // initial UI states
   document.querySelector('.ring-svg').classList.add('idle');
   renderCycleDots();
   updateSessionCounter();
+  renderBrainDump();
   // position the modes indicator after layout settles
   setTimeout(updateModesIndicator, 60);
   // scene

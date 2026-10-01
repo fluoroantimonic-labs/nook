@@ -3,8 +3,8 @@
 ## Project Overview
 A single-file HTML/CSS/JS focus & study app inspired by studywithme.io, served via a Next.js 16 project. The actual app lives at `public/focus.html` (fully self-contained — only Google Fonts loaded externally) and is embedded full-viewport via `src/app/page.tsx` (server component rendering an iframe with `allow="autoplay; fullscreen; encrypted-media"` + `allowFullScreen`).
 
-## Current Project Status (Phase 8 — COMPLETE)
-The app is **fully functional and verified** via agent-browser (desktop + mobile/iPhone 14 emulation). All core requirements plus Phases 2–8 of enhancements are implemented and working:
+## Current Project Status (Phase 9 — COMPLETE)
+The app is **fully functional and verified** via agent-browser (desktop + mobile/iPhone 14 emulation). All core requirements plus Phases 2–9 of enhancements are implemented and working:
 
 ### Implemented Features
 - **Timer**: 3 pill modes (Deep Focus 90 / Break 20 / Quick 40, all editable). End-timestamp timing (accurate in background tabs). Auto-cycle deep→break→quick→break→deep. Auto-start toggle. Chime on session end (Web Audio bell chord). Tab-title countdown (`▶ 89:58 · Sunny Meadow · focus`). Spacebar toggle. Goal/progress SVG ring around the timer.
@@ -32,7 +32,27 @@ The app is **fully functional and verified** via agent-browser (desktop + mobile
 - Tab title showed "undefined" for the scene name — `currentSceneClass()` returned the data-name string but was used to index `SCENE_NAMES`. Renamed to `currentSceneName()` and used the value directly. Verified: title now "▶ 24:58 · Sunny Meadow · focus".
 
 ## Current Goals / Completed
-Phase 1 (core) + Phase 2 (user-requested) + Phase 3 (QA fixes + styling) + Phase 4 (micro-interactions + mindfulness) + Phase 5 (segmented control + ambient theming + timeline) + Phase 6 (ambient presets + bokeh + vinyl + visualizer + task-linkage + focus gauge) + Phase 7 (celebration + live badge + distraction dim + typography) + Phase 8 (achievements + heatmap + command palette) are all **complete and verified**.
+Phase 1 (core) + Phase 2 (user-requested) + Phase 3 (QA fixes + styling) + Phase 4 (micro-interactions + mindfulness) + Phase 5 (segmented control + ambient theming + timeline) + Phase 6 (ambient presets + bokeh + vinyl + visualizer + task-linkage + focus gauge) + Phase 7 (celebration + live badge + distraction dim + typography) + Phase 8 (achievements + heatmap + command palette) + Phase 9 (brain dump + live clock + stats ticker + glass consistency) are all **complete and verified**.
+
+### Phase 9 — Brain Dump, Live Clock & Stats Ticker (DONE)
+QA confirmed the app was stable (command palette 12 items, timer accurate 89:59→89:57, 9 topbar buttons with tooltips, settings complete, tasks add/check work). Vision-model feedback drove 6 upgrades focused on ambient info, distraction capture, and glass cohesion. All browser-verified.
+
+#### QA Results (no bugs found)
+- Command palette: Ctrl+K opens (12 items), Esc closes.
+- Timer: 89:59 → 89:57 over 2s (accurate).
+- Topbar: 9 buttons, 9 with `data-tip` tooltips.
+- Settings: 5 presets, 7 scene thumbs, 3 toggles, 2 theme buttons.
+- Tasks: add 3, check 1 → 1 done.
+
+#### Styling Polish (3 upgrades) — vision-model confirmed
+1. **Standardized glass depth** — all panels (`.panel`, `.music-player`, `.ambient-mixer`) now use uniform `blur(20px)` + `--glass-bg-strong` + inset bevel highlights, giving consistent premium-thickness glass across the whole UI (previously the side panels used `--glass-bg` + 18px blur while the music player used `--glass-bg-strong` + 22px).
+2. **Larger control-button icons** — secondary ctrl-btn (reset/skip) icons increased from 22px → 24px for better visual weight balance against the primary play button.
+3. **Stats ticker** — a compact live summary line below the rotating quote: "N today · N min today · N.N hrs all-time · N day streak" with bold values + dim separators. `updateStatsTicker()` reads from store, called in renderStats. Verified: empty → "0 today·0 min today·0.0 hrs all-time·0 day streak"; after a session → "1 today·90 min today·1.5 hrs all-time·1 day streak".
+
+#### New Features (3)
+4. **Live clock widget** — a clock under the logo showing "HH:MM" + "Day, Mon Date" (e.g. "11:01 Thu, Oct 1"), updating every second via `startLiveClock()`. Tabular nums + a small circle bullet prefix. Verified: present + updating.
+5. **Brain-dump scratchpad** — a floating "Brain dump" button at the bottom center (with a count badge) opens a glass panel with a textarea + a list of quick notes. Enter saves a note (Shift+Enter for newline); each note has a delete button. Notes persist in `state.store.brainDump` (max 50, 300 chars). Also opens via the `D` keyboard shortcut + the command palette. Verified: add 2 notes (count "2"), delete 1 (1 left).
+6. **Brain dump in command palette + shortcuts** — added "Open brain dump" (key D) to both the command palette (13 commands total) and the help overlay shortcuts list (12 entries).
 
 ### Phase 8 — Achievements, Heatmap & Command Palette (DONE)
 QA confirmed the app was stable (cycle + celebration + counter work, ambient presets clear on manual adjustment, task-complete prompt fires). Vision-model feedback drove 5 upgrades focused on data visualization, gamification, and power-user tooling. All browser-verified.
@@ -240,6 +260,17 @@ Responded to user feedback with four changes, all browser-verified:
 - **Mobile (iPhone 14, 390px)**: command palette opens via Ctrl+K dispatch, timer intact.
 - ESLint clean; no runtime errors in dev.log.
 
+### Phase 9 Verification Results (agent-browser)
+- **No bugs found** in QA: command palette, timer, topbar, settings, tasks all stable.
+- **New elements present**: `#live-clock`, `#stats-ticker`, `#brain-btn` + `#brain-panel` — all in DOM and visible.
+- **Live clock**: shows "11:01 Thu, Oct 1" (HH:MM + weekday/month/day), updating every second.
+- **Stats ticker**: empty → "0 today·0 min today·0.0 hrs all-time·0 day streak"; after a session → "1 today·90 min today·1.5 hrs all-time·1 day streak".
+- **Brain dump**: add 2 notes (count badge "2"), delete 1 (1 left); `D` shortcut opens panel.
+- **Glass consistency**: all panels now use uniform `blur(20px)` + `--glass-bg-strong` + bevel highlights.
+- **Visual (vision model)**: confirmed live clock widget under logo, stats ticker below quote, brain dump button at bottom center, consistent glass panels.
+- **Mobile (iPhone 14, 390px)**: live clock + stats ticker visible, timer intact (brain button hidden on mobile to avoid overlap — accessible via `D` shortcut / command palette).
+- ESLint clean; no runtime errors in dev.log.
+
 ## Unresolved Issues / Risks / Next-Phase Recommendations
 - **No known bugs.** App is stable across desktop + mobile, light + dark themes.
 - **Potential enhancements for future phases** (for the recurring webDevReview cron):
@@ -253,8 +284,10 @@ Responded to user feedback with four changes, all browser-verified:
   - Add custom ambient preset creation (let users save their own combos).
   - Add an export/import settings + data feature (backup/restore localStorage).
   - Add a "today's total focus vs goal" ring in the stats panel header.
+  - Add a "focus shield" / DND toggle indicator near the timer.
+  - Make the brain dump button visible on mobile (currently hidden to avoid overlap).
 
 ## Architecture Notes
-- `public/focus.html` — the entire self-contained app (HTML + CSS + vanilla JS, ~2850 lines). Only external dependency: Google Fonts (Poppins + Caveat).
+- `public/focus.html` — the entire self-contained app (HTML + CSS + vanilla JS, ~3000 lines). Only external dependency: Google Fonts (Poppins + Caveat).
 - `src/app/page.tsx` — server component, renders a full-viewport `<iframe src="/focus.html">` so the single-file constraint is preserved while remaining previewable at `/`.
 - No Next.js API routes, no database, no external images/audio — fully client-side.
