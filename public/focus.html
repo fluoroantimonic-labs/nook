@@ -444,7 +444,10 @@
     display: flex; flex-direction: column; gap: 12px; z-index: 5;
     max-height: calc(100vh - 200px); overflow-y: auto;
     scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.3) transparent;
+    opacity: 1; pointer-events: auto; transition: opacity .3s ease, transform .3s cubic-bezier(.34,1.2,.5,1);
   }
+  /* Hidden state when toggled off via btn-panels */
+  body:not(.show-panels) .side-right { opacity: 0; pointer-events: none; transform: translateX(20px); }
   .side-right::-webkit-scrollbar { width: 6px; }
   .side-right::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.25); border-radius: 3px; }
   /* Beveled glass: inset top highlight + outer drop shadow for premium thickness */
@@ -802,7 +805,7 @@
     .ambient-mixer { left: 14px; right: 14px; width: auto; bottom: calc(172px + var(--safe-bottom)); max-height: 34vh; }
     .amb-list { max-height: 26vh; }
     .side-right { display: none; }
-    body.show-panels-mobile .side-right { display: flex; width: calc(100vw - 28px); left: 14px; right: 14px; bottom: auto; top: auto; position: fixed; max-height: 50vh; }
+    body.show-panels .side-right { display: flex; width: calc(100vw - 28px); left: 14px; right: 14px; bottom: auto; top: auto; position: fixed; max-height: 50vh; opacity: 1; pointer-events: auto; transform: none; }
     .ctrl-btn.primary { width: 62px; height: 62px; }
     .ctrl-btn { width: 46px; height: 46px; }
   }
@@ -1003,8 +1006,8 @@
       <button class="mode-pill" data-mode="quick">Quick Session</button>
     </div>
     <div class="top-actions">
-      <button class="icon-btn" id="btn-tasks-mobile" data-tip="Tasks & Stats" style="display:none">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5a2 2 0 0 0-2 2v7h18v-7a2 2 0 0 0-2-2h-4"/><rect x="9" y="3" width="6" height="8" rx="1"/></svg>
+      <button class="icon-btn" id="btn-panels" data-tip="Tasks & Stats">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="18" rx="1"/><rect x="14" y="3" width="7" height="11" rx="1"/><path d="M14 18h7"/><path d="M14 21h7"/></svg>
       </button>
       <button class="icon-btn" id="btn-scene" data-tip="Next scene (B)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg>
@@ -1279,9 +1282,9 @@
     <div class="m-section">
       <h3>Presets</h3>
       <div class="preset-row" id="preset-row">
-        <button class="preset-btn active" data-preset="90,20,40">90 · 20 · 40</button>
+        <button class="preset-btn" data-preset="90,20,40">90 · 20 · 40</button>
         <button class="preset-btn" data-preset="50,10,25">50 · 10 · 25</button>
-        <button class="preset-btn" data-preset="25,5,15">Pomodoro 25 · 5 · 15</button>
+        <button class="preset-btn active" data-preset="25,5,15">Pomodoro 25 · 5 · 15</button>
       </div>
     </div>
 
@@ -1382,7 +1385,7 @@ function saveStore() {
 }
 function defaultStore() {
   return {
-    durations: { deep: 90, break: 20, quick: 40 },
+    durations: { deep: 25, break: 5, quick: 15 },
     sceneInterval: 10,
     goalMins: 120,
     reminderEnabled: true,
@@ -3077,11 +3080,8 @@ function bindEvents() {
   // command palette input + click-outside
   $('cmdk-input').addEventListener('input', (e) => { cmdkSel = 0; renderCmdk(e.target.value); });
   $('cmdk-overlay').addEventListener('click', (e) => { if (e.target.id === 'cmdk-overlay') closeCmdk(); });
-  // mobile tasks toggle
-  if (window.matchMedia('(max-width: 640px)').matches) {
-    $('btn-tasks-mobile').style.display = 'flex';
-    $('btn-tasks-mobile').onclick = () => document.body.classList.toggle('show-panels-mobile');
-  }
+  // Tasks & Stats panel toggle (always visible)
+  $('btn-panels').onclick = () => document.body.classList.toggle('show-panels');
   // first user gesture -> resume audio context
   document.addEventListener('click', () => ensureAudio(), { once: true });
   // reset idle nudge on activity during a running focus session
@@ -3114,7 +3114,7 @@ function init() {
   // scene
   const startScene = state.store.currentScene && state.store.currentScene !== 'custom'
     ? SCENES.indexOf(state.store.currentScene)
-    : SCENES.indexOf(pickSceneByTime());
+    : SCENES.indexOf('scene-sakura');
   setScene(startScene >= 0 ? startScene : 0);
   startSceneTimer();
   // music
