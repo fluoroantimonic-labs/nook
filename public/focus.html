@@ -238,7 +238,7 @@
     position: relative; z-index: 2;
     display: flex; flex-direction: column;
     min-height: 100vh; height: 100vh;
-    padding: calc(12px + var(--safe-top)) calc(20px + var(--safe-right)) 0 calc(20px + var(--safe-left));
+    padding: calc(8px + var(--safe-top)) calc(20px + var(--safe-right)) 0 calc(20px + var(--safe-left));
   }
 
   /* Top bar */
@@ -315,7 +315,7 @@
   /* Timer center */
   .timer-wrap {
     flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 8px; min-height: 0; padding: 0; overflow: visible;
+    gap: 4px; min-height: 0; padding: 0; overflow: visible;
   }
   .focusing-label {
     font-size: 0.92rem; font-weight: 400; color: var(--text-soft);
@@ -331,32 +331,32 @@
   .focusing-label b { font-weight: 600; }
 
   .ring-wrap { position: relative; display: flex; align-items: center; justify-content: center; }
-  .ring-svg { width: clamp(200px, 26vw, 260px); height: clamp(200px, 26vw, 260px); transform: rotate(-90deg); filter: drop-shadow(0 4px 30px rgba(0,0,0,0.15)); transition: filter .5s ease; }
+  .ring-svg { width: clamp(210px, 26vw, 260px); height: clamp(210px, 26vw, 260px); transform: rotate(-90deg); filter: drop-shadow(0 4px 30px rgba(0,0,0,0.15)); transition: filter .5s ease; }
   .ring-svg.idle { animation: ringBreathe 4.5s ease-in-out infinite; }
   @keyframes ringBreathe { 0%,100% { transform: rotate(-90deg) scale(1); opacity: 0.96; } 50% { transform: rotate(-90deg) scale(1.015); opacity: 1; } }
   .ring-track { fill: none; stroke: var(--ring-track); stroke-width: 6; }
   .ring-progress { fill: none; stroke: url(#ringGrad); stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset .5s linear; filter: drop-shadow(0 0 8px rgba(255,209,102,0.6)); }
   .timer-text {
     position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-    font-size: clamp(2.4rem, 7.5vw, 4rem); font-weight: 700; letter-spacing: 0.01em;
+    font-size: clamp(2.6rem, 8vw, 4.2rem); font-weight: 700; letter-spacing: 0.01em;
     font-variant-numeric: tabular-nums; line-height: 1;
     text-shadow: 0 2px 20px rgba(0,0,0,0.18);
   }
   .timer-text .sep { opacity: 0.6; margin: 0 0.02em; }
-  .mode-label { font-size: 0.9rem; font-weight: 600; opacity: 0.9; letter-spacing: 0.2em; text-transform: uppercase; display: flex; align-items: center; gap: 10px; }
-  .session-counter { font-size: 0.72rem; opacity: 0.6; background: rgba(255,255,255,0.1); padding: 3px 10px; border-radius: var(--radius-pill); letter-spacing: 0.04em; }
-  .quote { font-size: 0.92rem; font-weight: 400; font-style: italic; opacity: 0; max-width: 480px; text-align: center; line-height: 1.5; min-height: 1.4em; transition: opacity .6s ease; letter-spacing: 0.01em; padding: 0 14px; border-radius: var(--radius-pill); }
+  .mode-label { font-size: 1.05rem; font-weight: 600; opacity: 0.9; letter-spacing: 0.2em; text-transform: uppercase; display: flex; align-items: center; gap: 12px; }
+  .session-counter { font-size: 0.82rem; opacity: 0.6; background: rgba(255,255,255,0.1); padding: 4px 12px; border-radius: var(--radius-pill); letter-spacing: 0.04em; }
+  .quote { font-size: 1.05rem; font-weight: 400; font-style: italic; opacity: 0; max-width: 480px; text-align: center; line-height: 1.5; min-height: 1.4em; transition: opacity .6s ease; letter-spacing: 0.01em; padding: 0 14px; border-radius: var(--radius-pill); }
   .quote.show { opacity: 0.82; }
 
   /* Stats ticker — a compact live summary below the quote */
-  .stats-ticker { font-size: 0.74rem; opacity: 0; max-width: 520px; text-align: center; min-height: 1.2em; transition: opacity .5s ease; letter-spacing: 0.02em; font-variant-numeric: tabular-nums; }
+  .stats-ticker { font-size: 0.82rem; opacity: 0; max-width: 520px; text-align: center; min-height: 1.2em; transition: opacity .5s ease; letter-spacing: 0.02em; font-variant-numeric: tabular-nums; }
   .stats-ticker.show { opacity: 0.55; }
   .stats-ticker b { font-weight: 600; opacity: 0.9; }
   .stats-ticker .sep { opacity: 0.4; margin: 0 8px; }
 
-  .controls { display: flex; align-items: center; gap: 12px; }
+  .controls { display: flex; align-items: center; gap: 14px; }
   .ctrl-btn {
-    width: 46px; height: 46px; border-radius: var(--radius-pill);
+    width: 52px; height: 52px; border-radius: var(--radius-pill);
     background: linear-gradient(180deg, var(--glass-bg-strong), var(--glass-bg)); border: 1px solid var(--glass-border);
     backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
     display: flex; align-items: center; justify-content: center;
@@ -365,13 +365,13 @@
   }
   .ctrl-btn:hover { background: var(--glass-bg-strong); transform: translateY(-2px); box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.25), 0 6px 20px rgba(0,0,0,0.18); }
   .ctrl-btn:active { transform: scale(0.92); transition: transform .08s ease; }
-  .ctrl-btn svg { width: 24px; height: 24px; transition: transform .2s ease; }
+  .ctrl-btn svg { width: 28px; height: 28px; transition: transform .2s ease; }
   .ctrl-btn.primary {
-    width: 52px; height: 52px; background: linear-gradient(180deg, #fff, #f0f0f0); border-color: rgba(255,255,255,0.95);
+    width: 62px; height: 62px; background: linear-gradient(180deg, #fff, #f0f0f0); border-color: rgba(255,255,255,0.95);
     box-shadow: 0 8px 30px rgba(0,0,0,0.25), inset 0 2px 0 rgba(255,255,255,0.8), inset 0 -2px 0 rgba(0,0,0,0.06);
   }
-  .ctrl-btn.primary svg { width: 28px; height: 28px; color: #2b2d42; }
-  .ctrl-btn.primary:active svg { width: 22px; height: 22px; }
+  .ctrl-btn.primary svg { width: 32px; height: 32px; color: #2b2d42; }
+  .ctrl-btn.primary:active svg { width: 26px; height: 26px; }
   /* Running state: play button takes on the warm focus glow */
   .ctrl-btn.primary.running {
     background: linear-gradient(180deg, var(--accent), #ff9a56);
@@ -848,11 +848,11 @@
   body.dimmed .timer-spotlight { opacity: 1.4 !important; }
 
   /* Cycle progress dots (Pomodoro set tracking) */
-  .cycle-dots { display: flex; align-items: center; gap: 7px; justify-content: center; }
-  .cycle-dots .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.25); transition: all .3s ease; }
+  .cycle-dots { display: flex; align-items: center; gap: 10px; justify-content: center; }
+  .cycle-dots .dot { width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.25); transition: all .3s ease; }
   .cycle-dots .dot.done { background: var(--accent); box-shadow: 0 0 8px rgba(255,209,102,0.5); }
   .cycle-dots .dot.next { background: rgba(255,255,255,0.5); transform: scale(1.25); }
-  .cycle-dots .dot.long { width: 16px; border-radius: 4px; }
+  .cycle-dots .dot.long { width: 22px; border-radius: 4px; }
   .cycle-dots .sep { width: 14px; height: 1px; background: rgba(255,255,255,0.2); }
 
   /* Streak garden — a tiny growing plant in stats */
