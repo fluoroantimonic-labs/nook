@@ -3,8 +3,8 @@
 ## Project Overview
 A single-file HTML/CSS/JS focus & study app inspired by studywithme.io, served via a Next.js 16 project. The actual app lives at `public/focus.html` (fully self-contained — only Google Fonts loaded externally) and is embedded full-viewport via `src/app/page.tsx` (server component rendering an iframe with `allow="autoplay; fullscreen; encrypted-media"` + `allowFullScreen`).
 
-## Current Project Status (Phase 5 — COMPLETE)
-The app is **fully functional and verified** via agent-browser (desktop + mobile/iPhone 14 emulation). All core requirements plus Phases 2–5 of enhancements are implemented and working:
+## Current Project Status (Phase 6 — COMPLETE)
+The app is **fully functional and verified** via agent-browser (desktop + mobile/iPhone 14 emulation). All core requirements plus Phases 2–6 of enhancements are implemented and working:
 
 ### Implemented Features
 - **Timer**: 3 pill modes (Deep Focus 90 / Break 20 / Quick 40, all editable). End-timestamp timing (accurate in background tabs). Auto-cycle deep→break→quick→break→deep. Auto-start toggle. Chime on session end (Web Audio bell chord). Tab-title countdown (`▶ 89:58 · Sunny Meadow · focus`). Spacebar toggle. Goal/progress SVG ring around the timer.
@@ -32,7 +32,26 @@ The app is **fully functional and verified** via agent-browser (desktop + mobile
 - Tab title showed "undefined" for the scene name — `currentSceneClass()` returned the data-name string but was used to index `SCENE_NAMES`. Renamed to `currentSceneName()` and used the value directly. Verified: title now "▶ 24:58 · Sunny Meadow · focus".
 
 ## Current Goals / Completed
-Phase 1 (core build) + Phase 2 (user-requested) + Phase 3 (QA fixes + styling) + Phase 4 (micro-interactions + mindfulness) + Phase 5 (segmented control + ambient theming + timeline) are all **complete and verified**.
+Phase 1 (core) + Phase 2 (user-requested) + Phase 3 (QA fixes + styling) + Phase 4 (micro-interactions + mindfulness) + Phase 5 (segmented control + ambient theming + timeline) + Phase 6 (ambient presets + bokeh + vinyl + visualizer + task-linkage + focus gauge) are all **complete and verified**.
+
+### Phase 6 — Ambient Presets, Bokeh Depth, Vinyl & Task Linkage (DONE)
+QA confirmed the app was stable (timer accurate, tab title updates, music+ambient play together, tasks work). Vision-model feedback drove 7 upgrades focused on ambient depth, music vitality, and task-timer linkage. All browser-verified.
+
+#### QA Results (no bugs found)
+- Timer countdown accurate (89:59→89:57 over 2s); tab title updates (`▶ 89:59 · Sunny Meadow · focus`).
+- Music + ambient play together without conflict.
+- Tasks add + click-to-focus → "Focusing on: Review code".
+
+#### Styling Polish (4 upgrades) — vision-model confirmed
+1. **Soft bokeh light orbs** — 5 large blurred orbs (`#bokeh`) in warm tones (gold/orange/white) drift slowly on a 22s `drift` animation with staggered delays, adding atmospheric depth to all scenes.
+2. **Vinyl-style spinning album art** — the music player's album art is now circular with a dark center hole (vinyl record look). When music plays, it spins on an 8s `spin` animation (`animation-play-state` toggled via `.playing` class); pauses when music stops.
+3. **Music visualizer bars** — 4 accent-colored bars in the music player card that animate on a 0.7s `vizBar` keyframe (staggered) when music plays; static/dim when paused.
+4. **Shortcut hint + stat-card bevels** — a tiny `.shortcut-hint` line below the controls ("Press Space to start · ? for shortcuts" with `<kbd>` badges) for discoverability; stat cards get an inset top highlight for a beveled look.
+
+#### New Features (3)
+5. **Ambient scene presets** — 5 one-tap combo chips at the top of the ambient mixer: "Rainy Library" (rain+cafe), "Night Forest" (fire+wind+thunder), "Beach" (waves+wind), "Morning Garden" (birds+stream), "Cozy Café" (cafe+rain). `applyAmbientPreset()` stops all current sounds, sets the preset's volumes, rebuilds the mixer, and toggles the preset's sounds on. Active preset highlights; manual slider adjustment clears the highlight. Verified: "Rainy Library" → rain+cafe on (2 on), fire off, preset highlighted.
+6. **Focus score gauge** — a circular SVG gauge in the stats panel (reusing the gold→orange `ringGrad`) showing today's focus minutes as a percentage of the daily goal. `renderFocusGauge()` sets the arc's `strokeDashoffset`. Verified: 0% at empty state (offset = full circumference 150.8).
+7. **Task-completion prompt (task-timer linkage)** — after a focus session completes, if a task was focused, a special reminder toast appears: "Nice work! Mark 'X' as done?" with "Mark done" / "Not now" buttons. "Mark done" completes the task. Timing accounts for the breathing exercise (waits 30s if breathing shows, else 1.2s). Verified: prompt shows with task name → "Mark done" → reminder hides + task marked done.
 
 ### Phase 5 — Segmented Control, Ambient Theming & Timeline (DONE)
 QA confirmed the app was stable (the parallax "issue" from earlier testing was a test-method artifact — dispatching on `window` instead of `document`; the feature works). Vision-model feedback drove 8 upgrades focused on visual cohesion + ambient life + data viz. All browser-verified.
@@ -148,6 +167,17 @@ Responded to user feedback with four changes, all browser-verified:
 - **Mobile (iPhone 14, 390px)**: indicator ready, fireflies present, layout intact (timeline hidden — side panel collapses on mobile as designed).
 - ESLint clean; no runtime errors in dev.log.
 
+### Phase 6 Verification Results (agent-browser)
+- **No bugs found** in QA: timer accurate, tab title updates, music+ambient play together, tasks work.
+- **New elements present**: `#bokeh` (5 orbs), `.amb-presets` (5 chips), `#music-viz` (4 bars), `#focus-gauge` + `#gauge-arc`, `#shortcut-hint` — all in DOM.
+- **Ambient preset "Rainy Library"**: rain+cafe on (2 on), fire off, preset highlighted.
+- **Vinyl spin + visualizer**: on music play → `album-art.playing=true`, `music-viz.playing=true`; both false on pause.
+- **Focus gauge**: 0% at empty state (offset=150.8 = full circumference).
+- **Task-completion prompt**: after a focus session with a focused task → "Nice work! Mark 'Read book' as done?" → "Mark done" → reminder hides + task marked done.
+- **Visual (vision model)**: confirmed bokeh light orbs for depth, circular vinyl-style album art with center hole, music visualizer bars, focus-score gauge.
+- **Mobile (iPhone 14, 390px)**: bokeh (5 orbs), shortcut hint visible, music player accessible, no overflow.
+- ESLint clean; no runtime errors in dev.log.
+
 ## Unresolved Issues / Risks / Next-Phase Recommendations
 - **No known bugs.** App is stable across desktop + mobile, light + dark themes.
 - **Potential enhancements for future phases** (for the recurring webDevReview cron):
@@ -157,9 +187,10 @@ Responded to user feedback with four changes, all browser-verified:
   - The `scene-custom` wallpaper is excluded from auto-rotation; consider a "pin custom wallpaper" toggle.
   - Add a co-view/presence feature (share timer status link) — bigger scope, needs a backend.
   - Add session notes/reflections to the journal (optional note per completed session).
-  - Add a "today's total focus vs goal" ring in the stats panel header.
+  - Add a real Web Audio AnalyserNode-driven visualizer (currently CSS-animated fake bars).
+  - Add custom ambient preset creation (let users save their own combos).
 
 ## Architecture Notes
-- `public/focus.html` — the entire self-contained app (HTML + CSS + vanilla JS, ~2400 lines). Only external dependency: Google Fonts (Poppins + Caveat).
+- `public/focus.html` — the entire self-contained app (HTML + CSS + vanilla JS, ~2550 lines). Only external dependency: Google Fonts (Poppins + Caveat).
 - `src/app/page.tsx` — server component, renders a full-viewport `<iframe src="/focus.html">` so the single-file constraint is preserved while remaining previewable at `/`.
 - No Next.js API routes, no database, no external images/audio — fully client-side.
