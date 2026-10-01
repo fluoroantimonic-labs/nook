@@ -537,6 +537,19 @@
   .streak-row .flame { color: var(--accent); }
   .streak-row .flame svg { width: 16px; height: 16px; display: inline-block; vertical-align: -3px; }
 
+  /* Insights panel — mood breakdown + best time of day */
+  .insights { margin-top: 12px; padding: 10px 12px; background: rgba(255,255,255,0.06); border-radius: var(--radius-sm); }
+  .insights-title { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.65; margin-bottom: 6px; }
+  .insight-row { display: flex; align-items: center; gap: 8px; font-size: 0.74rem; margin-bottom: 4px; }
+  .insight-row:last-child { margin-bottom: 0; }
+  .insight-row .i-label { opacity: 0.7; flex: 1; }
+  .insight-row .i-val { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .mood-bars { display: flex; gap: 4px; height: 22px; align-items: flex-end; margin-top: 4px; }
+  .mood-bar { flex: 1; background: var(--accent); border-radius: 3px 3px 0 0; min-height: 3px; opacity: 0.8; transition: height .4s ease; position: relative; }
+  .mood-bar:hover { opacity: 1; }
+  .mood-bar .mood-emoji { position: absolute; top: -16px; left: 50%; transform: translateX(-50%); font-size: 0.6rem; opacity: 0; transition: opacity .15s; }
+  .mood-bar:hover .mood-emoji { opacity: 0.8; }
+
   /* Weekly chart */
   .chart { display: flex; align-items: flex-end; justify-content: space-between; gap: 5px; height: 70px; margin-top: 8px; }
   .chart-bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end; }
@@ -1124,6 +1137,13 @@
         <div class="gauge-val" id="gauge-val">0%</div>
         <div class="gauge-label">Focus Score</div>
       </div>
+    </div>
+    <div class="insights" id="insights">
+      <div class="insights-title">Insights</div>
+      <div class="insight-row"><span class="i-label">Best time of day</span><span class="i-val" id="insight-best-time">—</span></div>
+      <div class="insight-row"><span class="i-label">Most common mood</span><span class="i-val" id="insight-mood">—</span></div>
+      <div class="insight-row"><span class="i-label">Avg session</span><span class="i-val" id="insight-avg">—</span></div>
+      <div class="mood-bars" id="mood-bars"></div>
     </div>
     <div class="chart" id="weekly-chart"></div>
     <div class="heatmap-section">
@@ -2193,6 +2213,7 @@ function renderStats() {
   // focus score gauge
   renderFocusGauge();
   renderHeatmap();
+  renderInsights();
   renderAchievements();
   updateSessionCounter();
   updateStatsTicker();
@@ -2831,6 +2852,42 @@ function renderHeatmap(){
     cell.title = (d.toLocaleDateString(undefined,{month:'short',day:'numeric'})) + (mins ? ' — '+mins+' min' : ' — no focus');
     wrap.appendChild(cell);
   }
+}
+
+/* ---------- INSIGHTS (mood breakdown + best time + avg) ---------- */
+function renderInsights(){
+  const j = state.store.journal || [];
+  const moodEmoji = { productive:'💪', calm:'🌿', neutral:'🙂', distracted:'🌀', tired:'😴' };
+  // Best time of day: find the hour bucket with the most focus minutes
+  const hourMins = {};
+  j.forEach(e => { if (e.mode !== 'break') { const h = new Date(e.ts).getHours(); hourMins[h] = (hourMins[h]||0) + e.mins; } });
+  let bestHour = null, bestMins = 0;
+  Object.keys(hourMins).forEach(h => { if (hourMins[h] > bestMins) { bestMins = hourMins[h]; bestHour = parseInt(h,10); } });
+  const bestTimeEl = $('insight-best-time');
+  if (bestTimeEl) bestTimeEl.textContent = bestHour !== null ? formatHour(bestHour) : '—';
+  // Most common mood
+  const moodCounts = {};
+  j.forEach(e => { if (e.mood) moodCounts[e.mood] = (moodCounts[e.mood]||0) + 1; });
+  let topMood = null, topCount = 0;
+  Object.keys(moodCounts).forEach(m => { if (moodCounts[m] > topCount) { topCount = moodCounts[m]; topMood = m; } });
+  const moodEl = $('insight-mood');
+  if (moodEl) moodEl.textContent = topMood ? (moodEmoji[topMood]||topMood) : '—';
+  // Avg session length (focus only)
+  const focusEntries = j.filter(e => e.mode !== 'break');
+  const avgEl = $('insight-avg');
+  if (avgEl) avgEl.textContent = focusEntries.length > 0 ? Math.round(focusEntries.reduce((s,e)=>s+e.mins,0)/focusEntries.length) + ' min' : '—';
+  // Mood bars (mini chart)
+  const barsWrap = $('mood-bars'); if (!barsWrap) return;
+  const moods = ['productive','calm','neutral','distracted','tired'];
+  const maxC = Math.max(1, ...moods.map(m => moodCounts[m]||0));
+  barsWrap.innerHTML = moods.map(m => {
+    const c = moodCounts[m]||0;
+    const h = c > 0 ? Math.max(8, (c/maxC)*100) : 3;
+    return '<div class="mood-bar" style="height:'+h+'%" title="'+m+': '+c+'"><span class="mood-emoji">'+(moodEmoji[m]||'')+'</span></div>';
+  }).join('');
+}
+function formatHour(h){
+  if (h === 0) return '12am'; if (h < 12) return h+'am'; if (h === 12) return '12pm'; return (h-12)+'pm';
 }
 
 /* ---------- ACHIEVEMENTS / MILESTONES ---------- */

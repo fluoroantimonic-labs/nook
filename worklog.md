@@ -3,8 +3,8 @@
 ## Project Overview
 A single-file HTML/CSS/JS focus & study app inspired by studywithme.io, served via a Next.js 16 project. The actual app lives at `public/focus.html` (fully self-contained — only Google Fonts loaded externally) and is embedded full-viewport via `src/app/page.tsx` (server component rendering an iframe with `allow="autoplay; fullscreen; encrypted-media"` + `allowFullScreen`).
 
-## Current Project Status (Phase 11 — COMPLETE)
-The app is **fully functional and verified** via agent-browser (desktop + mobile/iPhone 14 emulation). All core requirements plus Phases 2–11 of enhancements are implemented and working:
+## Current Project Status (Phase 12 — COMPLETE)
+The app is **fully functional and verified** via agent-browser (desktop + mobile/iPhone 14 emulation). All core requirements plus Phases 2–12 of enhancements are implemented and working:
 
 ### Implemented Features
 - **Timer**: 3 pill modes (Deep Focus 90 / Break 20 / Quick 40, all editable). End-timestamp timing (accurate in background tabs). Auto-cycle deep→break→quick→break→deep. Auto-start toggle. Chime on session end (Web Audio bell chord). Tab-title countdown (`▶ 89:58 · Sunny Meadow · focus`). Spacebar toggle. Goal/progress SVG ring around the timer.
@@ -32,7 +32,25 @@ The app is **fully functional and verified** via agent-browser (desktop + mobile
 - Tab title showed "undefined" for the scene name — `currentSceneClass()` returned the data-name string but was used to index `SCENE_NAMES`. Renamed to `currentSceneName()` and used the value directly. Verified: title now "▶ 24:58 · Sunny Meadow · focus".
 
 ## Current Goals / Completed
-Phase 1 (core) + Phase 2 (user-requested) + Phase 3 (QA fixes + styling) + Phase 4 (micro-interactions + mindfulness) + Phase 5 (segmented control + ambient theming + timeline) + Phase 6 (ambient presets + bokeh + vinyl + visualizer + task-linkage + focus gauge) + Phase 7 (celebration + live badge + distraction dim + typography) + Phase 8 (achievements + heatmap + command palette) + Phase 9 (brain dump + live clock + stats ticker + glass consistency) + Phase 10 (binaural beats + data backup + refinements) + Phase 11 (session reflection + binaural freqs + custom presets) are all **complete and verified**.
+Phase 1 (core) + Phase 2 (user-requested) + Phase 3 (QA fixes + styling) + Phase 4 (micro-interactions + mindfulness) + Phase 5 (segmented control + ambient theming + timeline) + Phase 6 (ambient presets + bokeh + vinyl + visualizer + task-linkage + focus gauge) + Phase 7 (celebration + live badge + distraction dim + typography) + Phase 8 (achievements + heatmap + command palette) + Phase 9 (brain dump + live clock + stats ticker + glass consistency) + Phase 10 (binaural beats + data backup + refinements) + Phase 11 (session reflection + binaural freqs + custom presets) + Phase 12 (insights panel + mood analytics) are all **complete and verified**.
+
+### Phase 12 — Insights Panel & Mood Analytics (DONE)
+QA confirmed the app was stable (reflection prompt, binaural freqs, timer accurate, command palette 14 items). Vision-model feedback drove a new insights panel with mood/time analytics. All browser-verified.
+
+#### QA Results (no bugs found)
+- Reflection prompt: "How did it go?" shows after focus session (auto-start off, breathing off).
+- Binaural freqs: selector appears on toggle (4 options); change to Beta → storedBeat=20.
+- Timer: 89:59 → 89:57 over 2s (accurate).
+- Command palette: 14 items.
+
+#### New Feature (1)
+1. **Insights panel** — a new `.insights` card in the stats panel (between the focus gauge and the weekly chart) showing three data-driven rows + a mini mood bar chart:
+   - **Best time of day** — finds the hour bucket with the most focus minutes from the journal, formatted as "9am" / "2pm" etc.
+   - **Most common mood** — the most frequently recorded reflection mood (emoji).
+   - **Avg session** — the average focus-session length in minutes (breaks excluded).
+   - **Mood bars** — 5 mini vertical bars (one per mood: 💪/🌿/🙂/🌀/😴) showing the relative count of each mood, with hover tooltips + emoji labels.
+   - `renderInsights()` reads from `state.store.journal`, called in `renderStats`.
+   - Verified: with 4 simulated sessions (2 productive, 1 calm, 1 distracted at 9am) → bestTime="9am", mood="💪", avg="78 min", mood bars [100%, 50%, 3%, 50%, 3%].
 
 ### Phase 11 — Session Reflection, Binaural Frequencies & Custom Presets (DONE)
 QA confirmed the app was stable (timer accurate, binaural toggle, command palette 14 items, data backup 3 buttons). Vision-model feedback drove 6 upgrades focused on habit-tracking, frequency selection, and custom mixes. All browser-verified.
@@ -330,6 +348,14 @@ Responded to user feedback with four changes, all browser-verified:
 - **Mobile (iPhone 14, 390px)**: reflect overlay + save-preset button present, timer intact.
 - ESLint clean; no runtime errors in dev.log.
 
+### Phase 12 Verification Results (agent-browser)
+- **No bugs found** in QA: reflection, binaural, timer, command palette all stable.
+- **New element present**: `#insights` card with 3 insight rows + `#mood-bars` (5 bars) — in DOM.
+- **Empty state**: all insights show "—", mood bars at min height (3%).
+- **Populated state** (4 simulated sessions): bestTime="9am", mood="💪", avg="78 min", mood bars [100%, 50%, 3%, 50%, 3%].
+- **Mobile (iPhone 14, 390px)**: timer intact, insights panel collapses with side-right (hidden on mobile as designed).
+- ESLint clean; no runtime errors in dev.log.
+
 ## Unresolved Issues / Risks / Next-Phase Recommendations
 - **No known bugs.** App is stable across desktop + mobile, light + dark themes.
 - **Potential enhancements for future phases** (for the recurring webDevReview cron):
@@ -339,13 +365,11 @@ Responded to user feedback with four changes, all browser-verified:
   - The `scene-custom` wallpaper is excluded from auto-rotation; consider a "pin custom wallpaper" toggle.
   - Add a co-view/presence feature (share timer status link) — bigger scope, needs a backend.
   - Add a real Web Audio AnalyserNode-driven visualizer (currently CSS-animated fake bars).
-  - Add a "today's total focus vs goal" ring in the stats panel header.
   - Add a "focus shield" / DND toggle indicator near the timer.
   - Make the brain dump button visible on mobile (currently hidden to avoid overlap).
-  - Add mood-based stats aggregation (which moods correlate with most focus?).
-  - Add a "best time of day" insight from the journal data.
+  - Add a weekly insights summary (best day, total hours, mood trend over time).
 
 ## Architecture Notes
-- `public/focus.html` — the entire self-contained app (HTML + CSS + vanilla JS, ~3250 lines). Only external dependency: Google Fonts (Poppins + Caveat).
+- `public/focus.html` — the entire self-contained app (HTML + CSS + vanilla JS, ~3350 lines). Only external dependency: Google Fonts (Poppins + Caveat).
 - `src/app/page.tsx` — server component, renders a full-viewport `<iframe src="/focus.html">` so the single-file constraint is preserved while remaining previewable at `/`.
 - No Next.js API routes, no database, no external images/audio — fully client-side.
