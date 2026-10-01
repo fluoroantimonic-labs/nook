@@ -3,8 +3,8 @@
 ## Project Overview
 A single-file HTML/CSS/JS focus & study app inspired by studywithme.io, served via a Next.js 16 project. The actual app lives at `public/focus.html` (fully self-contained — only Google Fonts loaded externally) and is embedded full-viewport via `src/app/page.tsx` (server component rendering an iframe with `allow="autoplay; fullscreen; encrypted-media"` + `allowFullScreen`).
 
-## Current Project Status (Phase 4 — COMPLETE)
-The app is **fully functional and verified** via agent-browser (desktop + mobile/iPhone 14 emulation). All core requirements plus Phases 2–4 of enhancements are implemented and working:
+## Current Project Status (Phase 5 — COMPLETE)
+The app is **fully functional and verified** via agent-browser (desktop + mobile/iPhone 14 emulation). All core requirements plus Phases 2–5 of enhancements are implemented and working:
 
 ### Implemented Features
 - **Timer**: 3 pill modes (Deep Focus 90 / Break 20 / Quick 40, all editable). End-timestamp timing (accurate in background tabs). Auto-cycle deep→break→quick→break→deep. Auto-start toggle. Chime on session end (Web Audio bell chord). Tab-title countdown (`▶ 89:58 · Sunny Meadow · focus`). Spacebar toggle. Goal/progress SVG ring around the timer.
@@ -32,7 +32,27 @@ The app is **fully functional and verified** via agent-browser (desktop + mobile
 - Tab title showed "undefined" for the scene name — `currentSceneClass()` returned the data-name string but was used to index `SCENE_NAMES`. Renamed to `currentSceneName()` and used the value directly. Verified: title now "▶ 24:58 · Sunny Meadow · focus".
 
 ## Current Goals / Completed
-Phase 1 (core build) + Phase 2 (user-requested enhancements) + Phase 3 (QA fixes + styling/features) + Phase 4 (micro-interactions + mindfulness features) are all **complete and verified**.
+Phase 1 (core build) + Phase 2 (user-requested) + Phase 3 (QA fixes + styling) + Phase 4 (micro-interactions + mindfulness) + Phase 5 (segmented control + ambient theming + timeline) are all **complete and verified**.
+
+### Phase 5 — Segmented Control, Ambient Theming & Timeline (DONE)
+QA confirmed the app was stable (the parallax "issue" from earlier testing was a test-method artifact — dispatching on `window` instead of `document`; the feature works). Vision-model feedback drove 8 upgrades focused on visual cohesion + ambient life + data viz. All browser-verified.
+
+#### QA Results (no bugs found)
+- Timer countdown accurate; settings persist across reload (durations + goal).
+- Breathing exercise text cycles correctly ("breathe in…" → "breathe out…" over 2.5s).
+- Parallax works when dispatching mousemove on `document` (hills translate).
+
+#### Styling Polish (5 upgrades) — vision-model confirmed
+1. **Sliding segmented indicator for mode pills** — replaced per-pill active backgrounds with a single `.modes-indicator` element that slides behind the active mode (Deep/Break/Quick) with a spring cubic-bezier transition. Repositions on resize + mode change. Verified: translateX 1px→124px→207px across modes.
+2. **Themed per-sound colors in the ambient mixer** — each sound now has a `color` + `glow` (rain=blue #5ba8e0, wind=sage, waves=teal, fire=orange #ff8a4c, birds=green, café=brown, thunder=purple, stream=mint). Active rows get a colored left-edge accent (`inset 3px 0 0`), the toggle gets a colored glow, and the slider track fill + thumb use the sound's color. Verified by vision model: distinct blue/orange/green glows.
+3. **Animated mini-waveform indicators** — 4 tiny bars next to each active sound's label, animating on a 0.9s `wave` keyframe (staggered delays) with the sound's themed color. Hidden when off. Verified visible on active rows.
+4. **Floating firefly particles** — 14 warm glowing dots (`#fireflies`) drift upward across the scene on a 12s `floatUp` animation with randomized delays/durations, adding ambient life to all scenes.
+5. **Topbar icon tooltips + entrance animations** — all 9 topbar icon buttons now have `data-tip` attributes rendering fade-in tooltip labels on hover (e.g. "Next scene (B)", "Fullscreen (F)", "Shortcuts (?)"). All panels/music/ambient get a 0.55s `panelIn` entrance animation with staggered delays.
+
+#### New Features (3)
+6. **Today's 24h timeline** — in the stats panel, a horizontal `.timeline-bar` represents the 24h day with colored segments marking when today's sessions occurred (positioned by start hour, width by duration). Shows "no sessions yet today" when empty. `renderTimeline()` filters journal entries by today's date. Verified: 0 segments → 1 segment after a skip.
+7. **Configurable long-break interval** — new "Long break every N focus sessions" input in Settings → Session (range 2–8, default 3). `isLongBreakDue()` now reads `state.store.longBreakEvery`. Verified: set to 2 → long break (40:00) fires at fc=2 instead of fc=3.
+8. **Persisted long-break setting** — `longBreakEvery` added to defaultStore, wired through openSettings/saveSettings, persisted in localStorage.
 
 ### Phase 4 — Micro-Interactions + Mindfulness Features (DONE)
 QA confirmed the app was stable (no bugs). Vision-model feedback pushed toward "premium cozy sanctuary" — implemented 8 upgrades focused on tactile feedback + emotional/mindful touches. All browser-verified.
@@ -118,19 +138,28 @@ Responded to user feedback with four changes, all browser-verified:
 - **Mobile (iPhone 14, 390px)**: timer, cycle dots, music player all visible; no overflow.
 - ESLint clean; no runtime errors in dev.log.
 
+### Phase 5 Verification Results (agent-browser)
+- **No bugs found** in QA: timer accurate, settings persist, breathing cycles, parallax works.
+- **New elements present**: `#modes-indicator` (ready), `#fireflies` (14 dots), `#timeline`, `#long-break-every`, 9 `data-tip` tooltips — all in DOM.
+- **Sliding indicator**: translateX changes 1px→124px→207px across Deep→Break→Quick (repositions on resize).
+- **Themed ambient colors**: fire row `--amb-color=#ff8a4c`, toggle glow = orange, waveform visible on active rows. Vision model confirmed distinct blue/orange/green glows + waveform bars.
+- **Timeline**: empty state ("no sessions yet today") → 1 segment after completing a session.
+- **Configurable long-break**: set to 2 → long break (40:00) fires at fc=2 (was fc=3 at default).
+- **Mobile (iPhone 14, 390px)**: indicator ready, fireflies present, layout intact (timeline hidden — side panel collapses on mobile as designed).
+- ESLint clean; no runtime errors in dev.log.
+
 ## Unresolved Issues / Risks / Next-Phase Recommendations
 - **No known bugs.** App is stable across desktop + mobile, light + dark themes.
 - **Potential enhancements for future phases** (for the recurring webDevReview cron):
   - Persist music playback state + ambient on-state across reloads (audio restarts on refresh).
-  - Add a "today's timeline" visualization (sessions laid out on a 24h bar).
-  - Add a configurable long-break interval (currently hardcoded to every 3rd focus session).
   - Add a "focus mode" color tint per scene (warm/cool) that shifts the glass accent.
   - Add PWA manifest + service worker for offline use (still single-file friendly).
-  - Add subtle entrance animations for panels on first load.
   - The `scene-custom` wallpaper is excluded from auto-rotation; consider a "pin custom wallpaper" toggle.
   - Add a co-view/presence feature (share timer status link) — bigger scope, needs a backend.
+  - Add session notes/reflections to the journal (optional note per completed session).
+  - Add a "today's total focus vs goal" ring in the stats panel header.
 
 ## Architecture Notes
-- `public/focus.html` — the entire self-contained app (HTML + CSS + vanilla JS, ~2250 lines). Only external dependency: Google Fonts (Poppins + Caveat).
+- `public/focus.html` — the entire self-contained app (HTML + CSS + vanilla JS, ~2400 lines). Only external dependency: Google Fonts (Poppins + Caveat).
 - `src/app/page.tsx` — server component, renders a full-viewport `<iframe src="/focus.html">` so the single-file constraint is preserved while remaining previewable at `/`.
 - No Next.js API routes, no database, no external images/audio — fully client-side.

@@ -229,6 +229,24 @@
     animation: fogDrift 40s ease-in-out infinite alternate;
   }
 
+  /* Floating firefly particles for ambient life */
+  #fireflies { position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+  .firefly { position: absolute; width: 4px; height: 4px; border-radius: 50%; background: rgba(255,230,160,0.9); box-shadow: 0 0 8px 2px rgba(255,230,160,0.5); opacity: 0; animation: floatUp 12s ease-in-out infinite; }
+  @keyframes floatUp {
+    0% { opacity: 0; transform: translate(0,0) scale(0.5); }
+    15% { opacity: 0.8; }
+    50% { transform: translate(30px,-60px) scale(1); }
+    85% { opacity: 0.6; }
+    100% { opacity: 0; transform: translate(-20px,-120px) scale(0.6); }
+  }
+
+  /* Panel entrance animations */
+  .panel, .music-player, .ambient-mixer { animation: panelIn .55s cubic-bezier(.34,1.2,.5,1) both; }
+  @keyframes panelIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  .music-player { animation-delay: .08s; }
+  .ambient-mixer { animation-delay: .16s; }
+  .side-right .panel:nth-child(2) { animation-delay: .12s; }
+
   /* Canvas overlays for stars & rain */
   #fx-canvas { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
   @keyframes spin { to { transform: rotate(360deg); } }
@@ -257,34 +275,51 @@
   .top-actions { display: flex; gap: 8px; align-items: center; }
   .icon-btn {
     width: 42px; height: 42px; border-radius: var(--radius-pill);
-    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    background: linear-gradient(180deg, var(--glass-bg-strong), var(--glass-bg)); border: 1px solid var(--glass-border);
     backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
     display: flex; align-items: center; justify-content: center;
-    transition: transform .18s ease, background .18s ease;
-    box-shadow: var(--glass-shadow);
+    transition: transform .22s cubic-bezier(.34,1.56,.64,1), background .18s ease;
+    box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.18);
+    position: relative;
   }
-  .icon-btn:hover { background: var(--glass-bg-strong); transform: translateY(-1px); }
-  .icon-btn:active { transform: scale(0.94); }
+  .icon-btn:hover { background: var(--glass-bg-strong); transform: translateY(-2px); }
+  .icon-btn:active { transform: scale(0.92); transition: transform .08s ease; }
   .icon-btn svg { width: 20px; height: 20px; }
+  /* Tooltip on hover */
+  .icon-btn::after {
+    content: attr(data-tip); position: absolute; top: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(-4px);
+    background: rgba(20,22,38,0.92); color: #fff; font-size: 0.66rem; font-weight: 500;
+    padding: 4px 9px; border-radius: 6px; white-space: nowrap; pointer-events: none;
+    opacity: 0; transition: opacity .2s ease, transform .2s ease; z-index: 30;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25); letter-spacing: 0.02em;
+  }
+  .icon-btn:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-  /* Mode pills */
+  /* Mode pills — segmented control with sliding indicator */
   .modes {
-    display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+    display: flex; gap: 4px; justify-content: center; flex-wrap: wrap;
     margin: 4px auto;
     background: var(--glass-bg); border: 1px solid var(--glass-border);
     backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-    padding: 6px; border-radius: var(--radius-pill);
-    box-shadow: var(--glass-shadow);
+    padding: 5px; border-radius: var(--radius-pill);
+    box-shadow: var(--glass-shadow); position: relative;
   }
+  .modes-indicator {
+    position: absolute; top: 5px; left: 5px; height: calc(100% - 10px);
+    background: var(--pill-active-bg); border-radius: var(--radius-pill);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+    transition: transform .4s cubic-bezier(.4,1.4,.5,1), width .4s cubic-bezier(.4,1.4,.5,1);
+    z-index: 0; opacity: 0;
+  }
+  .modes-indicator.ready { opacity: 1; }
   .mode-pill {
     padding: 9px 20px; border-radius: var(--radius-pill);
     font-size: 0.85rem; font-weight: 500; color: var(--text-soft);
-    transition: all .25s ease; white-space: nowrap;
+    transition: color .25s ease; white-space: nowrap; position: relative; z-index: 1;
   }
-  .mode-pill:hover { color: var(--text); background: rgba(255,255,255,0.08); }
+  .mode-pill:hover { color: var(--text); }
   .mode-pill.active {
-    background: var(--pill-active-bg); color: var(--pill-active-text);
-    text-shadow: none; box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+    color: var(--pill-active-text); text-shadow: none;
   }
 
   /* Timer center */
@@ -458,6 +493,14 @@
   .chart-bar.today { background: linear-gradient(180deg, #fff, rgba(255,255,255,0.6)); box-shadow: 0 0 8px rgba(255,255,255,0.4); }
   .chart-day { font-size: 0.6rem; opacity: 0.65; }
 
+  /* Today's 24h timeline */
+  .timeline { margin-top: 12px; }
+  .timeline-label { font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.7; margin-bottom: 6px; }
+  .timeline-bar { position: relative; height: 10px; background: var(--slider-track); border-radius: var(--radius-pill); overflow: hidden; }
+  .timeline-seg { position: absolute; top: 0; height: 100%; background: linear-gradient(90deg, var(--accent), #ff9a56); border-radius: 2px; box-shadow: 0 0 6px rgba(255,209,102,0.4); }
+  .timeline-hours { display: flex; justify-content: space-between; font-size: 0.56rem; opacity: 0.5; margin-top: 3px; font-variant-numeric: tabular-nums; }
+  .timeline-empty { font-size: 0.66rem; opacity: 0.4; text-align: center; padding: 6px 0; }
+
   /* Music player — slightly more opaque (primary control) */
   .music-player {
     position: fixed; bottom: calc(16px + var(--safe-bottom)); left: calc(20px + var(--safe-left));
@@ -511,17 +554,29 @@
   .amb-list { display: flex; flex-direction: column; gap: 4px; max-height: 46vh; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.3) transparent; padding-right: 2px; }
   .amb-list::-webkit-scrollbar { width: 5px; }
   .amb-list::-webkit-scrollbar-thumb { background: var(--slider-track); border-radius: 3px; }
-  .amb-row { display: flex; align-items: center; gap: 8px; padding: 3px 0; }
+  .amb-row { display: flex; align-items: center; gap: 8px; padding: 3px 0; position: relative; }
   .amb-toggle { display: flex; align-items: center; gap: 7px; padding: 7px 10px; border-radius: var(--radius-pill); background: rgba(255,255,255,0.08); border: 1px solid transparent; font-size: 0.77rem; color: var(--text-soft); transition: all .18s ease; flex-shrink: 0; min-width: 96px; }
   .amb-toggle:hover { background: var(--glass-bg-strong); color: var(--text); }
   .amb-toggle.active { background: var(--pill-active-bg); color: var(--pill-active-text); }
   .amb-toggle svg { width: 15px; height: 15px; flex-shrink: 0; }
+  /* Themed color glow on active rows */
+  .amb-row.on { box-shadow: inset 3px 0 0 0 var(--amb-color, var(--accent)); }
+  .amb-row.on .amb-toggle { box-shadow: 0 0 14px var(--amb-glow, rgba(255,209,102,0.3)); }
+  /* Mini waveform indicator next to active sound */
+  .amb-wave { display: none; align-items: flex-end; gap: 2px; height: 14px; width: 16px; flex-shrink: 0; }
+  .amb-row.on .amb-wave { display: flex; }
+  .amb-wave span { width: 2px; background: var(--amb-color, var(--accent)); border-radius: 1px; animation: wave 0.9s ease-in-out infinite; }
+  .amb-wave span:nth-child(1) { height: 40%; animation-delay: 0s; }
+  .amb-wave span:nth-child(2) { height: 80%; animation-delay: 0.15s; }
+  .amb-wave span:nth-child(3) { height: 55%; animation-delay: 0.3s; }
+  .amb-wave span:nth-child(4) { height: 90%; animation-delay: 0.45s; }
+  @keyframes wave { 0%,100% { transform: scaleY(0.4); } 50% { transform: scaleY(1); } }
   .amb-vol { flex: 1; -webkit-appearance: none; appearance: none; height: 4px; background: var(--slider-track); border-radius: var(--radius-pill); outline: none; min-width: 36px; }
   .amb-row:not(.on) .amb-vol { opacity: 0.35; }
-  .amb-row.on .amb-vol { background: linear-gradient(90deg, var(--accent), var(--slider-track)) no-repeat; background-size: var(--fill,50%) 100%; }
+  .amb-row.on .amb-vol { background: linear-gradient(90deg, var(--amb-color, var(--accent)), var(--slider-track)) no-repeat; background-size: var(--fill,50%) 100%; }
   .amb-vol::-webkit-slider-thumb { -webkit-appearance: none; width: 13px; height: 13px; border-radius: 50%; background: var(--thumb-bg); cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.3); transition: box-shadow .15s; }
-  .amb-row.on .amb-vol::-webkit-slider-thumb { box-shadow: 0 0 6px rgba(255,209,102,0.6), 0 1px 4px rgba(0,0,0,0.3); }
-  .amb-row.on .amb-vol:hover::-webkit-slider-thumb { box-shadow: 0 0 6px rgba(255,209,102,0.6), 0 0 0 4px rgba(255,209,102,0.2); }
+  .amb-row.on .amb-vol::-webkit-slider-thumb { box-shadow: 0 0 6px var(--amb-glow, rgba(255,209,102,0.6)), 0 1px 4px rgba(0,0,0,0.3); }
+  .amb-row.on .amb-vol:hover::-webkit-slider-thumb { box-shadow: 0 0 6px var(--amb-glow, rgba(255,209,102,0.6)), 0 0 0 4px var(--amb-glow, rgba(255,209,102,0.2)); }
   .amb-vol::-moz-range-thumb { width: 13px; height: 13px; border: none; border-radius: 50%; background: var(--thumb-bg); cursor: pointer; }
 
   /* Reminder toast */
@@ -764,6 +819,7 @@
 <div id="veil"></div>
 <div id="vignette"></div>
 <div id="grain"></div>
+<div id="fireflies"></div>
 
 <!-- REMINDER -->
 <div class="reminder" id="reminder">
@@ -780,37 +836,38 @@
       <span class="sub">cozy focus space</span>
     </div>
     <div class="modes" id="modes">
+      <span class="modes-indicator" id="modes-indicator"></span>
       <button class="mode-pill active" data-mode="deep">Deep Focus</button>
       <button class="mode-pill" data-mode="break">Break</button>
       <button class="mode-pill" data-mode="quick">Quick Session</button>
     </div>
     <div class="top-actions">
-      <button class="icon-btn" id="btn-tasks-mobile" title="Tasks & Stats" style="display:none">
+      <button class="icon-btn" id="btn-tasks-mobile" data-tip="Tasks & Stats" style="display:none">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11H5a2 2 0 0 0-2 2v7h18v-7a2 2 0 0 0-2-2h-4"/><rect x="9" y="3" width="6" height="8" rx="1"/></svg>
       </button>
-      <button class="icon-btn" id="btn-scene" title="Next scene">
+      <button class="icon-btn" id="btn-scene" data-tip="Next scene (B)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg>
       </button>
-      <button class="icon-btn" id="btn-wallpaper" title="Upload wallpaper">
+      <button class="icon-btn" id="btn-wallpaper" data-tip="Upload wallpaper">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.5-3.5a2 2 0 0 0-2.8 0L6 21"/></svg>
       </button>
-      <button class="icon-btn" id="btn-fullscreen" title="Fullscreen">
+      <button class="icon-btn" id="btn-fullscreen" data-tip="Fullscreen (F)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
       </button>
-      <button class="icon-btn" id="btn-zen" title="Distraction-free mode">
+      <button class="icon-btn" id="btn-zen" data-tip="Zen mode (Z)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
       </button>
-      <button class="icon-btn" id="btn-theme" title="Toggle dark mode">
+      <button class="icon-btn" id="btn-theme" data-tip="Toggle theme (T)">
         <svg id="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
         <svg id="theme-icon-sun" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
       </button>
-      <button class="icon-btn" id="btn-journal" title="Focus journal">
+      <button class="icon-btn" id="btn-journal" data-tip="Focus journal">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
       </button>
-      <button class="icon-btn" id="btn-help" title="Keyboard shortcuts (?)">
+      <button class="icon-btn" id="btn-help" data-tip="Shortcuts (?)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
       </button>
-      <button class="icon-btn" id="btn-settings" title="Settings">
+      <button class="icon-btn" id="btn-settings" data-tip="Settings">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
       </button>
     </div>
@@ -882,6 +939,11 @@
     </div>
     <div class="garden" id="garden"></div>
     <div class="chart" id="weekly-chart"></div>
+    <div class="timeline" id="timeline">
+      <div class="timeline-label">Today's timeline</div>
+      <div class="timeline-bar" id="timeline-bar"></div>
+      <div class="timeline-hours"><span>00</span><span>06</span><span>12</span><span>18</span><span>24</span></div>
+    </div>
   </div>
 </aside>
 
@@ -1021,6 +1083,10 @@
         <div class="m-label">Auto-start next session<small>auto-cycle deep → break → quick</small></div>
         <span class="switch"><input type="checkbox" id="auto-start" checked /><span class="slider"></span></span>
       </div>
+      <div class="m-row">
+        <div class="m-label">Long break every <small>focus sessions (then break doubles)</small></div>
+        <input type="number" id="long-break-every" min="2" max="8" value="3" style="width:64px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);border-radius:10px;padding:6px 8px;color:#fff;text-align:center" />
+      </div>
     </div>
 
     <div class="m-section">
@@ -1085,7 +1151,8 @@ function defaultStore() {
     ambientVols: {},
     journal: [],
     focusCount: 0,
-    breathingEnabled: true
+    breathingEnabled: true,
+    longBreakEvery: 3
   };
 }
 
@@ -1374,14 +1441,14 @@ const AMB_SVG = {
   stream:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 2c1.5 3 1.5 5 0 7S5.5 13 7 15s2.5 2 2 5"/><path d="M12 2c1.5 3 1.5 5 0 7s-1.5 4 0 6 2.5 2 2 5"/><path d="M17 2c1.5 3 1.5 5 0 7s-1.5 4 0 6 2.5 2 2 5"/></svg>'
 };
 const AMBIENT_SOUNDS = {
-  rain:    { label:'Rain',      vol:0.55, build: buildRain },
-  wind:    { label:'Wind',      vol:0.50, build: buildWind },
-  waves:   { label:'Waves',     vol:0.60, build: buildWaves },
-  fire:    { label:'Fireplace', vol:0.55, build: buildFire },
-  birds:   { label:'Birds',     vol:0.45, build: buildBirds },
-  cafe:    { label:'Café',      vol:0.55, build: buildCafe },
-  thunder: { label:'Thunder',   vol:0.70, build: buildThunder },
-  stream:  { label:'Stream',    vol:0.50, build: buildStream }
+  rain:    { label:'Rain',      vol:0.55, build: buildRain,    color:'#5ba8e0', glow:'rgba(91,168,224,0.45)' },
+  wind:    { label:'Wind',      vol:0.50, build: buildWind,    color:'#9bc1a8', glow:'rgba(155,193,168,0.4)' },
+  waves:   { label:'Waves',     vol:0.60, build: buildWaves,   color:'#4fa8c9', glow:'rgba(79,168,201,0.45)' },
+  fire:    { label:'Fireplace', vol:0.55, build: buildFire,    color:'#ff8a4c', glow:'rgba(255,138,76,0.5)' },
+  birds:   { label:'Birds',     vol:0.45, build: buildBirds,   color:'#8ed67a', glow:'rgba(142,214,122,0.45)' },
+  cafe:    { label:'Café',      vol:0.55, build: buildCafe,    color:'#d4a06a', glow:'rgba(212,160,106,0.45)' },
+  thunder: { label:'Thunder',   vol:0.70, build: buildThunder, color:'#9b8ad4', glow:'rgba(155,138,212,0.5)' },
+  stream:  { label:'Stream',    vol:0.50, build: buildStream,  color:'#6ad4c4', glow:'rgba(106,212,196,0.45)' }
 };
 let ambientNodes = {};
 function makeNoiseBuffer() {
@@ -1436,7 +1503,9 @@ function buildAmbientMixer(){
     const cfg=AMBIENT_SOUNDS[key];
     const v=(state.store.ambientVols&&state.store.ambientVols[key]!=null)?state.store.ambientVols[key]:Math.round(cfg.vol*100);
     const row=document.createElement('div'); row.className='amb-row'; row.dataset.amb=key;
-    row.innerHTML='<button class="amb-toggle" data-amb="'+key+'">'+AMB_SVG[key]+'<span>'+cfg.label+'</span></button><input type="range" class="amb-vol" min="0" max="100" value="'+v+'" data-amb="'+key+'" />';
+    row.style.setProperty('--amb-color', cfg.color);
+    row.style.setProperty('--amb-glow', cfg.glow);
+    row.innerHTML='<button class="amb-toggle" data-amb="'+key+'">'+AMB_SVG[key]+'<span>'+cfg.label+'</span></button><div class="amb-wave"><span></span><span></span><span></span><span></span></div><input type="range" class="amb-vol" min="0" max="100" value="'+v+'" data-amb="'+key+'" />';
     list.appendChild(row);
   });
   updateAmbientCount();
@@ -1453,6 +1522,7 @@ function setMode(mode, keepRunning) {
   // entries so indexOf would always pick the first, breaking the cycle.
   document.querySelectorAll('.mode-pill').forEach(p => p.classList.toggle('active', p.dataset.mode === mode));
   modeLabel.textContent = MODE_LABELS[mode];
+  updateModesIndicator();
   if (!keepRunning) {
     state.running = false;
     clearInterval(state.ticker);
@@ -1604,6 +1674,8 @@ function renderStats() {
   renderWeeklyChart();
   // streak garden
   renderGarden();
+  // today's timeline
+  renderTimeline();
 }
 function renderWeeklyChart() {
   const chart = $('weekly-chart');
@@ -1890,6 +1962,7 @@ function openSettings() {
   $('reminder-toggle').checked = state.store.reminderEnabled;
   $('breathing-toggle').checked = state.store.breathingEnabled !== false;
   $('auto-start').checked = state.store.autoStart !== false;
+  $('long-break-every').value = state.store.longBreakEvery || 3;
   // theme segmented highlight
   document.querySelectorAll('[data-theme]').forEach(b => b.classList.toggle('active', b.dataset.theme === (state.store.theme || 'light')));
   $('embed-input').value = state.store.embedUrl || '';
@@ -1912,6 +1985,7 @@ function saveSettings() {
   state.store.reminderEnabled = $('reminder-toggle').checked;
   state.store.breathingEnabled = $('breathing-toggle').checked;
   state.store.autoStart = $('auto-start').checked;
+  state.store.longBreakEvery = clampInt($('long-break-every').value, 2, 8, 3);
   state.store.embedUrl = $('embed-input').value.trim();
   saveStore();
   startSceneTimer();
@@ -2084,10 +2158,11 @@ function renderJournal(){
 }
 
 /* ---------- LONG-BREAK LOGIC ---------- */
-// After every 3 completed focus (deep/quick) sessions, the next break is a "long break" (2x normal).
+// After every N completed focus sessions, the next break is a "long break" (2x normal). N is configurable.
 function isLongBreakDue(){
   const fc = state.store.focusCount || 0;
-  return fc > 0 && fc % 3 === 0;
+  const every = state.store.longBreakEvery || 3;
+  return fc > 0 && fc % every === 0;
 }
 
 /* ---------- MOUSE PARALLAX ---------- */
@@ -2117,6 +2192,54 @@ function startParallax(){
 function updateAmbientFills(){
   document.querySelectorAll('.amb-row.on .amb-vol').forEach(s => {
     s.style.setProperty('--fill', s.value + '%');
+  });
+}
+
+/* ---------- MODES SLIDING INDICATOR ---------- */
+function updateModesIndicator(){
+  const ind = $('modes-indicator'); if(!ind) return;
+  const active = document.querySelector('.mode-pill.active'); if(!active) return;
+  const wrap = active.parentElement;
+  const wrapRect = wrap.getBoundingClientRect();
+  const r = active.getBoundingClientRect();
+  ind.style.width = r.width + 'px';
+  ind.style.transform = 'translateX(' + (r.left - wrapRect.left - 5) + 'px)';
+  ind.classList.add('ready');
+}
+
+/* ---------- FIREFLIES ---------- */
+function buildFireflies(){
+  const c = $('fireflies'); if(!c) return;
+  c.innerHTML = '';
+  const n = 14;
+  for (let i = 0; i < n; i++) {
+    const f = document.createElement('div'); f.className = 'firefly';
+    f.style.left = (Math.random()*100) + '%';
+    f.style.top = (60 + Math.random()*40) + '%'; // start lower
+    f.style.animationDelay = (Math.random()*12) + 's';
+    f.style.animationDuration = (10 + Math.random()*8) + 's';
+    c.appendChild(f);
+  }
+}
+
+/* ---------- TODAY'S TIMELINE ---------- */
+function renderTimeline(){
+  const bar = $('timeline-bar'); if(!bar) return;
+  const j = (state.store.journal || []).filter(e => {
+    const d = new Date(e.ts);
+    const k = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    return k === todayKey();
+  });
+  bar.innerHTML = '';
+  if (j.length === 0) { bar.innerHTML = '<div class="timeline-empty">no sessions yet today</div>'; return; }
+  j.forEach(e => {
+    const d = new Date(e.ts);
+    const hourPct = (d.getHours() + d.getMinutes()/60) / 24 * 100;
+    const durPct = Math.min(100 - hourPct, (e.mins / 60 / 24 * 100) || 3);
+    const seg = document.createElement('div'); seg.className = 'timeline-seg';
+    seg.style.left = hourPct + '%';
+    seg.style.width = Math.max(1.5, durPct) + '%';
+    bar.appendChild(seg);
   });
 }
 
@@ -2229,6 +2352,8 @@ function bindEvents() {
   document.addEventListener('click', () => ensureAudio(), { once: true });
   // reset idle nudge on activity during a running focus session
   ['mousemove','keydown','click'].forEach(ev => document.addEventListener(ev, () => { if (state.running) resetIdleTimer(); }, { passive: true }));
+  // reposition the modes indicator on resize
+  window.addEventListener('resize', updateModesIndicator);
 }
 
 /* ---------- INIT ---------- */
@@ -2237,6 +2362,7 @@ function init() {
   applyTheme(state.store.theme || 'light');
   buildAmbientMixer();
   buildShortcutList();
+  buildFireflies();
   startQuotes();
   startParallax();
   // restore durations into mode defaults
@@ -2244,6 +2370,8 @@ function init() {
   // initial UI states
   document.querySelector('.ring-svg').classList.add('idle');
   renderCycleDots();
+  // position the modes indicator after layout settles
+  setTimeout(updateModesIndicator, 60);
   // scene
   const startScene = state.store.currentScene && state.store.currentScene !== 'custom'
     ? SCENES.indexOf(state.store.currentScene)
