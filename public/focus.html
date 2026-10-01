@@ -59,6 +59,25 @@
     background: rgba(255,255,255,0); transition: background .5s ease;
   }
   html.theme-dark #veil { background: rgba(255,255,255,0.4); }
+  /* Film-grain noise overlay for a tactile, lo-fi feel */
+  #grain {
+    position: fixed; inset: 0; z-index: 8; pointer-events: none;
+    opacity: 0.04; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  /* Vignette for depth & focus */
+  #vignette {
+    position: fixed; inset: 0; z-index: 1; pointer-events: none;
+    background: radial-gradient(ellipse 100% 80% at 50% 50%, transparent 50%, rgba(0,0,0,0.22) 100%);
+  }
+  /* Soft spotlight glow behind the timer */
+  .timer-spotlight {
+    position: absolute; width: 520px; height: 520px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,240,200,0.16) 0%, rgba(255,240,200,0.05) 40%, transparent 70%);
+    pointer-events: none; z-index: -1; filter: blur(20px);
+    transition: opacity .8s ease;
+  }
+  html.theme-dark .timer-spotlight { background: radial-gradient(circle, rgba(255,250,230,0.5) 0%, rgba(255,250,230,0.18) 40%, transparent 70%); }
   @media (prefers-color-scheme: dark) {
     :root:not(.theme-dark) { --glass-bg: rgba(255,255,255,0.10); --glass-bg-strong: rgba(255,255,255,0.14); }
   }
@@ -92,13 +111,19 @@
   .scene-meadow {
     background:
       radial-gradient(ellipse 60% 40% at 78% 18%, rgba(255,255,255,0.55), transparent 60%),
+      radial-gradient(ellipse 120% 60% at 50% 100%, rgba(120,180,90,0.4), transparent 70%),
       linear-gradient(180deg, #6ec6ff 0%, #9bd7ff 38%, #cdeeff 58%, #8ed67a 58.5%, #6cc05a 100%);
   }
   .scene-meadow .sun {
     position: absolute; top: 12%; right: 14%; width: 120px; height: 120px;
     border-radius: 50%;
     background: radial-gradient(circle, #fffbe6 0%, #ffe9a8 55%, rgba(255,233,168,0) 75%);
-    box-shadow: 0 0 80px 30px rgba(255,233,168,0.5);
+    box-shadow: 0 0 100px 40px rgba(255,233,168,0.55), 0 0 200px 80px rgba(255,233,168,0.2);
+  }
+  .scene-meadow .sun::after {
+    content:''; position:absolute; inset:-40px; border-radius:50%;
+    background: conic-gradient(from 0deg, transparent, rgba(255,233,168,0.12), transparent, rgba(255,233,168,0.1), transparent);
+    animation: spin 80s linear infinite;
   }
   .hill {
     position: absolute; bottom: 0; width: 160%; height: 55%;
@@ -124,13 +149,14 @@
   .scene-golden {
     background:
       radial-gradient(ellipse 80% 50% at 50% 75%, rgba(255,200,120,0.6), transparent 70%),
+      radial-gradient(ellipse 50% 30% at 50% 55%, rgba(255,160,80,0.35), transparent 70%),
       linear-gradient(180deg, #ffb347 0%, #ff9a56 30%, #ff7e6b 55%, #c95d8a 78%, #6b4a8b 100%);
   }
   .scene-golden .sun {
     position: absolute; bottom: 28%; left: 50%; transform: translateX(-50%);
     width: 180px; height: 180px; border-radius: 50%;
     background: radial-gradient(circle, #fff3c4 0%, #ffd166 45%, rgba(255,180,80,0) 75%);
-    box-shadow: 0 0 120px 50px rgba(255,180,80,0.45);
+    box-shadow: 0 0 140px 60px rgba(255,180,80,0.5), 0 0 260px 100px rgba(255,140,70,0.22);
   }
   .scene-golden .hill.back { left: -30%; background: linear-gradient(180deg, #c8794e, #8a4a3a); height: 30%; bottom: 0; opacity: 0.8; }
   .scene-golden .hill.front { right: -40%; background: linear-gradient(180deg, #a85e3e, #5e3528); height: 24%; bottom: 0; }
@@ -138,12 +164,13 @@
   /* Sakura Dusk */
   .scene-sakura {
     background:
+      radial-gradient(ellipse 50% 30% at 75% 25%, rgba(255,200,225,0.4), transparent 70%),
       linear-gradient(180deg, #ffb3d9 0%, #d98cc9 35%, #9b6db3 65%, #5e4a8b 100%);
   }
   .scene-sakura .sun {
     position: absolute; top: 22%; right: 18%; width: 100px; height: 100px; border-radius: 50%;
     background: radial-gradient(circle, #fff0f5 0%, #ffc2e2 60%, rgba(255,180,210,0) 80%);
-    box-shadow: 0 0 70px 25px rgba(255,200,225,0.45);
+    box-shadow: 0 0 80px 30px rgba(255,200,225,0.5), 0 0 160px 60px rgba(255,180,210,0.18);
   }
   .scene-sakura .hill.back { left: -30%; background: linear-gradient(180deg, #b87aae, #7a4a8a); height: 40%; bottom: 0; opacity: 0.85; }
   .scene-sakura .hill.front { right: -45%; background: linear-gradient(180deg, #9a5e94, #5c3470); height: 32%; bottom: 0; }
@@ -155,7 +182,11 @@
   .scene-starry .moon {
     position: absolute; top: 14%; right: 16%; width: 90px; height: 90px; border-radius: 50%;
     background: radial-gradient(circle at 35% 35%, #fdfdf2, #e8e4d0 60%, #c9c4ab);
-    box-shadow: 0 0 60px 18px rgba(255,255,240,0.3);
+    box-shadow: 0 0 70px 22px rgba(255,255,240,0.35), 0 0 140px 50px rgba(200,220,255,0.12);
+  }
+  .scene-starry .moon::after {
+    content:''; position:absolute; top:18%; left:22%; width:18px; height:18px; border-radius:50%;
+    background: rgba(180,175,155,0.4);
   }
   .scene-starry .hill.back { left: -30%; background: linear-gradient(180deg, #1f2d4d, #0e1830); height: 32%; bottom: 0; }
   .scene-starry .hill.front { right: -40%; background: linear-gradient(180deg, #18223e, #0a1124); height: 26%; bottom: 0; }
@@ -163,30 +194,46 @@
   /* Rainy Forest */
   .scene-rainy {
     background:
+      radial-gradient(ellipse 70% 40% at 50% 20%, rgba(120,140,150,0.3), transparent 70%),
       linear-gradient(180deg, #4a5a6a 0%, #5a6a5a 35%, #3e4f3e 70%, #2a3a2e 100%);
   }
   .scene-rainy .hill.back { left: -30%; background: linear-gradient(180deg, #3e5238, #2a3a2e); height: 45%; bottom: 0; opacity: 0.9; }
   .scene-rainy .hill.front { right: -45%; background: linear-gradient(180deg, #34482f, #1f2c1f); height: 36%; bottom: 0; }
   .scene-rainy .fog {
     position: absolute; inset: 0;
-    background: radial-gradient(ellipse 70% 40% at 50% 60%, rgba(200,210,200,0.25), transparent 70%);
+    background:
+      radial-gradient(ellipse 70% 40% at 50% 60%, rgba(200,210,200,0.28), transparent 70%),
+      linear-gradient(180deg, rgba(180,190,190,0.15) 0%, transparent 40%);
   }
 
-  /* Misty Morning */
+  /* Misty Morning — enriched with layered fog drifts + soft sun glow */
   .scene-misty {
     background:
+      radial-gradient(ellipse 50% 30% at 70% 22%, rgba(255,250,235,0.4), transparent 70%),
       radial-gradient(ellipse 80% 50% at 50% 70%, rgba(230,235,240,0.5), transparent 75%),
       linear-gradient(180deg, #c3cdd6 0%, #b0bcc8 40%, #9aa8b4 75%, #8a98a4 100%);
+  }
+  .scene-misty .sun {
+    position: absolute; top: 18%; right: 22%; width: 90px; height: 90px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,250,0.7), rgba(255,250,235,0.3) 50%, transparent 75%);
+    filter: blur(2px);
   }
   .scene-misty .hill.back { left: -30%; background: linear-gradient(180deg, #8a98a4, #6c7a86); height: 35%; bottom: 0; opacity: 0.7; }
   .scene-misty .hill.front { right: -45%; background: linear-gradient(180deg, #7c8a96, #5e6c78); height: 28%; bottom: 0; opacity: 0.85; }
   .scene-misty .fog {
     position: absolute; inset: 0;
-    background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, transparent 50%, rgba(255,255,255,0.25) 100%);
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.35) 0%, transparent 45%, rgba(255,255,255,0.3) 100%),
+      radial-gradient(ellipse 60% 25% at 30% 65%, rgba(255,255,255,0.25), transparent 70%),
+      radial-gradient(ellipse 50% 20% at 70% 80%, rgba(255,255,255,0.2), transparent 70%);
+    animation: fogDrift 40s ease-in-out infinite alternate;
   }
 
   /* Canvas overlays for stars & rain */
   #fx-canvas { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes fogDrift { 0% { transform: translateX(-2%) translateY(0); } 100% { transform: translateX(2%) translateY(-1%); } }
+  @keyframes quoteFade { 0% { opacity: 0; transform: translateY(6px); } 15% { opacity: 0.85; transform: translateY(0); } 85% { opacity: 0.85; } 100% { opacity: 0; transform: translateY(-6px); } }
 
   /* Custom wallpaper scene */
   .scene-custom { background-size: cover; background-position: center; }
@@ -259,15 +306,18 @@
   .focusing-label b { font-weight: 600; }
 
   .ring-wrap { position: relative; display: flex; align-items: center; justify-content: center; }
-  .ring-svg { width: clamp(260px, 38vw, 380px); height: clamp(260px, 38vw, 380px); transform: rotate(-90deg); }
-  .ring-track { fill: none; stroke: var(--ring-track); stroke-width: 6; }
-  .ring-progress { fill: none; stroke: var(--accent); stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset .5s linear; filter: drop-shadow(0 0 6px rgba(255,209,102,0.5)); }
+  .ring-svg { width: clamp(260px, 38vw, 380px); height: clamp(260px, 38vw, 380px); transform: rotate(-90deg); filter: drop-shadow(0 4px 30px rgba(0,0,0,0.15)); }
+  .ring-track { fill: none; stroke: var(--ring-track); stroke-width: 5; }
+  .ring-progress { fill: none; stroke: url(#ringGrad); stroke-width: 7; stroke-linecap: round; transition: stroke-dashoffset .5s linear; filter: drop-shadow(0 0 8px rgba(255,209,102,0.6)); }
   .timer-text {
     position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
     font-size: clamp(3.2rem, 11vw, 6.5rem); font-weight: 700; letter-spacing: 0.01em;
     font-variant-numeric: tabular-nums; line-height: 1;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.18);
   }
   .mode-label { font-size: 0.8rem; font-weight: 500; opacity: 0.85; letter-spacing: 0.18em; text-transform: uppercase; }
+  .quote { font-size: 0.86rem; font-weight: 300; font-style: italic; opacity: 0; max-width: 460px; text-align: center; line-height: 1.5; min-height: 1.4em; transition: opacity .6s ease; }
+  .quote.show { opacity: 0.7; }
 
   .controls { display: flex; align-items: center; gap: 16px; }
   .ctrl-btn {
@@ -386,13 +436,13 @@
   .chart-bar.today { background: linear-gradient(180deg, #fff, rgba(255,255,255,0.6)); box-shadow: 0 0 8px rgba(255,255,255,0.4); }
   .chart-day { font-size: 0.6rem; opacity: 0.65; }
 
-  /* Music player */
+  /* Music player — slightly more opaque (primary control) */
   .music-player {
     position: fixed; bottom: calc(16px + var(--safe-bottom)); left: calc(20px + var(--safe-left));
     width: 340px; max-width: calc(100vw - 40px); z-index: 6;
-    background: var(--glass-bg); border: 1px solid var(--glass-border);
-    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-    border-radius: var(--radius-lg); box-shadow: var(--glass-shadow);
+    background: var(--glass-bg-strong); border: 1px solid var(--glass-border);
+    backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px);
+    border-radius: var(--radius-lg); box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.15);
     padding: 14px; color: var(--text);
   }
   .music-head { display: flex; gap: 12px; align-items: center; }
@@ -420,8 +470,9 @@
   .volume-row { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
   .volume-row svg { width: 16px; height: 16px; opacity: 0.8; flex-shrink: 0; }
   .volume-slider { flex: 1; -webkit-appearance: none; appearance: none; height: 4px; background: var(--slider-track); border-radius: var(--radius-pill); outline: none; }
-  .volume-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 13px; height: 13px; border-radius: 50%; background: var(--thumb-bg); cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
-  .volume-slider::-moz-range-thumb { width: 13px; height: 13px; border: none; border-radius: 50%; background: var(--thumb-bg); cursor: pointer; }
+  .volume-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--thumb-bg); cursor: pointer; box-shadow: 0 1px 6px rgba(0,0,0,0.35), 0 0 0 0 rgba(255,209,102,0.4); transition: box-shadow .15s; }
+  .volume-slider:hover::-webkit-slider-thumb { box-shadow: 0 1px 6px rgba(0,0,0,0.35), 0 0 0 5px rgba(255,209,102,0.18); }
+  .volume-slider::-moz-range-thumb { width: 14px; height: 14px; border: none; border-radius: 50%; background: var(--thumb-bg); cursor: pointer; }
 
   /* Ambient mixer panel */
   .ambient-mixer {
@@ -444,8 +495,11 @@
   .amb-toggle.active { background: var(--pill-active-bg); color: var(--pill-active-text); }
   .amb-toggle svg { width: 15px; height: 15px; flex-shrink: 0; }
   .amb-vol { flex: 1; -webkit-appearance: none; appearance: none; height: 4px; background: var(--slider-track); border-radius: var(--radius-pill); outline: none; min-width: 36px; }
-  .amb-row:not(.on) .amb-vol { opacity: 0.4; }
-  .amb-vol::-webkit-slider-thumb { -webkit-appearance: none; width: 13px; height: 13px; border-radius: 50%; background: var(--thumb-bg); cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+  .amb-row:not(.on) .amb-vol { opacity: 0.35; }
+  .amb-row.on .amb-vol { background: linear-gradient(90deg, var(--accent), var(--slider-track)) no-repeat; background-size: var(--fill,50%) 100%; }
+  .amb-vol::-webkit-slider-thumb { -webkit-appearance: none; width: 13px; height: 13px; border-radius: 50%; background: var(--thumb-bg); cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.3); transition: box-shadow .15s; }
+  .amb-row.on .amb-vol::-webkit-slider-thumb { box-shadow: 0 0 6px rgba(255,209,102,0.6), 0 1px 4px rgba(0,0,0,0.3); }
+  .amb-row.on .amb-vol:hover::-webkit-slider-thumb { box-shadow: 0 0 6px rgba(255,209,102,0.6), 0 0 0 4px rgba(255,209,102,0.2); }
   .amb-vol::-moz-range-thumb { width: 13px; height: 13px; border: none; border-radius: 50%; background: var(--thumb-bg); cursor: pointer; }
 
   /* Reminder toast */
@@ -565,6 +619,45 @@
 
   .hidden { display: none !important; }
 
+  /* Keyboard shortcuts / help overlay */
+  .help-overlay {
+    position: fixed; inset: 0; z-index: 32; background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+    opacity: 0; pointer-events: none; transition: opacity .25s ease;
+  }
+  .help-overlay.show { opacity: 1; pointer-events: auto; }
+  .help-card {
+    background: rgba(40,46,66,0.88); border: 1px solid var(--glass-border);
+    backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+    border-radius: var(--radius-lg); box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    width: 420px; max-width: 100%; max-height: 80vh; overflow-y: auto;
+    padding: 24px; color: #fff;
+    transform: scale(0.95); transition: transform .25s ease;
+  }
+  .help-overlay.show .help-card { transform: scale(1); }
+  .help-card h2 { font-family: var(--font-logo); font-size: 1.7rem; margin-bottom: 4px; }
+  .help-card .h-sub { font-size: 0.76rem; opacity: 0.65; margin-bottom: 16px; }
+  .shortcut-list { display: flex; flex-direction: column; gap: 8px; }
+  .shortcut { display: flex; align-items: center; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .shortcut:last-child { border-bottom: none; }
+  .shortcut .desc { font-size: 0.84rem; opacity: 0.85; }
+  .kbd { display: inline-flex; align-items: center; gap: 3px; }
+  .kbd span { font-family: var(--font-ui); font-size: 0.72rem; font-weight: 600; background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.2); border-bottom-width: 2px; border-radius: 6px; padding: 3px 8px; min-width: 26px; text-align: center; box-shadow: 0 1px 0 rgba(0,0,0,0.2); }
+
+  /* Journal button */
+  .journal-list { display: flex; flex-direction: column; gap: 6px; max-height: 220px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.3) transparent; }
+  .journal-list::-webkit-scrollbar { width: 5px; }
+  .journal-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.25); border-radius: 3px; }
+  .journal-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; background: rgba(255,255,255,0.08); border-radius: var(--radius-sm); font-size: 0.8rem; }
+  .journal-item .j-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .journal-item .j-mode { flex: 1; opacity: 0.85; }
+  .journal-item .j-mins { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .journal-item .j-time { font-size: 0.68rem; opacity: 0.5; }
+  .journal-empty { font-size: 0.8rem; opacity: 0.5; text-align: center; padding: 16px 0; }
+
+  .scroll-y { overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.3) transparent; }
+
   /* Scrollbar global for panels */
   .scroll-y { overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.3) transparent; }
   .scroll-y::-webkit-scrollbar { width: 5px; }
@@ -609,6 +702,8 @@
 </div>
 <canvas id="fx-canvas"></canvas>
 <div id="veil"></div>
+<div id="vignette"></div>
+<div id="grain"></div>
 
 <!-- REMINDER -->
 <div class="reminder" id="reminder">
@@ -649,6 +744,12 @@
         <svg id="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
         <svg id="theme-icon-sun" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
       </button>
+      <button class="icon-btn" id="btn-journal" title="Focus journal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      </button>
+      <button class="icon-btn" id="btn-help" title="Keyboard shortcuts (?)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </button>
       <button class="icon-btn" id="btn-settings" title="Settings">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
       </button>
@@ -656,15 +757,24 @@
   </header>
 
   <main class="timer-wrap">
+    <div class="timer-spotlight"></div>
     <div class="focusing-label" id="focusing-label"></div>
     <div class="ring-wrap">
       <svg class="ring-svg" viewBox="0 0 200 200" id="goal-ring">
+        <defs>
+          <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#ffd166"/>
+            <stop offset="50%" stop-color="#ff9a56"/>
+            <stop offset="100%" stop-color="#ff7e6b"/>
+          </linearGradient>
+        </defs>
         <circle class="ring-track" cx="100" cy="100" r="92"></circle>
         <circle class="ring-progress" id="ring-progress" cx="100" cy="100" r="92" stroke-dasharray="578" stroke-dashoffset="578"></circle>
       </svg>
       <div class="timer-text" id="timer-text">90:00</div>
     </div>
     <div class="mode-label" id="mode-label">DEEP FOCUS</div>
+    <div class="quote" id="quote"></div>
     <div class="controls">
       <button class="ctrl-btn" id="btn-reset" title="Reset">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
@@ -759,6 +869,28 @@
 </button>
 
 <input type="file" id="wallpaper-input" accept="image/*" class="hidden" />
+
+<!-- HELP / SHORTCUTS OVERLAY -->
+<div class="help-overlay" id="help-overlay">
+  <div class="help-card">
+    <h2>Shortcuts</h2>
+    <div class="h-sub">Keep your hands on the keyboard, your mind on the work.</div>
+    <div class="shortcut-list" id="shortcut-list"></div>
+  </div>
+</div>
+
+<!-- JOURNAL MODAL -->
+<div class="modal-overlay" id="journal-modal">
+  <div class="modal">
+    <h2>Focus Journal</h2>
+    <div class="m-sub">Your recent completed sessions.</div>
+    <div class="journal-list" id="journal-list"></div>
+    <div class="modal-footer">
+      <button class="btn-ghost" id="journal-clear">Clear history</button>
+      <button class="btn-primary" id="journal-close">Close</button>
+    </div>
+  </div>
+</div>
 
 <!-- SETTINGS MODAL -->
 <div class="modal-overlay" id="settings-modal">
@@ -876,7 +1008,9 @@ function defaultStore() {
     currentScene: null,
     embedUrl: '',
     theme: 'light',
-    ambientVols: {}
+    ambientVols: {},
+    journal: [],
+    focusCount: 0
   };
 }
 
@@ -1031,13 +1165,29 @@ function startMusic() {
   musicState.playing = true;
   musicState.startedAt = ac.currentTime - musicState.pos;
   scheduleLoop();
+  startProgressTicker();
   updateMusicUI();
 }
 function stopMusic() {
   musicState.playing = false;
   clearTimeout(musicState.scheduler);
+  stopProgressTicker();
   stopAllMusicNodes();
   updateMusicUI();
+}
+function startProgressTicker(){
+  stopProgressTicker();
+  musicState.progressTicker = setInterval(()=>{
+    if(!musicState.playing) return;
+    const ac = ensureAudio(); if(!ac) return;
+    const t = TRACKS[musicState.trackIdx];
+    const elapsed = ac.currentTime - musicState.startedAt;
+    musicState.pos = elapsed;
+    updateProgressUI(elapsed, t.totalSec);
+  }, 250);
+}
+function stopProgressTicker(){
+  if(musicState.progressTicker){ clearInterval(musicState.progressTicker); musicState.progressTicker=null; }
 }
 function stopAllMusicNodes() {
   musicState.activeNodes.forEach(n => { try { n.stop(); } catch(e){} });
@@ -1084,7 +1234,6 @@ function scheduleLoop() {
     return;
   }
   musicState.pos = elapsed;
-  updateProgressUI(elapsed, t.totalSec);
 
   // Schedule current bar chord pad
   const barIdx = Math.floor(elapsed / secPerBar) % t.bars;
@@ -1185,7 +1334,7 @@ function toggleAmbient(type){
     const node=ambientNodes[type];
     try{ node.gain.gain.setTargetAtTime(0,ac.currentTime,0.2); }catch(e){}
     setTimeout(()=>{ try{node.stop();}catch(e){} },500);
-    ambientNodes[type]=null;
+    delete ambientNodes[type];
     btn.classList.remove('active'); row.classList.remove('on');
   } else {
     const g=ac.createGain(); g.gain.value=0;
@@ -1196,6 +1345,7 @@ function toggleAmbient(type){
     g.gain.setTargetAtTime(vol*0.7,ac.currentTime,0.3);
     ambientNodes[type]={ gain:g, stop:handle.stop };
     btn.classList.add('active'); row.classList.add('on');
+    setTimeout(updateAmbientFills, 30);
   }
   updateAmbientCount();
 }
@@ -1223,8 +1373,9 @@ function getDuration(mode) {
 }
 function setMode(mode, keepRunning) {
   state.mode = mode;
-  state.cycleIndex = CYCLE.indexOf(mode);
-  if (state.cycleIndex < 0) state.cycleIndex = 0;
+  // NOTE: do NOT reset cycleIndex here — finishSession advances it, and
+  // manual mode-pill clicks set it explicitly. CYCLE has duplicate 'break'
+  // entries so indexOf would always pick the first, breaking the cycle.
   document.querySelectorAll('.mode-pill').forEach(p => p.classList.toggle('active', p.dataset.mode === mode));
   modeLabel.textContent = MODE_LABELS[mode];
   if (!keepRunning) {
@@ -1293,17 +1444,27 @@ function finishSession() {
   clearInterval(state.ticker);
   playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden');
   playChime();
-  // record stats for focus sessions (deep & quick count)
+  // record stats + journal for focus sessions (deep & quick count)
   if (state.mode !== 'break') {
-    recordSession(getDuration(state.mode) / 60);
+    const mins = getDuration(state.mode) / 60;
+    recordSession(mins);
+    recordJournal(state.mode, mins);
+    state.store.focusCount = (state.store.focusCount || 0) + 1;
+    saveStore();
   }
   // advance cycle
   state.cycleIndex = (state.cycleIndex + 1) % CYCLE.length;
   const nextMode = CYCLE[state.cycleIndex];
   setMode(nextMode, false);
+  // long-break logic: every 3rd focus session → double the break duration
+  if (nextMode === 'break' && isLongBreakDue()) {
+    state.remaining = getDuration('break') * 2;
+    renderTimer();
+    showReminder();
+  }
   renderStats();
   // reminder during breaks
-  if (nextMode === 'break' && state.store.reminderEnabled) showReminder();
+  if (nextMode === 'break' && state.store.reminderEnabled && !isLongBreakDue()) showReminder();
   if (state.store.autoStart) {
     setTimeout(startTimer, 1200);
   } else {
@@ -1671,10 +1832,134 @@ function applyTheme(theme){
 }
 function toggleTheme(){ applyTheme((state.store.theme === 'dark') ? 'light' : 'dark'); }
 
+/* ---------- FOCUS QUOTES ---------- */
+const QUOTES = [
+  'Small steps every day add up to big results.',
+  'The secret of getting ahead is getting started.',
+  'Focus on progress, not perfection.',
+  'You don\u2019t have to be extreme, just consistent.',
+  'A year from now you\u2019ll wish you started today.',
+  'Deep work is the superpower of the 21st century.',
+  'Discipline is choosing between what you want now and what you want most.',
+  'The expert in anything was once a beginner.',
+  'Concentrate all your thoughts upon the work at hand.',
+  'Lost time is never found again.',
+  'Done is better than perfect.',
+  'Your future is created by what you do today.'
+];
+let quoteTimer = null;
+function startQuotes(){
+  const el = $('quote');
+  if (!el) return;
+  let qi = Math.floor(Math.random() * QUOTES.length);
+  function rotate(){
+    el.classList.remove('show');
+    setTimeout(()=>{
+      qi = (qi + 1) % QUOTES.length;
+      el.textContent = '\u201C' + QUOTES[qi] + '\u201D';
+      el.classList.add('show');
+    }, 700);
+  }
+  // initial
+  el.textContent = '\u201C' + QUOTES[qi] + '\u201D';
+  setTimeout(()=>el.classList.add('show'), 800);
+  quoteTimer = setInterval(rotate, 22000);
+}
+
+/* ---------- KEYBOARD SHORTCUTS + HELP ---------- */
+const SHORTCUTS = [
+  { key:'Space', desc:'Start / pause timer' },
+  { key:'R', desc:'Reset timer' },
+  { key:'S', desc:'Skip to next session' },
+  { key:'M', desc:'Play / pause music' },
+  { key:'N', desc:'Next music track' },
+  { key:'B', desc:'Next background scene' },
+  { key:'T', desc:'Toggle light / dark text' },
+  { key:'F', desc:'Toggle fullscreen' },
+  { key:'Z', desc:'Toggle distraction-free mode' },
+  { key:'?', desc:'Show this shortcuts panel' }
+];
+function buildShortcutList(){
+  const list = $('shortcut-list'); if(!list) return;
+  list.innerHTML = SHORTCUTS.map(s =>
+    '<div class="shortcut"><span class="desc">'+s.desc+'</span><span class="kbd"><span>'+s.key+'</span></span></div>'
+  ).join('');
+}
+function toggleHelp(){ $('help-overlay').classList.toggle('show'); }
+
+/* ---------- SESSION JOURNAL ---------- */
+function recordJournal(mode, minutes){
+  if (!state.store.journal) state.store.journal = [];
+  state.store.journal.unshift({ mode, mins: Math.round(minutes), ts: Date.now() });
+  if (state.store.journal.length > 50) state.store.journal.length = 50;
+  saveStore();
+}
+function openJournal(){
+  renderJournal();
+  $('journal-modal').classList.add('show');
+}
+function closeJournal(){ $('journal-modal').classList.remove('show'); }
+function renderJournal(){
+  const list = $('journal-list'); if(!list) return;
+  const j = state.store.journal || [];
+  if (j.length === 0) { list.innerHTML = '<div class="journal-empty">No sessions yet \u2014 complete a focus round to start your journal.</div>'; return; }
+  const colors = { deep:'#ffd166', break:'#8ed67a', quick:'#9b6db3' };
+  const labels = { deep:'Deep Focus', break:'Break', quick:'Quick Session' };
+  list.innerHTML = j.map(e => {
+    const d = new Date(e.ts);
+    const t = d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0');
+    const day = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()];
+    return '<div class="journal-item"><span class="j-dot" style="background:'+(colors[e.mode]||'#888')+'"></span><span class="j-mode">'+(labels[e.mode]||e.mode)+'</span><span class="j-mins">'+e.mins+' min</span><span class="j-time">'+day+' '+t+'</span></div>';
+  }).join('');
+}
+
+/* ---------- LONG-BREAK LOGIC ---------- */
+// After every 3 completed focus (deep/quick) sessions, the next break is a "long break" (2x normal).
+function isLongBreakDue(){
+  const fc = state.store.focusCount || 0;
+  return fc > 0 && fc % 3 === 0;
+}
+
+/* ---------- MOUSE PARALLAX ---------- */
+function startParallax(){
+  let raf = null;
+  document.addEventListener('mousemove', (e) => {
+    if (raf) return;
+    raf = requestAnimationFrame(()=>{
+      const x = (e.clientX / window.innerWidth - 0.5) * 2;
+      const y = (e.clientY / window.innerHeight - 0.5) * 2;
+      const active = document.querySelector('.scene.active');
+      if (active) {
+        const hills = active.querySelectorAll('.hill');
+        hills.forEach((h, i) => {
+          const depth = (i + 1) * 6;
+          h.style.transform = 'translate(' + (-x * depth) + 'px,' + (-y * depth * 0.3) + 'px)';
+        });
+        const sun = active.querySelector('.sun, .moon');
+        if (sun) sun.style.transform = (sun.style.transform || '').replace(/translate\([^)]*\)/,'') + ' translate(' + (x * 10) + 'px,' + (y * 8) + 'px)';
+      }
+      raf = null;
+    });
+  });
+}
+
+/* ---------- AMBIENT SLIDER FILL ---------- */
+function updateAmbientFills(){
+  document.querySelectorAll('.amb-row.on .amb-vol').forEach(s => {
+    s.style.setProperty('--fill', s.value + '%');
+  });
+}
+
 /* ---------- EVENTS ---------- */
 function bindEvents() {
   // modes
-  document.querySelectorAll('.mode-pill').forEach(p => p.onclick = () => setMode(p.dataset.mode, false));
+  document.querySelectorAll('.mode-pill').forEach(p => p.onclick = () => {
+    // manual selection: point cycleIndex at the first occurrence of this mode
+    // so the auto-cycle continues naturally from there.
+    state.cycleIndex = CYCLE.indexOf(p.dataset.mode);
+    if (state.cycleIndex < 0) state.cycleIndex = 0;
+    setMode(p.dataset.mode, false);
+  });
   // controls
   $('btn-play').onclick = toggleTimer;
   $('btn-reset').onclick = resetTimer;
@@ -1684,6 +1969,12 @@ function bindEvents() {
   $('btn-fullscreen').onclick = toggleFullscreen;
   $('btn-zen').onclick = toggleZen;
   $('btn-theme').onclick = toggleTheme;
+  $('btn-help').onclick = toggleHelp;
+  $('btn-journal').onclick = openJournal;
+  $('journal-close').onclick = closeJournal;
+  $('journal-modal').onclick = (e) => { if (e.target.id === 'journal-modal') closeJournal(); };
+  $('journal-clear').onclick = () => { state.store.journal = []; state.store.focusCount = 0; saveStore(); renderJournal(); };
+  $('help-overlay').onclick = (e) => { if (e.target.id === 'help-overlay') toggleHelp(); };
   $('exit-zen').onclick = toggleZen;
   $('btn-wallpaper').onclick = () => $('wallpaper-input').click();
   $('wallpaper-input').onchange = (e) => handleWallpaper(e.target.files[0]);
@@ -1722,6 +2013,7 @@ function bindEvents() {
   $('ambient-mixer').addEventListener('input', (e) => {
     if (!e.target.classList.contains('amb-vol')) return;
     setAmbientVolume(e.target.dataset.amb, parseInt(e.target.value, 10));
+    updateAmbientFills();
   });
   // theme segmented buttons (live preview)
   document.querySelectorAll('[data-theme]').forEach(b => b.onclick = () => applyTheme(b.dataset.theme));
@@ -1731,15 +2023,29 @@ function bindEvents() {
     $('embed-frame').src = url;
     $('embed-frame').classList.toggle('show', !!url);
   };
-  // spacebar
+  // keyboard shortcuts
   document.addEventListener('keydown', (e) => {
-    if (e.code === 'Space' && e.target.tagName !== 'INPUT' && !e.target.isContentEditable) {
-      e.preventDefault(); toggleTimer();
+    // ignore when typing in inputs/textareas
+    const tag = e.target.tagName;
+    if (e.code === 'Space' && tag !== 'INPUT' && tag !== 'TEXTAREA' && !e.target.isContentEditable) {
+      e.preventDefault(); toggleTimer(); return;
     }
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || e.target.isContentEditable) return;
+    const k = e.key.toLowerCase();
     if (e.key === 'Escape') {
       if (document.body.classList.contains('distraction-free')) toggleZen();
-      closeSettings();
+      closeSettings(); closeJournal(); $('help-overlay').classList.remove('show');
+      return;
     }
+    if (k === 'r') resetTimer();
+    else if (k === 's') finishSession();
+    else if (k === 'm') { musicState.playing ? stopMusic() : startMusic(); }
+    else if (k === 'n') nextTrack(1);
+    else if (k === 'b') nextScene();
+    else if (k === 't') toggleTheme();
+    else if (k === 'f') toggleFullscreen();
+    else if (k === 'z') toggleZen();
+    else if (e.key === '?' || (e.shiftKey && k === '/')) { e.preventDefault(); toggleHelp(); }
   });
   // mobile tasks toggle
   if (window.matchMedia('(max-width: 640px)').matches) {
@@ -1755,6 +2061,9 @@ function init() {
   $('volume').value = state.store.volume;
   applyTheme(state.store.theme || 'light');
   buildAmbientMixer();
+  buildShortcutList();
+  startQuotes();
+  startParallax();
   // restore durations into mode defaults
   setMode('deep', false);
   // scene
