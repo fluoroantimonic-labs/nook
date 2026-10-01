@@ -3,8 +3,8 @@
 ## Project Overview
 A single-file HTML/CSS/JS focus & study app inspired by studywithme.io, served via a Next.js 16 project. The actual app lives at `public/focus.html` (fully self-contained — only Google Fonts loaded externally) and is embedded full-viewport via `src/app/page.tsx` (server component rendering an iframe with `allow="autoplay; fullscreen; encrypted-media"` + `allowFullScreen`).
 
-## Current Project Status (Phase 10 — COMPLETE)
-The app is **fully functional and verified** via agent-browser (desktop + mobile/iPhone 14 emulation). All core requirements plus Phases 2–10 of enhancements are implemented and working:
+## Current Project Status (Phase 11 — COMPLETE)
+The app is **fully functional and verified** via agent-browser (desktop + mobile/iPhone 14 emulation). All core requirements plus Phases 2–11 of enhancements are implemented and working:
 
 ### Implemented Features
 - **Timer**: 3 pill modes (Deep Focus 90 / Break 20 / Quick 40, all editable). End-timestamp timing (accurate in background tabs). Auto-cycle deep→break→quick→break→deep. Auto-start toggle. Chime on session end (Web Audio bell chord). Tab-title countdown (`▶ 89:58 · Sunny Meadow · focus`). Spacebar toggle. Goal/progress SVG ring around the timer.
@@ -32,7 +32,26 @@ The app is **fully functional and verified** via agent-browser (desktop + mobile
 - Tab title showed "undefined" for the scene name — `currentSceneClass()` returned the data-name string but was used to index `SCENE_NAMES`. Renamed to `currentSceneName()` and used the value directly. Verified: title now "▶ 24:58 · Sunny Meadow · focus".
 
 ## Current Goals / Completed
-Phase 1 (core) + Phase 2 (user-requested) + Phase 3 (QA fixes + styling) + Phase 4 (micro-interactions + mindfulness) + Phase 5 (segmented control + ambient theming + timeline) + Phase 6 (ambient presets + bokeh + vinyl + visualizer + task-linkage + focus gauge) + Phase 7 (celebration + live badge + distraction dim + typography) + Phase 8 (achievements + heatmap + command palette) + Phase 9 (brain dump + live clock + stats ticker + glass consistency) + Phase 10 (binaural beats + data backup + refinements) are all **complete and verified**.
+Phase 1 (core) + Phase 2 (user-requested) + Phase 3 (QA fixes + styling) + Phase 4 (micro-interactions + mindfulness) + Phase 5 (segmented control + ambient theming + timeline) + Phase 6 (ambient presets + bokeh + vinyl + visualizer + task-linkage + focus gauge) + Phase 7 (celebration + live badge + distraction dim + typography) + Phase 8 (achievements + heatmap + command palette) + Phase 9 (brain dump + live clock + stats ticker + glass consistency) + Phase 10 (binaural beats + data backup + refinements) + Phase 11 (session reflection + binaural freqs + custom presets) are all **complete and verified**.
+
+### Phase 11 — Session Reflection, Binaural Frequencies & Custom Presets (DONE)
+QA confirmed the app was stable (timer accurate, binaural toggle, command palette 14 items, data backup 3 buttons). Vision-model feedback drove 6 upgrades focused on habit-tracking, frequency selection, and custom mixes. All browser-verified.
+
+#### QA Results (no bugs found)
+- Timer: 89:59 → 89:57 over 2s (accurate).
+- Binaural: toggle on → count "1 on"; freq selector appears.
+- Command palette: 14 items with export entry.
+- Data backup: 3 buttons (Export/Import/Reset) present.
+
+#### Styling Polish (3 upgrades)
+1. **Quote pill** — the rotating quote now has horizontal padding (`0 14px`) + `border-radius: pill`, giving it a subtle container feel + raised opacity to 0.82 for legibility.
+2. **Task input padding** — `.task-input` padding increased from `8px 12px` → `10px 14px` for a roomier, more inviting typing area.
+3. **Journal mood/note display** — journal items now show a mood emoji next to the mode label + an italic note line below the entry (when a reflection was saved).
+
+#### New Features (3)
+4. **Session reflection prompt** — after a focus session (when auto-start is off), a full-screen reflection card appears: "How did it go?" with 5 mood buttons emojis (💪 productive / 🌿 calm / 🙂 neutral / 🌀 distracted / 😴 tired) + a textarea for a note. Save stores the mood + note on the latest journal entry; Skip closes. Timing accounts for the breathing exercise (waits 30s if breathing shows, else 1.5s). Verified: prompt shows → select "productive" → note "Got a lot done!" → save → journal[0].mood="productive", journal[0].note="Got a lot done!".
+5. **Binaural frequency presets** — a frequency selector appears below the ambient mixer when binaural is toggled on: Theta 4Hz, Alpha 10Hz (default), Beta 20Hz, Gamma 40Hz. `setBinauralFreq()` updates `state.store.binauralBeat` + restarts the binaural sound at the new beat. Verified: change to Beta → active="Beta 20Hz", storedBeat=20.
+6. **Custom ambient presets** — a "+ Save current mix" button below the preset chips. `saveCustomPreset()` captures all currently-on sounds + their volumes, prompts for a name, and saves to `state.store.customPresets`. Custom presets render as gold-bordered chips with an × delete button. Clicking applies the mix; × deletes it. Verified: turn on rain+fire → save "Test Mix" → 1 custom chip "Test Mix×" appears.
 
 ### Phase 10 — Binaural Beats, Data Backup & Refinements (DONE)
 QA confirmed the app was stable (brain dump + D shortcut, command palette 13 items, full cycle + celebration + ticker, settings persist). Vision-model feedback drove 5 upgrades focused on focus frequencies, data portability, and typography. All browser-verified.
@@ -300,6 +319,17 @@ Responded to user feedback with four changes, all browser-verified:
 - **Mobile (iPhone 14, 390px)**: binaural row exists, timer intact.
 - ESLint clean; no runtime errors in dev.log.
 
+### Phase 11 Verification Results (agent-browser)
+- **No bugs found** in QA: timer accurate, binaural toggle, command palette 14 items, data backup 3 buttons.
+- **New elements present**: `#reflect-overlay` + 5 `.mood-btn`, `#binaural-freqs` (4 freq buttons), `#amb-save-preset` — all in DOM.
+- **Binaural freqs**: selector appears on binaural toggle (`display:flex`); change to Beta → active="Beta 20Hz", storedBeat=20.
+- **Custom presets**: turn on rain+fire → save "Test Mix" → 1 gold-bordered custom chip "Test Mix×" appears.
+- **Reflection**: after focus session (auto-start off, breathing off) → "How did it go?" prompt → select 💪 productive → note "Got a lot done!" → save → journal[0].mood="productive", journal[0].note="Got a lot done!".
+- **Quote pill**: padding + border-radius applied; opacity 0.82.
+- **Task input**: padding 10px 14px (was 8px 12px).
+- **Mobile (iPhone 14, 390px)**: reflect overlay + save-preset button present, timer intact.
+- ESLint clean; no runtime errors in dev.log.
+
 ## Unresolved Issues / Risks / Next-Phase Recommendations
 - **No known bugs.** App is stable across desktop + mobile, light + dark themes.
 - **Potential enhancements for future phases** (for the recurring webDevReview cron):
@@ -308,16 +338,14 @@ Responded to user feedback with four changes, all browser-verified:
   - Add PWA manifest + service worker for offline use (still single-file friendly).
   - The `scene-custom` wallpaper is excluded from auto-rotation; consider a "pin custom wallpaper" toggle.
   - Add a co-view/presence feature (share timer status link) — bigger scope, needs a backend.
-  - Add session notes/reflections to the journal (optional note per completed session).
   - Add a real Web Audio AnalyserNode-driven visualizer (currently CSS-animated fake bars).
-  - Add custom ambient preset creation (let users save their own combos).
   - Add a "today's total focus vs goal" ring in the stats panel header.
   - Add a "focus shield" / DND toggle indicator near the timer.
   - Make the brain dump button visible on mobile (currently hidden to avoid overlap).
-  - Add configurable binaural beat frequency (alpha/beta/theta presets).
-  - Add a session-reflection prompt after breathing (mood/interruption tracking).
+  - Add mood-based stats aggregation (which moods correlate with most focus?).
+  - Add a "best time of day" insight from the journal data.
 
 ## Architecture Notes
-- `public/focus.html` — the entire self-contained app (HTML + CSS + vanilla JS, ~3100 lines). Only external dependency: Google Fonts (Poppins + Caveat).
+- `public/focus.html` — the entire self-contained app (HTML + CSS + vanilla JS, ~3250 lines). Only external dependency: Google Fonts (Poppins + Caveat).
 - `src/app/page.tsx` — server component, renders a full-viewport `<iframe src="/focus.html">` so the single-file constraint is preserved while remaining previewable at `/`.
 - No Next.js API routes, no database, no external images/audio — fully client-side.

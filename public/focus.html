@@ -370,8 +370,8 @@
   .timer-text .sep { opacity: 0.6; margin: 0 0.02em; }
   .mode-label { font-size: 0.8rem; font-weight: 600; opacity: 0.9; letter-spacing: 0.2em; text-transform: uppercase; display: flex; align-items: center; gap: 10px; }
   .session-counter { font-size: 0.66rem; opacity: 0.6; background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: var(--radius-pill); letter-spacing: 0.04em; }
-  .quote { font-size: 0.85rem; font-weight: 400; font-style: italic; opacity: 0; max-width: 460px; text-align: center; line-height: 1.5; min-height: 1.4em; transition: opacity .6s ease; letter-spacing: 0.01em; }
-  .quote.show { opacity: 0.78; }
+  .quote { font-size: 0.85rem; font-weight: 400; font-style: italic; opacity: 0; max-width: 480px; text-align: center; line-height: 1.5; min-height: 1.4em; transition: opacity .6s ease; letter-spacing: 0.01em; padding: 0 14px; border-radius: var(--radius-pill); }
+  .quote.show { opacity: 0.82; }
 
   /* Stats ticker — a compact live summary below the quote */
   .stats-ticker { font-size: 0.68rem; opacity: 0; max-width: 520px; text-align: center; min-height: 1.2em; transition: opacity .5s ease; letter-spacing: 0.02em; font-variant-numeric: tabular-nums; }
@@ -487,7 +487,7 @@
   .task-input-row { display: flex; gap: 8px; margin-bottom: 10px; }
   .task-input {
     flex: 1; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25);
-    border-radius: var(--radius-sm); padding: 8px 12px; color: var(--text); font-size: 0.85rem;
+    border-radius: var(--radius-sm); padding: 10px 14px; color: var(--text); font-size: 0.85rem;
     outline: none; min-width: 0;
   }
   .task-input::placeholder { color: var(--text-dim); }
@@ -843,6 +843,36 @@
   .breath-skip { margin-top: 8px; font-size: 0.8rem; opacity: 0.5; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 8px 18px; border-radius: var(--radius-pill); transition: opacity .15s; }
   .breath-skip:hover { opacity: 1; }
 
+  /* Binaural frequency selector */
+  .binaural-freqs { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; justify-content: center; }
+  .binaural-freq { font-size: 0.66rem; padding: 5px 10px; border-radius: var(--radius-pill); background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: var(--text-soft); transition: all .15s; cursor: pointer; }
+  .binaural-freq:hover { background: var(--glass-bg-strong); color: var(--text); }
+  .binaural-freq.active { background: var(--pill-active-bg); color: var(--pill-active-text); border-color: transparent; }
+
+  /* Session reflection prompt */
+  .reflect-overlay { position: fixed; inset: 0; z-index: 42; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity .3s ease; }
+  .reflect-overlay.show { opacity: 1; pointer-events: auto; }
+  .reflect-card { width: 420px; max-width: 100%; background: rgba(40,46,66,0.9); border: 1px solid var(--glass-border); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border-radius: var(--radius-lg); box-shadow: 0 20px 60px rgba(0,0,0,0.4); padding: 24px; color: #fff; transform: scale(0.95); transition: transform .3s cubic-bezier(.34,1.2,.5,1); }
+  .reflect-overlay.show .reflect-card { transform: scale(1); }
+  .reflect-card h3 { font-family: var(--font-logo); font-size: 1.6rem; margin-bottom: 4px; }
+  .reflect-card .r-sub { font-size: 0.74rem; opacity: 0.65; margin-bottom: 14px; }
+  .reflect-mood { display: flex; gap: 8px; margin-bottom: 14px; justify-content: center; }
+  .mood-btn { font-size: 1.4rem; width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); transition: all .2s ease; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .mood-btn:hover { transform: scale(1.15); background: var(--glass-bg-strong); }
+  .mood-btn.sel { background: var(--accent); border-color: var(--accent); }
+  .reflect-note { width: 100%; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); border-radius: var(--radius-sm); padding: 10px 14px; color: #fff; font-size: 0.85rem; outline: none; resize: vertical; min-height: 70px; max-height: 140px; font-family: inherit; }
+  .reflect-note:focus { border-color: rgba(255,255,255,0.5); }
+  .reflect-actions { display: flex; gap: 10px; margin-top: 14px; }
+  .reflect-actions button { flex: 1; padding: 11px; border-radius: var(--radius-sm); font-size: 0.85rem; font-weight: 500; transition: all .15s; }
+  .reflect-actions .r-save { background: var(--accent); color: #2b2d42; }
+  .reflect-actions .r-skip { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.8); }
+
+  /* Custom preset save button */
+  .amb-save-preset { font-size: 0.66rem; padding: 5px 9px; border-radius: var(--radius-pill); background: rgba(255,255,255,0.08); border: 1px dashed rgba(255,255,255,0.2); color: var(--text-soft); transition: all .15s; cursor: pointer; }
+  .amb-save-preset:hover { background: var(--glass-bg-strong); color: var(--text); border-style: solid; }
+  .amb-preset-custom { border-style: solid; border-color: rgba(255,209,102,0.4); background: rgba(255,209,102,0.1); }
+  .amb-preset-custom .x { margin-left: 4px; opacity: 0.6; }
+
   /* Session-complete celebration (confetti burst) */
   #celebrate { position: fixed; inset: 0; z-index: 41; pointer-events: none; overflow: hidden; }
   .confetti { position: absolute; width: 8px; height: 8px; top: -20px; opacity: 0; animation: confettiFall 2.4s cubic-bezier(.3,.6,.5,1) forwards; }
@@ -909,6 +939,8 @@
   .journal-item .j-mode { flex: 1; opacity: 0.85; }
   .journal-item .j-mins { font-weight: 600; font-variant-numeric: tabular-nums; }
   .journal-item .j-time { font-size: 0.68rem; opacity: 0.5; }
+  .journal-item .j-mood { margin-left: 4px; }
+  .journal-note { font-size: 0.72rem; opacity: 0.6; padding: 4px 10px 6px 28px; line-height: 1.4; font-style: italic; }
   .journal-empty { font-size: 0.8rem; opacity: 0.5; text-align: center; padding: 16px 0; }
 
   .scroll-y { overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.3) transparent; }
@@ -1150,7 +1182,14 @@
     <span class="amb-count" id="amb-count">0 on</span>
   </div>
   <div class="amb-presets" id="amb-presets"></div>
+  <button class="amb-save-preset" id="amb-save-preset">+ Save current mix</button>
   <div class="amb-list" id="amb-list"></div>
+  <div class="binaural-freqs" id="binaural-freqs" style="display:none">
+    <button class="binaural-freq" data-freq="4" data-base="200">Theta 4Hz</button>
+    <button class="binaural-freq active" data-freq="10" data-base="200">Alpha 10Hz</button>
+    <button class="binaural-freq" data-freq="20" data-base="200">Beta 20Hz</button>
+    <button class="binaural-freq" data-freq="40" data-base="200">Gamma 40Hz</button>
+  </div>
 </div>
 
 <button class="icon-btn exit-df" id="exit-zen" title="Exit zen mode">
@@ -1190,6 +1229,26 @@
   <div class="breath-circle"></div>
   <div class="breath-text" id="breath-text">breathe in…</div>
   <button class="breath-skip" id="breath-skip">skip</button>
+</div>
+
+<!-- SESSION REFLECTION PROMPT -->
+<div class="reflect-overlay" id="reflect-overlay">
+  <div class="reflect-card">
+    <h3>How did it go?</h3>
+    <div class="r-sub">A quick reflection helps lock in the habit.</div>
+    <div class="reflect-mood" id="reflect-mood">
+      <button class="mood-btn" data-mood="productive" title="Productive">💪</button>
+      <button class="mood-btn" data-mood="calm" title="Calm">🌿</button>
+      <button class="mood-btn" data-mood="neutral" title="Neutral">🙂</button>
+      <button class="mood-btn" data-mood="distracted" title="Distracted">🌀</button>
+      <button class="mood-btn" data-mood="tired" title="Tired">😴</button>
+    </div>
+    <textarea class="reflect-note" id="reflect-note" placeholder="What did you accomplish? (optional)"></textarea>
+    <div class="reflect-actions">
+      <button class="r-skip" id="reflect-skip">Skip</button>
+      <button class="r-save" id="reflect-save">Save reflection</button>
+    </div>
+  </div>
 </div>
 
 <!-- HELP / SHORTCUTS OVERLAY -->
@@ -1353,7 +1412,10 @@ function defaultStore() {
     focusCount: 0,
     breathingEnabled: true,
     longBreakEvery: 3,
-    brainDump: []
+    brainDump: [],
+    binauralBase: 200,
+    binauralBeat: 10,
+    customPresets: []
   };
 }
 
@@ -1674,9 +1736,10 @@ function buildCafe(ac,out){ const n=ac.createBufferSource(); n.buffer=makeNoiseB
 function buildThunder(ac,out){ let alive=true; let to=null; function rumble(){ if(!alive)return; const t=ac.currentTime; const n=ac.createBufferSource(); n.buffer=makeNoiseBuffer(); n.loop=false; const lp=ac.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=120; const g=ac.createGain(); const dur=2+Math.random()*3; g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.9,t+0.4); g.gain.linearRampToValueAtTime(0.5,t+dur*0.6); g.gain.exponentialRampToValueAtTime(0.0001,t+dur); n.connect(lp); lp.connect(g); g.connect(out); n.start(t); n.stop(t+dur+0.1); to=setTimeout(rumble,8000+Math.random()*16000); } to=setTimeout(rumble,2000+Math.random()*4000); return {stop:()=>{alive=false;clearTimeout(to);}}; }
 function buildStream(ac,out){ const n=ac.createBufferSource(); n.buffer=makeNoiseBuffer(); n.loop=true; const hp=ac.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=1200; const bp=ac.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=3000; bp.Q.value=0.6; const inner=ac.createGain(); inner.gain.value=0.5; const lfo=ac.createOscillator(); lfo.frequency.value=7; const lg=ac.createGain(); lg.gain.value=0.25; lfo.connect(lg); lg.connect(inner.gain); lfo.start(); n.connect(hp); hp.connect(bp); bp.connect(inner); inner.connect(out); n.start(); return {stop:()=>{try{n.stop()}catch(e){};try{lfo.stop()}catch(e){}}}; }
 function buildBinaural(ac,out){
-  // Binaural beats: two sine oscillators at slightly different frequencies (200Hz base + ~10Hz beat = alpha-range focus).
-  // Left ear gets base, right ear gets base+beat. Headphones recommended for the effect.
-  const base = 200; const beat = 10;
+  // Binaural beats: two sine oscillators at slightly different frequencies.
+  // Left ear gets base, right ear gets base+beat. The difference creates the binaural beat.
+  const base = (state.store.binauralBase || 200);
+  const beat = (state.store.binauralBeat || 10);
   const left = ac.createOscillator(); left.type='sine'; left.frequency.value=base;
   const right = ac.createOscillator(); right.type='sine'; right.frequency.value=base+beat;
   const merger = ac.createChannelMerger(2);
@@ -1709,6 +1772,9 @@ function toggleAmbient(type){
     btn.classList.add('active'); row.classList.add('on');
     setTimeout(updateAmbientFills, 30);
   }
+  // show/hide binaural frequency selector
+  const freqs = $('binaural-freqs');
+  if (freqs) freqs.style.display = ambientNodes['binaural'] ? 'flex' : 'none';
   updateAmbientCount();
 }
 function setAmbientVolume(type,v){
@@ -1902,6 +1968,89 @@ function resetAllData(){
   try { localStorage.removeItem(STORE_KEY); } catch(e){}
   location.reload();
 }
+/* Binaural frequency selection — restart the binaural sound at the new beat freq */
+function setBinauralFreq(freq, base){
+  state.store.binauralBeat = freq; state.store.binauralBase = base; saveStore();
+  // restart binaural if currently on
+  if (ambientNodes['binaural']) { toggleAmbient('binaural'); setTimeout(()=>toggleAmbient('binaural'), 60); }
+  document.querySelectorAll('.binaural-freq').forEach(b => b.classList.toggle('active', parseInt(b.dataset.freq,10) === freq));
+}
+/* Custom ambient presets — save the current on-sounds + volumes as a named preset */
+function saveCustomPreset(){
+  const onSounds = {};
+  Object.keys(ambientNodes).forEach(type => {
+    const row = document.querySelector('.amb-row[data-amb="'+type+'"]');
+    if (row) onSounds[type] = parseInt(row.querySelector('.amb-vol').value, 10);
+  });
+  if (Object.keys(onSounds).length === 0) { alert('Turn on at least one sound first.'); return; }
+  const name = prompt('Name this mix:', 'My Mix ' + ((state.store.customPresets||[]).length + 1));
+  if (!name) return;
+  if (!state.store.customPresets) state.store.customPresets = [];
+  state.store.customPresets.push({ label: name.slice(0,20), sounds: onSounds, custom: true });
+  saveStore();
+  buildAmbientPresets();
+}
+function deleteCustomPreset(idx){
+  if (!state.store.customPresets) return;
+  state.store.customPresets.splice(idx, 1);
+  saveStore(); buildAmbientPresets();
+}
+function buildAmbientPresets(){
+  const wrap = $('amb-presets'); if(!wrap) return;
+  const builtins = AMB_PRESETS.map((p, i) =>
+    '<button class="amb-preset" data-preset-idx="'+i+'">'+p.label+'</button>'
+  );
+  const customs = (state.store.customPresets||[]).map((p, i) =>
+    '<button class="amb-preset amb-preset-custom" data-custom-idx="'+i+'">'+p.label+'<span class="x">×</span></button>'
+  );
+  wrap.innerHTML = builtins.join('') + customs.join('');
+}
+function applyAmbientPreset(idx){
+  Object.keys(ambientNodes).forEach(type => toggleAmbient(type));
+  const preset = AMB_PRESETS[idx];
+  if (!preset) return;
+  Object.keys(preset.sounds).forEach(type => {
+    if (!AMBIENT_SOUNDS[type]) return;
+    if (!state.store.ambientVols) state.store.ambientVols = {};
+    state.store.ambientVols[type] = preset.sounds[type];
+    const row = document.querySelector('.amb-row[data-amb="'+type+'"]');
+    if (row) { const s = row.querySelector('.amb-vol'); if (s) { s.value = preset.sounds[type]; } }
+  });
+  saveStore(); buildAmbientMixer();
+  Object.keys(preset.sounds).forEach(type => { if (AMBIENT_SOUNDS[type]) toggleAmbient(type); });
+  document.querySelectorAll('.amb-preset').forEach((b, i) => b.classList.toggle('active', i === idx));
+}
+function applyCustomPreset(idx){
+  const preset = (state.store.customPresets||[])[idx]; if(!preset) return;
+  Object.keys(ambientNodes).forEach(type => toggleAmbient(type));
+  Object.keys(preset.sounds).forEach(type => {
+    if (!AMBIENT_SOUNDS[type]) return;
+    if (!state.store.ambientVols) state.store.ambientVols = {};
+    state.store.ambientVols[type] = preset.sounds[type];
+    const row = document.querySelector('.amb-row[data-amb="'+type+'"]');
+    if (row) { const s = row.querySelector('.amb-vol'); if (s) { s.value = preset.sounds[type]; } }
+  });
+  saveStore(); buildAmbientMixer();
+  Object.keys(preset.sounds).forEach(type => { if (AMBIENT_SOUNDS[type]) toggleAmbient(type); });
+}
+/* Session reflection prompt — mood + note, saved to the latest journal entry */
+let reflectMood = null;
+function showReflection(){
+  const ov = $('reflect-overlay'); if(!ov) return;
+  $('reflect-note').value = ''; reflectMood = null;
+  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('sel'));
+  ov.classList.add('show'); $('reflect-note').focus();
+}
+function hideReflection(){ $('reflect-overlay').classList.remove('show'); }
+function saveReflection(){
+  const note = $('reflect-note').value.trim();
+  if (state.store.journal && state.store.journal.length > 0) {
+    state.store.journal[0].mood = reflectMood;
+    state.store.journal[0].note = note || undefined;
+    saveStore();
+  }
+  hideReflection();
+}
 function startTimer() {
   if (state.running) return;
   ensureAudio(); buildMaster();
@@ -1989,6 +2138,10 @@ function finishSession() {
   // task-completion prompt after a focus session (if a task was focused)
   if (wasFocus && state.store.focusingTaskId) {
     setTimeout(maybePromptTaskComplete, state.store.breathingEnabled && !state.store.autoStart ? 30000 : 1200);
+  }
+  // session reflection prompt after a focus session (if not auto-starting)
+  if (wasFocus && !state.store.autoStart) {
+    setTimeout(showReflection, state.store.breathingEnabled ? 30000 : 1500);
   }
   if (state.store.autoStart) {
     setTimeout(startTimer, 1200);
@@ -2518,11 +2671,14 @@ function renderJournal(){
   if (j.length === 0) { list.innerHTML = '<div class="journal-empty">No sessions yet \u2014 complete a focus round to start your journal.</div>'; return; }
   const colors = { deep:'#ffd166', break:'#8ed67a', quick:'#9b6db3' };
   const labels = { deep:'Deep Focus', break:'Break', quick:'Quick Session' };
+  const moodEmoji = { productive:'💪', calm:'🌿', neutral:'🙂', distracted:'🌀', tired:'😴' };
   list.innerHTML = j.map(e => {
     const d = new Date(e.ts);
     const t = d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0');
     const day = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()];
-    return '<div class="journal-item"><span class="j-dot" style="background:'+(colors[e.mode]||'#888')+'"></span><span class="j-mode">'+(labels[e.mode]||e.mode)+'</span><span class="j-mins">'+e.mins+' min</span><span class="j-time">'+day+' '+t+'</span></div>';
+    const mood = e.mood ? '<span class="j-mood">'+(moodEmoji[e.mood]||'')+'</span>' : '';
+    const note = e.note ? '<div class="j-note">'+e.note.replace(/</g,'&lt;')+'</div>' : '';
+    return '<div class="journal-item"><span class="j-dot" style="background:'+(colors[e.mode]||'#888')+'"></span><span class="j-mode">'+(labels[e.mode]||e.mode)+mood+'</span><span class="j-mins">'+e.mins+' min</span><span class="j-time">'+day+' '+t+'</span></div>'+note;
   }).join('');
 }
 
@@ -2642,30 +2798,6 @@ const AMB_PRESETS = [
   { label: 'Morning Garden', sounds: { birds: 50, stream: 45 } },
   { label: 'Cozy Café', sounds: { cafe: 60, rain: 30 } }
 ];
-function buildAmbientPresets(){
-  const wrap = $('amb-presets'); if(!wrap) return;
-  wrap.innerHTML = AMB_PRESETS.map((p, i) =>
-    '<button class="amb-preset" data-preset-idx="'+i+'">'+p.label+'</button>'
-  ).join('');
-}
-function applyAmbientPreset(idx){
-  // stop all currently-on sounds, then start the preset's sounds at given volumes
-  Object.keys(ambientNodes).forEach(type => toggleAmbient(type));
-  const preset = AMB_PRESETS[idx];
-  if (!preset) return;
-  // set volumes first (so sliders show the right value), then toggle on
-  Object.keys(preset.sounds).forEach(type => {
-    if (!AMBIENT_SOUNDS[type]) return;
-    if (!state.store.ambientVols) state.store.ambientVols = {};
-    state.store.ambientVols[type] = preset.sounds[type];
-    const row = document.querySelector('.amb-row[data-amb="'+type+'"]');
-    if (row) { const s = row.querySelector('.amb-vol'); if (s) { s.value = preset.sounds[type]; } }
-  });
-  saveStore();
-  buildAmbientMixer(); // rebuild rows with new volumes + themed colors
-  Object.keys(preset.sounds).forEach(type => { if (AMBIENT_SOUNDS[type]) toggleAmbient(type); });
-  document.querySelectorAll('.amb-preset').forEach((b, i) => b.classList.toggle('active', i === idx));
-}
 
 /* ---------- FOCUS SCORE GAUGE ---------- */
 function renderFocusGauge(){
@@ -2844,20 +2976,37 @@ function bindEvents() {
     if (musicState.playing) { musicState.startedAt = ensureAudio().currentTime - musicState.pos; }
   };
   $('volume').oninput = (e) => setVolume(parseInt(e.target.value, 10));
-  // ambient mixer (event delegation for toggle buttons + volume sliders)
+  // ambient mixer (event delegation for toggle buttons + volume sliders + presets + binaural freqs)
   $('ambient-mixer').addEventListener('click', (e) => {
     const toggle = e.target.closest('.amb-toggle');
     if (toggle) { toggleAmbient(toggle.dataset.amb); return; }
     const preset = e.target.closest('.amb-preset');
-    if (preset) { applyAmbientPreset(parseInt(preset.dataset.presetIdx, 10)); }
+    if (preset) {
+      if (preset.dataset.presetIdx != null) applyAmbientPreset(parseInt(preset.dataset.presetIdx, 10));
+      else if (preset.dataset.customIdx != null) {
+        if (e.target.classList.contains('x')) deleteCustomPreset(parseInt(preset.dataset.customIdx, 10));
+        else applyCustomPreset(parseInt(preset.dataset.customIdx, 10));
+      }
+      return;
+    }
+    const freq = e.target.closest('.binaural-freq');
+    if (freq) { setBinauralFreq(parseInt(freq.dataset.freq,10), parseInt(freq.dataset.base,10)); }
   });
+  $('amb-save-preset').onclick = saveCustomPreset;
   $('ambient-mixer').addEventListener('input', (e) => {
     if (!e.target.classList.contains('amb-vol')) return;
     setAmbientVolume(e.target.dataset.amb, parseInt(e.target.value, 10));
     updateAmbientFills();
-    // clear active preset highlight when manually adjusting
     document.querySelectorAll('.amb-preset').forEach(b => b.classList.remove('active'));
   });
+  // reflection
+  document.querySelectorAll('.mood-btn').forEach(b => b.onclick = () => {
+    document.querySelectorAll('.mood-btn').forEach(x => x.classList.remove('sel'));
+    b.classList.add('sel'); reflectMood = b.dataset.mood;
+  });
+  $('reflect-skip').onclick = hideReflection;
+  $('reflect-save').onclick = saveReflection;
+  $('reflect-overlay').onclick = (e) => { if (e.target.id === 'reflect-overlay') hideReflection(); };
   // theme segmented buttons (live preview)
   document.querySelectorAll('[data-theme]').forEach(b => b.onclick = () => applyTheme(b.dataset.theme));
   // embed
