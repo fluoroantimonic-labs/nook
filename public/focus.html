@@ -31,9 +31,36 @@
     --safe-bottom: env(safe-area-inset-bottom, 0px);
     --safe-left: env(safe-area-inset-left, 0px);
     --safe-right: env(safe-area-inset-right, 0px);
+    --slider-track: rgba(255,255,255,0.2);
+    --thumb-bg: #ffffff;
+    --switch-track: rgba(255,255,255,0.25);
   }
+  /* Dark-text theme: white chrome inverts to dark on lightened glass */
+  html.theme-dark {
+    --text: #181a2e;
+    --text-soft: rgba(24,26,46,0.82);
+    --text-dim: rgba(24,26,46,0.55);
+    --glass-bg: rgba(255,255,255,0.55);
+    --glass-bg-strong: rgba(255,255,255,0.72);
+    --glass-border: rgba(255,255,255,0.65);
+    --glass-shadow: 0 8px 32px rgba(0,0,0,0.14);
+    --pill-active-bg: rgba(30,32,50,0.92);
+    --pill-active-text: #ffffff;
+    --accent: #e0883a;
+    --ring-track: rgba(0,0,0,0.12);
+    --slider-track: rgba(0,0,0,0.16);
+    --thumb-bg: #2b2d42;
+    --switch-track: rgba(0,0,0,0.18);
+  }
+  html.theme-dark body { text-shadow: 0 1px 6px rgba(255,255,255,0.35); }
+  /* Veil lightens scenes so dark text stays readable in dark-text mode */
+  #veil {
+    position: fixed; inset: 0; z-index: 1; pointer-events: none;
+    background: rgba(255,255,255,0); transition: background .5s ease;
+  }
+  html.theme-dark #veil { background: rgba(255,255,255,0.4); }
   @media (prefers-color-scheme: dark) {
-    :root { --glass-bg: rgba(255,255,255,0.10); --glass-bg-strong: rgba(255,255,255,0.14); }
+    :root:not(.theme-dark) { --glass-bg: rgba(255,255,255,0.10); --glass-bg-strong: rgba(255,255,255,0.14); }
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -271,12 +298,12 @@
   .switch { position: relative; width: 36px; height: 20px; flex-shrink: 0; }
   .switch input { opacity: 0; width: 0; height: 0; }
   .switch .slider {
-    position: absolute; inset: 0; background: rgba(255,255,255,0.25); border-radius: var(--radius-pill);
+    position: absolute; inset: 0; background: var(--switch-track); border-radius: var(--radius-pill);
     transition: .25s; cursor: pointer;
   }
   .switch .slider::before {
     content: ''; position: absolute; width: 14px; height: 14px; left: 3px; top: 3px;
-    background: #fff; border-radius: 50%; transition: .25s;
+    background: var(--thumb-bg); border-radius: 50%; transition: .25s;
   }
   .switch input:checked + .slider { background: var(--accent); }
   .switch input:checked + .slider::before { transform: translateX(16px); }
@@ -392,27 +419,34 @@
   .music-btn.play svg { color: #2b2d42; width: 20px; height: 20px; }
   .volume-row { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
   .volume-row svg { width: 16px; height: 16px; opacity: 0.8; flex-shrink: 0; }
-  .volume-slider { flex: 1; -webkit-appearance: none; appearance: none; height: 4px; background: rgba(255,255,255,0.2); border-radius: var(--radius-pill); outline: none; }
-  .volume-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 13px; height: 13px; border-radius: 50%; background: #fff; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
-  .volume-slider::-moz-range-thumb { width: 13px; height: 13px; border: none; border-radius: 50%; background: #fff; cursor: pointer; }
+  .volume-slider { flex: 1; -webkit-appearance: none; appearance: none; height: 4px; background: var(--slider-track); border-radius: var(--radius-pill); outline: none; }
+  .volume-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 13px; height: 13px; border-radius: 50%; background: var(--thumb-bg); cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+  .volume-slider::-moz-range-thumb { width: 13px; height: 13px; border: none; border-radius: 50%; background: var(--thumb-bg); cursor: pointer; }
 
-  /* Ambient mixer */
-  .ambient-bar {
+  /* Ambient mixer panel */
+  .ambient-mixer {
     position: fixed; bottom: calc(16px + var(--safe-bottom)); right: calc(20px + var(--safe-right));
-    z-index: 6; display: flex; flex-direction: column; gap: 8px; align-items: flex-end;
-  }
-  .ambient-chips { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; max-width: 220px; }
-  .chip {
-    display: flex; align-items: center; gap: 6px;
-    padding: 8px 14px; border-radius: var(--radius-pill);
+    width: 252px; max-width: calc(100vw - 40px); z-index: 6;
     background: var(--glass-bg); border: 1px solid var(--glass-border);
-    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-    font-size: 0.78rem; color: var(--text-soft);
-    box-shadow: var(--glass-shadow); transition: all .2s ease;
+    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    border-radius: var(--radius-lg); box-shadow: var(--glass-shadow);
+    padding: 12px 14px; color: var(--text);
   }
-  .chip:hover { background: var(--glass-bg-strong); color: var(--text); }
-  .chip.active { background: rgba(255,255,255,0.95); color: #2b2d42; border-color: rgba(255,255,255,0.95); text-shadow: none; }
-  .chip svg { width: 15px; height: 15px; }
+  .amb-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; padding: 0 2px; }
+  .amb-title { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.85; }
+  .amb-count { font-size: 0.66rem; opacity: 0.6; font-variant-numeric: tabular-nums; }
+  .amb-list { display: flex; flex-direction: column; gap: 4px; max-height: 46vh; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.3) transparent; padding-right: 2px; }
+  .amb-list::-webkit-scrollbar { width: 5px; }
+  .amb-list::-webkit-scrollbar-thumb { background: var(--slider-track); border-radius: 3px; }
+  .amb-row { display: flex; align-items: center; gap: 8px; padding: 3px 0; }
+  .amb-toggle { display: flex; align-items: center; gap: 7px; padding: 7px 10px; border-radius: var(--radius-pill); background: rgba(255,255,255,0.08); border: 1px solid transparent; font-size: 0.77rem; color: var(--text-soft); transition: all .18s ease; flex-shrink: 0; min-width: 96px; }
+  .amb-toggle:hover { background: var(--glass-bg-strong); color: var(--text); }
+  .amb-toggle.active { background: var(--pill-active-bg); color: var(--pill-active-text); }
+  .amb-toggle svg { width: 15px; height: 15px; flex-shrink: 0; }
+  .amb-vol { flex: 1; -webkit-appearance: none; appearance: none; height: 4px; background: var(--slider-track); border-radius: var(--radius-pill); outline: none; min-width: 36px; }
+  .amb-row:not(.on) .amb-vol { opacity: 0.4; }
+  .amb-vol::-webkit-slider-thumb { -webkit-appearance: none; width: 13px; height: 13px; border-radius: 50%; background: var(--thumb-bg); cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+  .amb-vol::-moz-range-thumb { width: 13px; height: 13px; border: none; border-radius: 50%; background: var(--thumb-bg); cursor: pointer; }
 
   /* Reminder toast */
   .reminder {
@@ -499,8 +533,7 @@
   body.distraction-free .top-actions,
   body.distraction-free .side-right,
   body.distraction-free .music-player,
-  body.distraction-free .ambient-bar,
-  body.distraction-free .auto-toggle,
+  body.distraction-free .ambient-mixer,
   body.distraction-free .modes { opacity: 0; pointer-events: none; transition: opacity .4s ease; }
   body.distraction-free .timer-wrap { transform: scale(1.08); transition: transform .5s ease; }
   .exit-df {
@@ -522,8 +555,8 @@
     .top-actions { flex-wrap: wrap; justify-content: center; }
     .mode-pill { padding: 7px 14px; font-size: 0.78rem; }
     .music-player { width: calc(100vw - 28px); left: 14px; right: 14px; }
-    .ambient-bar { left: calc(14px + var(--safe-left)); right: auto; }
-    .ambient-chips { max-width: 100%; justify-content: flex-start; }
+    .ambient-mixer { left: 14px; right: 14px; width: auto; bottom: calc(172px + var(--safe-bottom)); max-height: 34vh; }
+    .amb-list { max-height: 26vh; }
     .side-right { display: none; }
     body.show-panels-mobile .side-right { display: flex; width: calc(100vw - 28px); left: 14px; right: 14px; bottom: auto; top: auto; position: fixed; max-height: 50vh; }
     .ctrl-btn.primary { width: 62px; height: 62px; }
@@ -575,6 +608,7 @@
   <div class="scene scene-custom hidden" data-name="My Wallpaper"></div>
 </div>
 <canvas id="fx-canvas"></canvas>
+<div id="veil"></div>
 
 <!-- REMINDER -->
 <div class="reminder" id="reminder">
@@ -609,7 +643,11 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
       </button>
       <button class="icon-btn" id="btn-zen" title="Distraction-free mode">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
+      </button>
+      <button class="icon-btn" id="btn-theme" title="Toggle dark mode">
+        <svg id="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        <svg id="theme-icon-sun" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
       </button>
       <button class="icon-btn" id="btn-settings" title="Settings">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
@@ -635,10 +673,9 @@
         <svg id="play-icon" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg>
         <svg id="pause-icon" class="hidden" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
       </button>
-      <label class="auto-toggle" title="Auto-start next session">
-        <span class="switch"><input type="checkbox" id="auto-start" checked /><span class="slider"></span></span>
-        <span>Auto-start next</span>
-      </label>
+      <button class="ctrl-btn" id="btn-skip" title="Skip to next session">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4" fill="currentColor"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
+      </button>
     </div>
   </main>
 </div>
@@ -709,21 +746,12 @@
 </div>
 
 <!-- AMBIENT MIXER -->
-<div class="ambient-bar">
-  <div class="ambient-chips">
-    <button class="chip" id="amb-rain" data-amb="rain">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a4 4 0 0 1 1-7 6 6 0 0 1 11.5 1.5A4.5 4.5 0 0 1 18 16"/><path d="M8 19v2M12 17v4M16 19v2"/></svg>
-      Rain
-    </button>
-    <button class="chip" id="amb-wind" data-amb="wind">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.6 4.6A2 2 0 1 1 11 8H2"/><path d="M12.6 19.4A2 2 0 1 0 14 16H2"/><path d="M17.5 8a2.5 2.5 0 1 1 2 4H2"/></svg>
-      Wind
-    </button>
-    <button class="chip" id="amb-waves" data-amb="waves">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg>
-      Waves
-    </button>
+<div class="ambient-mixer" id="ambient-mixer">
+  <div class="amb-head">
+    <span class="amb-title">Ambient Mixer</span>
+    <span class="amb-count" id="amb-count">0 on</span>
   </div>
+  <div class="amb-list" id="amb-list"></div>
 </div>
 
 <button class="icon-btn exit-df" id="exit-zen" title="Exit zen mode">
@@ -781,6 +809,22 @@
       </div>
     </div>
 
+    <div class="m-section">
+      <h3>Session</h3>
+      <div class="m-row">
+        <div class="m-label">Auto-start next session<small>auto-cycle deep → break → quick</small></div>
+        <span class="switch"><input type="checkbox" id="auto-start" checked /><span class="slider"></span></span>
+      </div>
+    </div>
+
+    <div class="m-section">
+      <h3>Appearance</h3>
+      <div class="preset-row">
+        <button class="preset-btn" data-theme="light">☀ Light text</button>
+        <button class="preset-btn" data-theme="dark">🌙 Dark text</button>
+      </div>
+    </div>
+
     <div class="m-section embed-section">
       <h3>YouTube / Spotify (local)</h3>
       <input type="text" class="embed-input" id="embed-input" placeholder="Paste YouTube or Spotify embed URL…" />
@@ -830,7 +874,9 @@ function defaultStore() {
     volume: 40,
     autoStart: true,
     currentScene: null,
-    embedUrl: ''
+    embedUrl: '',
+    theme: 'light',
+    ambientVols: {}
   };
 }
 
@@ -932,6 +978,41 @@ const TRACKS = [
     key: 'A', scale: [220.00, 261.63, 293.66, 329.63, 392.00], // A minor pent
     chords: [[110.00, 261.63, 329.63], [146.83, 293.66, 369.99], [130.81, 261.63, 392.00], [98.00, 220.00, 329.63]],
     bpm: 64, bars: 4, totalSec: 210
+  },
+  {
+    title: 'Library Whispers', artist: 'lo-fi generator',
+    grad: 'linear-gradient(135deg,#6d8a96,#a8b5c0,#5e4a8b)',
+    key: 'D', scale: [293.66, 349.23, 392.00, 440.00, 523.25],
+    chords: [[146.83, 392.00, 440.00], [196.00, 392.00, 523.25], [174.61, 349.23, 440.00], [220.00, 440.00, 523.25]],
+    bpm: 72, bars: 4, totalSec: 188
+  },
+  {
+    title: 'Late Night Drive', artist: 'lo-fi generator',
+    grad: 'linear-gradient(135deg,#1a1a2e,#4a306d,#7a4a8b)',
+    key: 'E', scale: [329.63, 392.00, 440.00, 493.88, 587.33],
+    chords: [[164.81, 392.00, 440.00], [196.00, 440.00, 493.88], [146.83, 329.63, 440.00], [220.00, 493.88, 587.33]],
+    bpm: 60, bars: 4, totalSec: 220
+  },
+  {
+    title: 'Autumn Leaves', artist: 'lo-fi generator',
+    grad: 'linear-gradient(135deg,#d4691e,#a83232,#5e2a4a)',
+    key: 'G', scale: [392.00, 440.00, 493.88, 587.33, 659.25],
+    chords: [[196.00, 493.88, 587.33], [220.00, 440.00, 523.25], [174.61, 440.00, 523.25], [246.94, 587.33, 659.25]],
+    bpm: 68, bars: 4, totalSec: 196
+  },
+  {
+    title: 'Coffee Shop Vibes', artist: 'lo-fi generator',
+    grad: 'linear-gradient(135deg,#8b5a2b,#c89b6a,#6b4226)',
+    key: 'Bb', scale: [466.16, 523.25, 587.33, 622.25, 698.46],
+    chords: [[233.08, 587.33, 622.25], [261.63, 523.25, 587.33], [311.13, 622.25, 698.46], [207.65, 523.25, 622.25]],
+    bpm: 75, bars: 4, totalSec: 180
+  },
+  {
+    title: 'Deep Work', artist: 'lo-fi generator',
+    grad: 'linear-gradient(135deg,#0f3460,#16537e,#533483)',
+    key: 'D', scale: [293.66, 349.23, 392.00, 440.00, 523.25],
+    chords: [[73.42, 293.66, 440.00], [98.00, 349.23, 440.00], [110.00, 392.00, 523.25], [87.31, 293.66, 440.00]],
+    bpm: 56, bars: 4, totalSec: 240
   }
 ];
 
@@ -1058,7 +1139,27 @@ function updateProgressUI(elapsed, total) {
 }
 
 /* ---------- AMBIENT NOISE MIXER ---------- */
-let ambientNodes = { rain: null, wind: null, waves: null };
+const AMB_SVG = {
+  rain: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a4 4 0 0 1 1-7 6 6 0 0 1 11.5 1.5A4.5 4.5 0 0 1 18 16"/><path d="M8 19v2M12 17v4M16 19v2"/></svg>',
+  wind: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.6 4.6A2 2 0 1 1 11 8H2"/><path d="M12.6 19.4A2 2 0 1 0 14 16H2"/><path d="M17.5 8a2.5 2.5 0 1 1 2 4H2"/></svg>',
+  waves:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg>',
+  fire:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>',
+  birds: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7h.01"/><path d="M3.4 18H12a8 8 0 0 0 8-8V7"/><path d="M9.8 7.4a2 2 0 0 0-1.7 2.8l.9 1.8a2 2 0 0 1-1.7 2.8H5"/></svg>',
+  cafe:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/></svg>',
+  thunder:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 16.9A5 5 0 0 0 18 7h-1.26a8 8 0 1 0-11.62 9"/><polyline points="13 11 9 17 15 17 11 23"/></svg>',
+  stream:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 2c1.5 3 1.5 5 0 7S5.5 13 7 15s2.5 2 2 5"/><path d="M12 2c1.5 3 1.5 5 0 7s-1.5 4 0 6 2.5 2 2 5"/><path d="M17 2c1.5 3 1.5 5 0 7s-1.5 4 0 6 2.5 2 2 5"/></svg>'
+};
+const AMBIENT_SOUNDS = {
+  rain:    { label:'Rain',      vol:0.55, build: buildRain },
+  wind:    { label:'Wind',      vol:0.50, build: buildWind },
+  waves:   { label:'Waves',     vol:0.60, build: buildWaves },
+  fire:    { label:'Fireplace', vol:0.55, build: buildFire },
+  birds:   { label:'Birds',     vol:0.45, build: buildBirds },
+  cafe:    { label:'Café',      vol:0.55, build: buildCafe },
+  thunder: { label:'Thunder',   vol:0.70, build: buildThunder },
+  stream:  { label:'Stream',    vol:0.50, build: buildStream }
+};
+let ambientNodes = {};
 function makeNoiseBuffer() {
   const ac = ensureAudio(); if (!ac) return null;
   const len = ac.sampleRate * 3;
@@ -1067,48 +1168,53 @@ function makeNoiseBuffer() {
   for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
   return buf;
 }
-function toggleAmbient(type) {
-  buildMaster(); const ac = ensureAudio(); if (!ac) return;
-  const chip = $('amb-' + type);
-  if (ambientNodes[type]) {
-    // stop
-    const node = ambientNodes[type];
-    node.gain.gain.setTargetAtTime(0, ac.currentTime, 0.3);
-    setTimeout(() => { try { node.src.stop(); } catch(e){} }, 600);
-    ambientNodes[type] = null;
-    chip.classList.remove('active');
+function buildRain(ac,out){ const n=ac.createBufferSource(); n.buffer=makeNoiseBuffer(); n.loop=true; const hp=ac.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=600; const bp=ac.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=2400; bp.Q.value=0.4; n.connect(hp); hp.connect(bp); bp.connect(out); n.start(); return {stop:()=>{try{n.stop()}catch(e){}}}; }
+function buildWind(ac,out){ const n=ac.createBufferSource(); n.buffer=makeNoiseBuffer(); n.loop=true; const lp=ac.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=500; const lfo=ac.createOscillator(); lfo.frequency.value=0.15; const lg=ac.createGain(); lg.gain.value=200; lfo.connect(lg); lg.connect(lp.frequency); lfo.start(); n.connect(lp); lp.connect(out); n.start(); return {stop:()=>{try{n.stop()}catch(e){};try{lfo.stop()}catch(e){}}}; }
+function buildWaves(ac,out){ const n=ac.createBufferSource(); n.buffer=makeNoiseBuffer(); n.loop=true; const lp=ac.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=700; const inner=ac.createGain(); inner.gain.value=0.5; const lfo=ac.createOscillator(); lfo.frequency.value=0.12; const lg=ac.createGain(); lg.gain.value=0.4; lfo.connect(lg); lg.connect(inner.gain); lfo.start(); n.connect(lp); lp.connect(inner); inner.connect(out); n.start(); return {stop:()=>{try{n.stop()}catch(e){};try{lfo.stop()}catch(e){}}}; }
+function buildFire(ac,out){ const n=ac.createBufferSource(); n.buffer=makeNoiseBuffer(); n.loop=true; const bp=ac.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=800; bp.Q.value=0.8; const roar=ac.createGain(); roar.gain.value=0.5; n.connect(bp); bp.connect(roar); roar.connect(out); n.start(); let alive=true; function crackle(){ if(!alive)return; const t=ac.currentTime; const c=ac.createBufferSource(); c.buffer=makeNoiseBuffer(); c.loop=false; const cf=ac.createBiquadFilter(); cf.type='bandpass'; cf.frequency.value=1200+Math.random()*1800; cf.Q.value=2; const cg=ac.createGain(); const dur=0.02+Math.random()*0.05; cg.gain.setValueAtTime(0,t); cg.gain.linearRampToValueAtTime(0.6+Math.random()*0.4,t+0.005); cg.gain.exponentialRampToValueAtTime(0.0001,t+dur); c.connect(cf); cf.connect(cg); cg.connect(out); c.start(t); c.stop(t+dur+0.02); setTimeout(crackle,60+Math.random()*260); } crackle(); return {stop:()=>{alive=false;try{n.stop()}catch(e){}}}; }
+function buildBirds(ac,out){ let alive=true; let to=null; function chirp(){ if(!alive)return; const t=ac.currentTime; const o=ac.createOscillator(); o.type='sine'; const base=1800+Math.random()*1400; o.frequency.setValueAtTime(base,t); o.frequency.exponentialRampToValueAtTime(base*1.4,t+0.08); o.frequency.exponentialRampToValueAtTime(base*0.9,t+0.16); const g=ac.createGain(); g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.3,t+0.02); g.gain.exponentialRampToValueAtTime(0.0001,t+0.18); o.connect(g); g.connect(out); o.start(t); o.stop(t+0.2); if(Math.random()<0.4){ setTimeout(()=>{ if(!alive)return; const t2=ac.currentTime; const o2=ac.createOscillator(); o2.type='sine'; const b2=base*1.05; o2.frequency.setValueAtTime(b2,t2); o2.frequency.exponentialRampToValueAtTime(b2*1.4,t2+0.08); const g2=ac.createGain(); g2.gain.setValueAtTime(0,t2); g2.gain.linearRampToValueAtTime(0.25,t2+0.02); g2.gain.exponentialRampToValueAtTime(0.0001,t2+0.16); o2.connect(g2); g2.connect(out); o2.start(t2); o2.stop(t2+0.2); },180); } to=setTimeout(chirp,1200+Math.random()*3000); } chirp(); return {stop:()=>{alive=false;clearTimeout(to);}}; }
+function buildCafe(ac,out){ const n=ac.createBufferSource(); n.buffer=makeNoiseBuffer(); n.loop=true; const lp=ac.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=420; const murmur=ac.createGain(); murmur.gain.value=0.7; const lfo=ac.createOscillator(); lfo.frequency.value=0.2; const lg=ac.createGain(); lg.gain.value=0.2; lfo.connect(lg); lg.connect(murmur.gain); lfo.start(); n.connect(lp); lp.connect(murmur); murmur.connect(out); n.start(); let alive=true; function clink(){ if(!alive)return; const t=ac.currentTime; const o=ac.createOscillator(); o.type='triangle'; o.frequency.value=2400+Math.random()*1200; const g=ac.createGain(); g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.06,t+0.005); g.gain.exponentialRampToValueAtTime(0.0001,t+0.15); o.connect(g); g.connect(out); o.start(t); o.stop(t+0.16); setTimeout(clink,4000+Math.random()*8000); } clink(); return {stop:()=>{alive=false;try{n.stop()}catch(e){};try{lfo.stop()}catch(e){}}}; }
+function buildThunder(ac,out){ let alive=true; let to=null; function rumble(){ if(!alive)return; const t=ac.currentTime; const n=ac.createBufferSource(); n.buffer=makeNoiseBuffer(); n.loop=false; const lp=ac.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=120; const g=ac.createGain(); const dur=2+Math.random()*3; g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.9,t+0.4); g.gain.linearRampToValueAtTime(0.5,t+dur*0.6); g.gain.exponentialRampToValueAtTime(0.0001,t+dur); n.connect(lp); lp.connect(g); g.connect(out); n.start(t); n.stop(t+dur+0.1); to=setTimeout(rumble,8000+Math.random()*16000); } to=setTimeout(rumble,2000+Math.random()*4000); return {stop:()=>{alive=false;clearTimeout(to);}}; }
+function buildStream(ac,out){ const n=ac.createBufferSource(); n.buffer=makeNoiseBuffer(); n.loop=true; const hp=ac.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=1200; const bp=ac.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=3000; bp.Q.value=0.6; const inner=ac.createGain(); inner.gain.value=0.5; const lfo=ac.createOscillator(); lfo.frequency.value=7; const lg=ac.createGain(); lg.gain.value=0.25; lfo.connect(lg); lg.connect(inner.gain); lfo.start(); n.connect(hp); hp.connect(bp); bp.connect(inner); inner.connect(out); n.start(); return {stop:()=>{try{n.stop()}catch(e){};try{lfo.stop()}catch(e){}}}; }
+function updateAmbientCount(){ const n=Object.keys(ambientNodes).length; const el=$('amb-count'); if(el) el.textContent = n + ' on'; }
+function toggleAmbient(type){
+  buildMaster(); const ac=ensureAudio(); if(!ac) return;
+  const row=document.querySelector('.amb-row[data-amb="'+type+'"]'); if(!row) return;
+  const btn=row.querySelector('.amb-toggle');
+  if(ambientNodes[type]){
+    const node=ambientNodes[type];
+    try{ node.gain.gain.setTargetAtTime(0,ac.currentTime,0.2); }catch(e){}
+    setTimeout(()=>{ try{node.stop();}catch(e){} },500);
+    ambientNodes[type]=null;
+    btn.classList.remove('active'); row.classList.remove('on');
   } else {
-    const noise = ac.createBufferSource(); noise.buffer = makeNoiseBuffer(); noise.loop = true;
-    const g = ac.createGain(); g.gain.value = 0;
-    const target = type === 'rain' ? 0.35 : type === 'wind' ? 0.3 : 0.4;
-    g.gain.setTargetAtTime(target, ac.currentTime, 0.6);
-
-    if (type === 'rain') {
-      const hp = ac.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 600;
-      const bp = ac.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 2400; bp.Q.value = 0.4;
-      noise.connect(hp); hp.connect(bp); bp.connect(g);
-    } else if (type === 'wind') {
-      const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 500;
-      // LFO on filter frequency
-      const lfo = ac.createOscillator(); lfo.frequency.value = 0.15;
-      const lfoGain = ac.createGain(); lfoGain.gain.value = 200;
-      lfo.connect(lfoGain); lfoGain.connect(lp.frequency); lfo.start();
-      noise.connect(lp); lp.connect(g);
-    } else { // waves
-      const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 700;
-      // slow swell LFO on gain
-      const lfo = ac.createOscillator(); lfo.frequency.value = 0.12;
-      const lfoGain = ac.createGain(); lfoGain.gain.value = 0.2;
-      const lfoOffset = ac.createConstantSource(); lfoOffset.offset.value = 0.25;
-      lfo.connect(lfoGain); lfoGain.connect(g.gain);
-      lfoOffset.connect(g.gain); lfoOffset.start(); lfo.start();
-      noise.connect(lp); lp.connect(g);
-    }
+    const g=ac.createGain(); g.gain.value=0;
+    const cfg=AMBIENT_SOUNDS[type];
+    const handle=cfg.build(ac,g);
     g.connect(ambientGain);
-    noise.start();
-    ambientNodes[type] = { src: noise, gain: g };
-    chip.classList.add('active');
+    const vol=parseFloat(row.querySelector('.amb-vol').value)/100;
+    g.gain.setTargetAtTime(vol*0.7,ac.currentTime,0.3);
+    ambientNodes[type]={ gain:g, stop:handle.stop };
+    btn.classList.add('active'); row.classList.add('on');
   }
+  updateAmbientCount();
+}
+function setAmbientVolume(type,v){
+  const ac=ensureAudio();
+  if(ambientNodes[type]&&ac){ ambientNodes[type].gain.gain.setTargetAtTime((v/100)*0.7,ac.currentTime,0.05); }
+  if(!state.store.ambientVols) state.store.ambientVols={};
+  state.store.ambientVols[type]=v; saveStore();
+}
+function buildAmbientMixer(){
+  const list=$('amb-list'); if(!list) return; list.innerHTML='';
+  Object.keys(AMBIENT_SOUNDS).forEach(key=>{
+    const cfg=AMBIENT_SOUNDS[key];
+    const v=(state.store.ambientVols&&state.store.ambientVols[key]!=null)?state.store.ambientVols[key]:Math.round(cfg.vol*100);
+    const row=document.createElement('div'); row.className='amb-row'; row.dataset.amb=key;
+    row.innerHTML='<button class="amb-toggle" data-amb="'+key+'">'+AMB_SVG[key]+'<span>'+cfg.label+'</span></button><input type="range" class="amb-vol" min="0" max="100" value="'+v+'" data-amb="'+key+'" />';
+    list.appendChild(row);
+  });
+  updateAmbientCount();
 }
 
 /* ---------- TIMER LOGIC ---------- */
@@ -1198,7 +1304,7 @@ function finishSession() {
   renderStats();
   // reminder during breaks
   if (nextMode === 'break' && state.store.reminderEnabled) showReminder();
-  if ($('auto-start').checked) {
+  if (state.store.autoStart) {
     setTimeout(startTimer, 1200);
   } else {
     renderTimer();
@@ -1453,6 +1559,9 @@ function openSettings() {
   $('scene-interval').value = state.store.sceneInterval;
   $('goal-mins').value = state.store.goalMins;
   $('reminder-toggle').checked = state.store.reminderEnabled;
+  $('auto-start').checked = state.store.autoStart !== false;
+  // theme segmented highlight
+  document.querySelectorAll('[data-theme]').forEach(b => b.classList.toggle('active', b.dataset.theme === (state.store.theme || 'light')));
   $('embed-input').value = state.store.embedUrl || '';
   $('embed-frame').src = state.store.embedUrl || '';
   $('embed-frame').classList.toggle('show', !!state.store.embedUrl);
@@ -1471,6 +1580,7 @@ function saveSettings() {
   state.store.sceneInterval = clampInt($('scene-interval').value, 0, 120, 10);
   state.store.goalMins = clampInt($('goal-mins').value, 10, 600, 120);
   state.store.reminderEnabled = $('reminder-toggle').checked;
+  state.store.autoStart = $('auto-start').checked;
   state.store.embedUrl = $('embed-input').value.trim();
   saveStore();
   startSceneTimer();
@@ -1550,6 +1660,17 @@ function toggleZen() {
   document.body.classList.toggle('distraction-free');
 }
 
+/* ---------- THEME ---------- */
+function applyTheme(theme){
+  state.store.theme = theme; saveStore();
+  document.documentElement.classList.toggle('theme-dark', theme === 'dark');
+  const moon = $('theme-icon-moon'), sun = $('theme-icon-sun');
+  if (moon) moon.classList.toggle('hidden', theme === 'dark');
+  if (sun) sun.classList.toggle('hidden', theme !== 'dark');
+  document.querySelectorAll('[data-theme]').forEach(b => b.classList.toggle('active', b.dataset.theme === theme));
+}
+function toggleTheme(){ applyTheme((state.store.theme === 'dark') ? 'light' : 'dark'); }
+
 /* ---------- EVENTS ---------- */
 function bindEvents() {
   // modes
@@ -1557,10 +1678,12 @@ function bindEvents() {
   // controls
   $('btn-play').onclick = toggleTimer;
   $('btn-reset').onclick = resetTimer;
+  $('btn-skip').onclick = finishSession;
   $('btn-settings').onclick = openSettings;
   $('btn-scene').onclick = nextScene;
   $('btn-fullscreen').onclick = toggleFullscreen;
   $('btn-zen').onclick = toggleZen;
+  $('btn-theme').onclick = toggleTheme;
   $('exit-zen').onclick = toggleZen;
   $('btn-wallpaper').onclick = () => $('wallpaper-input').click();
   $('wallpaper-input').onchange = (e) => handleWallpaper(e.target.files[0]);
@@ -1591,10 +1714,17 @@ function bindEvents() {
     if (musicState.playing) { musicState.startedAt = ensureAudio().currentTime - musicState.pos; }
   };
   $('volume').oninput = (e) => setVolume(parseInt(e.target.value, 10));
-  // ambient
-  $('amb-rain').onclick = () => toggleAmbient('rain');
-  $('amb-wind').onclick = () => toggleAmbient('wind');
-  $('amb-waves').onclick = () => toggleAmbient('waves');
+  // ambient mixer (event delegation for toggle buttons + volume sliders)
+  $('ambient-mixer').addEventListener('click', (e) => {
+    const btn = e.target.closest('.amb-toggle'); if (!btn) return;
+    toggleAmbient(btn.dataset.amb);
+  });
+  $('ambient-mixer').addEventListener('input', (e) => {
+    if (!e.target.classList.contains('amb-vol')) return;
+    setAmbientVolume(e.target.dataset.amb, parseInt(e.target.value, 10));
+  });
+  // theme segmented buttons (live preview)
+  document.querySelectorAll('[data-theme]').forEach(b => b.onclick = () => applyTheme(b.dataset.theme));
   // embed
   $('embed-input').oninput = (e) => {
     const url = e.target.value.trim();
@@ -1622,9 +1752,9 @@ function bindEvents() {
 
 /* ---------- INIT ---------- */
 function init() {
-  // restore autoStart toggle
-  $('auto-start').checked = state.store.autoStart !== false;
   $('volume').value = state.store.volume;
+  applyTheme(state.store.theme || 'light');
+  buildAmbientMixer();
   // restore durations into mode defaults
   setMode('deep', false);
   // scene

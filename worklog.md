@@ -3,14 +3,14 @@
 ## Project Overview
 A single-file HTML/CSS/JS focus & study app inspired by studywithme.io, served via a Next.js 16 project. The actual app lives at `public/focus.html` (fully self-contained — only Google Fonts loaded externally) and is embedded full-viewport via `src/app/page.tsx` (server component rendering an iframe with `allow="autoplay; fullscreen; encrypted-media"` + `allowFullScreen`).
 
-## Current Project Status (Phase 1 — COMPLETE)
-The app is **fully functional and verified** via agent-browser (desktop + mobile/iPhone 14 emulation). All core requirements from the task spec are implemented and working:
+## Current Project Status (Phase 2 — COMPLETE)
+The app is **fully functional and verified** via agent-browser (desktop + mobile/iPhone 14 emulation). All core requirements plus Phase 2 user-requested enhancements are implemented and working:
 
 ### Implemented Features
 - **Timer**: 3 pill modes (Deep Focus 90 / Break 20 / Quick 40, all editable). End-timestamp timing (accurate in background tabs). Auto-cycle deep→break→quick→break→deep. Auto-start toggle. Chime on session end (Web Audio bell chord). Tab-title countdown (`▶ 89:58 · Sunny Meadow · focus`). Spacebar toggle. Goal/progress SVG ring around the timer.
 - **Backgrounds**: 6 animated CSS-gradient scenes (Sunny Meadow, Golden Hour, Sakura Dusk, Starry Night, Rainy Forest, Misty Morning). Canvas FX overlays: twinkling stars, animated rain, falling petals. Crossfade every N minutes (editable). First scene picked by time of day. Manual "next scene" button. Custom wallpaper upload (data URL, no external asset).
-- **Music player** (bottom-left): Frosted-glass card, album-art gradient, title/artist, progress bar with seek, prev/play-pause/next, volume slider. 3 lo-fi tracks generated with Web Audio API (soft triangle-wave chord pads through lowpass filter + random sine pluck melodies), auto-advance.
-- **Ambient mixer**: Toggle chips for rain (bandpass filtered noise), wind (lowpass + LFO), waves (lowpass + slow gain swell), all from a generated white-noise buffer.
+- **Music player** (bottom-left): Frosted-glass card, album-art gradient, title/artist, progress bar with seek, prev/play-pause/next, volume slider. **8 lo-fi tracks** (expanded in Phase 2) generated with Web Audio API (soft triangle-wave chord pads through lowpass filter + random sine pluck melodies), auto-advance.
+- **Ambient mixer** (bottom-right, **redesigned in Phase 2**): Now a full mixer panel with **8 sounds** (Rain, Wind, Waves, Fireplace, Birds, Café, Thunder, Stream) — each row has its own toggle button **plus an individual volume slider**. All synthesized via Web Audio (filtered noise + LFOs + event-scheduled chirps/crackles/thunder rumbles). Per-sound volumes persisted to localStorage.
 - **Student features**: Task list (add/check/delete, click-to-set "Focusing on: …"). Stats panel (sessions today, minutes today, all-time hours, daily goal %). Streaks. Weekly bar chart. All persisted in localStorage with try/catch. Fullscreen button.
 - **Design**: Poppins (UI) + Caveat (logo) from Google Fonts. White text with soft shadow. Glassmorphism panels (backdrop-filter blur, translucent white). Rounded pills. Responsive (breakpoints at 640px and 900px) + safe-area-aware CSS variables + theme-aware variables.
 - **Nice-to-haves**: Streaks, weekly chart, distraction-free (zen) mode that hides UI, custom wallpaper upload, YouTube/Spotify embed input (local use), break-time stretch/water reminder toast, goal/progress ring.
@@ -32,7 +32,23 @@ The app is **fully functional and verified** via agent-browser (desktop + mobile
 - Tab title showed "undefined" for the scene name — `currentSceneClass()` returned the data-name string but was used to index `SCENE_NAMES`. Renamed to `currentSceneName()` and used the value directly. Verified: title now "▶ 24:58 · Sunny Meadow · focus".
 
 ## Current Goals / Completed
-Phase 1 (core build) is **complete and verified**. The app meets all requirements from the task description.
+Phase 1 (core build) + Phase 2 (user-requested enhancements) are both **complete and verified**.
+
+### Phase 2 — User-Requested Enhancements (DONE)
+Responded to user feedback with four changes, all browser-verified:
+
+1. **Per-sound volume sliders for ambient sounds** — The old toggle-only chips were replaced with a full **Ambient Mixer panel**. Each sound now has its own toggle button *and* an individual volume slider. Added **5 new synthesized sounds** (Fireplace with random crackles, Birds with chirp sweeps, Café murmur + clinks, Thunder rumbles, Stream bubbles) → 8 total. Per-sound volumes persist to localStorage.
+2. **Moved "auto-start next" toggle into Settings** — Removed from the main timer controls (which now hold reset + play + a new skip button). Added a "Session" section in the settings modal with the auto-start switch. `finishSession` now reads `state.store.autoStart` (not the DOM) for reliability.
+3. **More sounds and music** — Expanded lo-fi music from 3 → **8 generated tracks** (added Library Whispers, Late Night Drive, Autumn Leaves, Coffee Shop Vibes, Deep Work, each with distinct key/scale/chords/bpm). Ambient sounds 3 → 8 (above).
+4. **Dark mode option** — New theme toggle button (sun/moon) in the top toolbar + an "Appearance" segmented control (Light text / Dark text) in settings. In dark-text mode: white text/buttons become dark navy, glass panels lighten to opaque white, a `#veil` overlay gently lightens background scenes so dark text stays readable on any scene. Persisted to localStorage. Theme vars (`--text`, `--glass-bg`, `--pill-active-*`, `--slider-track`, `--thumb-bg`, etc.) flip via an `html.theme-dark` class.
+
+### Phase 2 Verification Results (agent-browser)
+- Ambient mixer renders 8 rows (Rain, Wind, Waves, Fireplace, Birds, Café, Thunder, Stream); toggling a sound marks it `on` and the count updates ("1 on"); volume slider input updates the live gain.
+- Dark mode toggle: `html.theme-dark` applied, body text color → `rgb(24,26,46)` (dark navy); vision model confirmed dark timer text + lightened glass panels with correct contrast; toggles back cleanly.
+- Music: cycling `next` walks through new tracks (Morning Coffee → Midnight Study → Library Whispers …), confirming 8 tracks.
+- Settings: auto-start checkbox present in Session section; Appearance section has 2 theme buttons; auto-start no longer in main controls (count 0).
+- Skip button: from Deep Focus → advances cycle to BREAK (20:00) and chimes.
+- ESLint clean; no runtime errors in dev.log.
 
 ## Unresolved Issues / Risks / Next-Phase Recommendations
 - **No known bugs.** App is stable.
