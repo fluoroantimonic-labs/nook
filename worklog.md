@@ -3,8 +3,8 @@
 ## Project Overview
 A single-file HTML/CSS/JS focus & study app inspired by studywithme.io, served via a Next.js 16 project. The actual app lives at `public/focus.html` (fully self-contained — only Google Fonts loaded externally) and is embedded full-viewport via `src/app/page.tsx` (server component rendering an iframe with `allow="autoplay; fullscreen; encrypted-media"` + `allowFullScreen`).
 
-## Current Project Status (Phase 7 — COMPLETE)
-The app is **fully functional and verified** via agent-browser (desktop + mobile/iPhone 14 emulation). All core requirements plus Phases 2–7 of enhancements are implemented and working:
+## Current Project Status (Phase 8 — COMPLETE)
+The app is **fully functional and verified** via agent-browser (desktop + mobile/iPhone 14 emulation). All core requirements plus Phases 2–8 of enhancements are implemented and working:
 
 ### Implemented Features
 - **Timer**: 3 pill modes (Deep Focus 90 / Break 20 / Quick 40, all editable). End-timestamp timing (accurate in background tabs). Auto-cycle deep→break→quick→break→deep. Auto-start toggle. Chime on session end (Web Audio bell chord). Tab-title countdown (`▶ 89:58 · Sunny Meadow · focus`). Spacebar toggle. Goal/progress SVG ring around the timer.
@@ -32,7 +32,25 @@ The app is **fully functional and verified** via agent-browser (desktop + mobile
 - Tab title showed "undefined" for the scene name — `currentSceneClass()` returned the data-name string but was used to index `SCENE_NAMES`. Renamed to `currentSceneName()` and used the value directly. Verified: title now "▶ 24:58 · Sunny Meadow · focus".
 
 ## Current Goals / Completed
-Phase 1 (core) + Phase 2 (user-requested) + Phase 3 (QA fixes + styling) + Phase 4 (micro-interactions + mindfulness) + Phase 5 (segmented control + ambient theming + timeline) + Phase 6 (ambient presets + bokeh + vinyl + visualizer + task-linkage + focus gauge) + Phase 7 (celebration + live badge + distraction dim + typography) are all **complete and verified**.
+Phase 1 (core) + Phase 2 (user-requested) + Phase 3 (QA fixes + styling) + Phase 4 (micro-interactions + mindfulness) + Phase 5 (segmented control + ambient theming + timeline) + Phase 6 (ambient presets + bokeh + vinyl + visualizer + task-linkage + focus gauge) + Phase 7 (celebration + live badge + distraction dim + typography) + Phase 8 (achievements + heatmap + command palette) are all **complete and verified**.
+
+### Phase 8 — Achievements, Heatmap & Command Palette (DONE)
+QA confirmed the app was stable (cycle + celebration + counter work, ambient presets clear on manual adjustment, task-complete prompt fires). Vision-model feedback drove 5 upgrades focused on data visualization, gamification, and power-user tooling. All browser-verified.
+
+#### QA Results (no bugs found)
+- Full session cycle + celebration: skip → BREAK, counter "Session 2", 40 confetti + banner shown.
+- Ambient preset "Beach" → 2 on; manual slider adjustment clears the active preset highlight.
+- Task-complete prompt: focused task → skip → "Nice work! Mark 'Study calculus' as done?".
+- Music: play toggles vinyl spin + visualizer; next track cycles.
+
+#### Styling Polish (2 upgrades)
+1. **Quote legibility** — quote opacity raised from 0.55 to 0.78 (weight 300→400, +letter-spacing) so it's readable as a "whisper" rather than nearly invisible.
+2. **Ambient row spacing** — `.amb-row` padding increased from 3px to 4px vertical for more breathing room.
+
+#### New Features (3)
+3. **Focus heatmap** — a 7×7 grid (49 cells) in the stats panel showing the last 7 weeks of focus activity. Each cell is colored by intensity: empty (0 min), l1 (>0), l2 (≥25), l3 (≥60), l4 (≥120 min, with glow). Hover scales the cell + shows a tooltip with date + minutes. `renderHeatmap()` reads from `state.store.sessions`. Verified: 49 empty cells → 1 active cell after a session.
+4. **Achievements / milestones** — 7 badge chips in the stats panel: "First Focus" (1 session), "5 Sessions", "25 Sessions", "10 Hours", "3-Day Streak", "7-Day Streak", "Daily Goal Hit". Each tests against `totalSessions()` / `totalAllMins()` / streak / today's goal. Unlocked badges get gold tint + accent icon. Verified: 0 unlocked → "First Focus" unlocks after 1 session.
+5. **Command palette (Ctrl/Cmd+K)** — a power-user command palette overlay with a search input + list of 12 commands (timer, music, scene, theme, fullscreen, zen, settings, journal, shortcuts). Fuzzy filter by typing; arrow-key navigation; Enter runs the selected command; Esc/click-outside closes. The shortcut hint below the controls now mentions `⌘K`, and the help overlay lists it too. Verified: opens via Ctrl+K (12 items), filters "music" → 2 results, arrow nav to index 2, Enter runs "Skip to next session" + closes.
 
 ### Phase 7 — Celebration, Live Badge & Distraction Dim (DONE)
 QA confirmed the app was stable (cycle works, scene auto-rotation works, all settings sections present). Vision-model feedback drove 7 upgrades focused on session feedback, ambient life, and refined typography. All browser-verified.
@@ -211,6 +229,17 @@ Responded to user feedback with four changes, all browser-verified:
 - **Mobile (iPhone 14, 390px)**: live badge + session counter present, timer intact.
 - ESLint clean; no runtime errors in dev.log.
 
+### Phase 8 Verification Results (agent-browser)
+- **No bugs found** in QA: cycle + celebration + counter work, ambient presets clear on manual adjustment, task-complete prompt fires, music vinyl/visualizer toggle.
+- **New elements present**: `#heatmap` (49 cells), `#achievements` (7 badges), `#cmdk-overlay` + `#cmdk-input` — all in DOM and visible.
+- **Command palette**: Ctrl+K opens (12 commands), "music" filter → 2 results, ArrowDown×2 → sel index 2 ("Skip to next session"), Enter runs it + closes.
+- **Heatmap**: 49 empty cells initially → 1 active cell after a focus session.
+- **Achievements**: 0 unlocked → "First Focus" unlocks after 1 focus session.
+- **Quote opacity**: 0.78 (raised from 0.55 for legibility).
+- **Shortcut hint**: updated to "Press Space to start · ⌘K command palette · ? all shortcuts".
+- **Mobile (iPhone 14, 390px)**: command palette opens via Ctrl+K dispatch, timer intact.
+- ESLint clean; no runtime errors in dev.log.
+
 ## Unresolved Issues / Risks / Next-Phase Recommendations
 - **No known bugs.** App is stable across desktop + mobile, light + dark themes.
 - **Potential enhancements for future phases** (for the recurring webDevReview cron):
@@ -222,10 +251,10 @@ Responded to user feedback with four changes, all browser-verified:
   - Add session notes/reflections to the journal (optional note per completed session).
   - Add a real Web Audio AnalyserNode-driven visualizer (currently CSS-animated fake bars).
   - Add custom ambient preset creation (let users save their own combos).
+  - Add an export/import settings + data feature (backup/restore localStorage).
   - Add a "today's total focus vs goal" ring in the stats panel header.
-  - Add a achievements/milestones system (e.g. "First 10 sessions", "5-day streak").
 
 ## Architecture Notes
-- `public/focus.html` — the entire self-contained app (HTML + CSS + vanilla JS, ~2700 lines). Only external dependency: Google Fonts (Poppins + Caveat).
+- `public/focus.html` — the entire self-contained app (HTML + CSS + vanilla JS, ~2850 lines). Only external dependency: Google Fonts (Poppins + Caveat).
 - `src/app/page.tsx` — server component, renders a full-viewport `<iframe src="/focus.html">` so the single-file constraint is preserved while remaining previewable at `/`.
 - No Next.js API routes, no database, no external images/audio — fully client-side.

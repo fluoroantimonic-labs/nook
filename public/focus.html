@@ -366,8 +366,8 @@
   .timer-text .sep { opacity: 0.6; margin: 0 0.02em; }
   .mode-label { font-size: 0.8rem; font-weight: 500; opacity: 0.85; letter-spacing: 0.18em; text-transform: uppercase; display: flex; align-items: center; gap: 10px; }
   .session-counter { font-size: 0.66rem; opacity: 0.6; background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: var(--radius-pill); letter-spacing: 0.04em; }
-  .quote { font-size: 0.84rem; font-weight: 300; font-style: italic; opacity: 0; max-width: 460px; text-align: center; line-height: 1.5; min-height: 1.4em; transition: opacity .6s ease; }
-  .quote.show { opacity: 0.55; }
+  .quote { font-size: 0.85rem; font-weight: 400; font-style: italic; opacity: 0; max-width: 460px; text-align: center; line-height: 1.5; min-height: 1.4em; transition: opacity .6s ease; letter-spacing: 0.01em; }
+  .quote.show { opacity: 0.78; }
 
   .controls { display: flex; align-items: center; gap: 16px; }
   .ctrl-btn {
@@ -512,6 +512,39 @@
   .amb-preset:hover { background: var(--glass-bg-strong); color: var(--text); }
   .amb-preset.active { background: var(--pill-active-bg); color: var(--pill-active-text); border-color: transparent; }
 
+  /* Focus heatmap (7-week grid) */
+  .heatmap { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; margin-top: 10px; }
+  .heatmap-cell { aspect-ratio: 1; border-radius: 3px; background: rgba(255,255,255,0.08); transition: transform .15s; }
+  .heatmap-cell:hover { transform: scale(1.3); z-index: 2; }
+  .heatmap-cell.l1 { background: rgba(255,209,102,0.3); }
+  .heatmap-cell.l2 { background: rgba(255,209,102,0.5); }
+  .heatmap-cell.l3 { background: rgba(255,209,102,0.72); }
+  .heatmap-cell.l4 { background: rgba(255,209,102,0.95); box-shadow: 0 0 6px rgba(255,209,102,0.5); }
+  .heatmap-week-labels { display: flex; justify-content: space-between; font-size: 0.54rem; opacity: 0.5; margin-top: 4px; }
+
+  /* Achievements / milestones */
+  .achievements { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .ach { display: flex; align-items: center; gap: 5px; font-size: 0.66rem; padding: 4px 8px 4px 6px; border-radius: var(--radius-pill); background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); opacity: 0.5; transition: all .3s ease; }
+  .ach.unlocked { opacity: 1; background: rgba(255,209,102,0.15); border-color: rgba(255,209,102,0.4); }
+  .ach svg { width: 13px; height: 13px; color: var(--text-dim); }
+  .ach.unlocked svg { color: var(--accent); }
+
+  /* Command palette (Ctrl/Cmd+K) */
+  .cmdk-overlay { position: fixed; inset: 0; z-index: 44; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); display: flex; align-items: flex-start; justify-content: center; padding-top: 14vh; opacity: 0; pointer-events: none; transition: opacity .2s ease; }
+  .cmdk-overlay.show { opacity: 1; pointer-events: auto; }
+  .cmdk { width: 440px; max-width: calc(100vw - 40px); background: rgba(40,46,66,0.92); border: 1px solid var(--glass-border); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border-radius: var(--radius-lg); box-shadow: 0 20px 60px rgba(0,0,0,0.4); overflow: hidden; transform: translateY(-10px); transition: transform .25s cubic-bezier(.34,1.2,.5,1); }
+  .cmdk-overlay.show .cmdk { transform: translateY(0); }
+  .cmdk-input { width: 100%; background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 14px 18px; color: #fff; font-size: 0.95rem; outline: none; }
+  .cmdk-input::placeholder { color: rgba(255,255,255,0.5); }
+  .cmdk-list { max-height: 320px; overflow-y: auto; padding: 6px; }
+  .cmdk-list::-webkit-scrollbar { width: 5px; }
+  .cmdk-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
+  .cmdk-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: var(--radius-sm); font-size: 0.84rem; color: rgba(255,255,255,0.85); cursor: pointer; transition: background .12s; }
+  .cmdk-item:hover, .cmdk-item.sel { background: rgba(255,255,255,0.12); }
+  .cmdk-item svg { width: 16px; height: 16px; opacity: 0.7; flex-shrink: 0; }
+  .cmdk-item .cmdk-key { margin-left: auto; font-size: 0.66rem; opacity: 0.5; background: rgba(255,255,255,0.1); padding: 1px 6px; border-radius: 4px; }
+  .cmdk-empty { padding: 18px; text-align: center; font-size: 0.8rem; opacity: 0.5; }
+
   /* Focus score gauge */
   .focus-gauge { display: flex; align-items: center; gap: 12px; margin-top: 12px; padding: 10px; background: rgba(255,255,255,0.06); border-radius: var(--radius-sm); }
   .focus-gauge svg { width: 52px; height: 52px; flex-shrink: 0; }
@@ -599,7 +632,7 @@
   .amb-list { display: flex; flex-direction: column; gap: 4px; max-height: 46vh; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.3) transparent; padding-right: 2px; }
   .amb-list::-webkit-scrollbar { width: 5px; }
   .amb-list::-webkit-scrollbar-thumb { background: var(--slider-track); border-radius: 3px; }
-  .amb-row { display: flex; align-items: center; gap: 8px; padding: 3px 0; position: relative; }
+  .amb-row { display: flex; align-items: center; gap: 8px; padding: 4px 0; position: relative; }
   .amb-toggle { display: flex; align-items: center; gap: 7px; padding: 7px 10px; border-radius: var(--radius-pill); background: rgba(255,255,255,0.08); border: 1px solid transparent; font-size: 0.77rem; color: var(--text-soft); transition: all .18s ease; flex-shrink: 0; min-width: 96px; }
   .amb-toggle:hover { background: var(--glass-bg-strong); color: var(--text); }
   .amb-toggle.active { background: var(--pill-active-bg); color: var(--pill-active-text); }
@@ -965,7 +998,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4" fill="currentColor"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
       </button>
     </div>
-    <div class="shortcut-hint" id="shortcut-hint">Press <kbd>Space</kbd> to start &middot; <kbd>?</kbd> for shortcuts</div>
+    <div class="shortcut-hint" id="shortcut-hint">Press <kbd>Space</kbd> to start &middot; <kbd>⌘K</kbd> command palette &middot; <kbd>?</kbd> all shortcuts</div>
   </main>
 </div>
 
@@ -1010,6 +1043,14 @@
       </div>
     </div>
     <div class="chart" id="weekly-chart"></div>
+    <div class="heatmap-section">
+      <div class="timeline-label">Last 7 weeks</div>
+      <div class="heatmap" id="heatmap"></div>
+    </div>
+    <div class="achievements-section">
+      <div class="timeline-label">Achievements</div>
+      <div class="achievements" id="achievements"></div>
+    </div>
     <div class="timeline" id="timeline">
       <div class="timeline-label">Today's timeline</div>
       <div class="timeline-bar" id="timeline-bar"></div>
@@ -1066,6 +1107,14 @@
 </button>
 
 <input type="file" id="wallpaper-input" accept="image/*" class="hidden" />
+
+<!-- COMMAND PALETTE -->
+<div class="cmdk-overlay" id="cmdk-overlay">
+  <div class="cmdk">
+    <input type="text" class="cmdk-input" id="cmdk-input" placeholder="Type a command or search…" autocomplete="off" />
+    <div class="cmdk-list" id="cmdk-list"></div>
+  </div>
+</div>
 
 <!-- SESSION-COMPLETE CELEBRATION -->
 <div id="celebrate"></div>
@@ -1819,6 +1868,8 @@ function renderStats() {
   renderTimeline();
   // focus score gauge
   renderFocusGauge();
+  renderHeatmap();
+  renderAchievements();
   updateSessionCounter();
 }
 function renderWeeklyChart() {
@@ -2265,6 +2316,7 @@ const SHORTCUTS = [
   { key:'T', desc:'Toggle light / dark text' },
   { key:'F', desc:'Toggle fullscreen' },
   { key:'Z', desc:'Toggle distraction-free mode' },
+  { key:'⌘K', desc:'Open command palette' },
   { key:'?', desc:'Show this shortcuts panel' }
 ];
 function buildShortcutList(){
@@ -2454,6 +2506,84 @@ function renderFocusGauge(){
   val.textContent = pct + '%';
 }
 
+/* ---------- FOCUS HEATMAP (last 7 weeks) ---------- */
+function renderHeatmap(){
+  const wrap = $('heatmap'); if(!wrap) return;
+  wrap.innerHTML = '';
+  const today = new Date();
+  // 7 weeks × 7 days = 49 cells, ending today
+  for (let i = 48; i >= 0; i--) {
+    const d = new Date(today); d.setDate(today.getDate() - i);
+    const dk = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    const mins = (state.store.sessions[dk] || {mins:0}).mins;
+    let level = '';
+    if (mins >= 120) level = 'l4';
+    else if (mins >= 60) level = 'l3';
+    else if (mins >= 25) level = 'l2';
+    else if (mins > 0) level = 'l1';
+    const cell = document.createElement('div');
+    cell.className = 'heatmap-cell ' + level;
+    cell.title = (d.toLocaleDateString(undefined,{month:'short',day:'numeric'})) + (mins ? ' — '+mins+' min' : ' — no focus');
+    wrap.appendChild(cell);
+  }
+}
+
+/* ---------- ACHIEVEMENTS / MILESTONES ---------- */
+const ACHIEVEMENTS = [
+  { id:'first', label:'First Focus', test:()=> totalSessions() >= 1, icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15 8.5 22 9.3 17 14.1 18.2 21 12 17.6 5.8 21 7 14.1 2 9.3 9 8.5 12 2"/></svg>' },
+  { id:'s5', label:'5 Sessions', test:()=> totalSessions() >= 5, icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.5 13.5 17 22l-5-3-5 3 1.5-8.5"/></svg>' },
+  { id:'s25', label:'25 Sessions', test:()=> totalSessions() >= 25, icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>' },
+  { id:'h10', label:'10 Hours', test:()=> totalAllMins() >= 600, icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>' },
+  { id:'streak3', label:'3-Day Streak', test:()=> (state.store.streak||0) >= 3, icon:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2s4 3.5 4 8a4 4 0 0 1-8 0c0-1 .5-2 .5-2S6 11 6 14a6 6 0 0 0 12 0c0-5.5-6-12-6-12z"/></svg>' },
+  { id:'streak7', label:'7-Day Streak', test:()=> (state.store.streak||0) >= 7, icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>' },
+  { id:'goal', label:'Daily Goal Hit', test:()=> { const k=todayKey(); const t=state.store.sessions[k]||{mins:0}; return state.store.goalMins>0 && t.mins>=state.store.goalMins; }, icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>' }
+];
+function totalSessions(){ let n=0; Object.values(state.store.sessions||{}).forEach(s=>n+=s.count); return n; }
+function totalAllMins(){ let m=0; Object.values(state.store.sessions||{}).forEach(s=>m+=s.mins); return m; }
+function renderAchievements(){
+  const wrap = $('achievements'); if(!wrap) return;
+  wrap.innerHTML = ACHIEVEMENTS.map(a =>
+    '<div class="ach'+(a.test()?' unlocked':'')+'" title="'+a.label+'">'+a.icon+'<span>'+a.label+'</span></div>'
+  ).join('');
+}
+
+/* ---------- COMMAND PALETTE ---------- */
+const CMDK_COMMANDS = [
+  { label:'Start / pause timer', key:'Space', icon:'<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg>', run: toggleTimer },
+  { label:'Reset timer', key:'R', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>', run: resetTimer },
+  { label:'Skip to next session', key:'S', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 4 15 12 5 20 5 4" fill="currentColor"/><line x1="19" y1="5" x2="19" y2="19"/></svg>', run: finishSession },
+  { label:'Play / pause music', key:'M', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>', run: ()=> musicState.playing ? stopMusic() : startMusic() },
+  { label:'Next music track', key:'N', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>', run: ()=> nextTrack(1) },
+  { label:'Next background scene', key:'B', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/></svg>', run: nextScene },
+  { label:'Toggle light / dark text', key:'T', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>', run: toggleTheme },
+  { label:'Toggle fullscreen', key:'F', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>', run: toggleFullscreen },
+  { label:'Toggle zen mode', key:'Z', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/></svg>', run: toggleZen },
+  { label:'Open settings', key:'', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"/></svg>', run: openSettings },
+  { label:'Open focus journal', key:'', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>', run: openJournal },
+  { label:'Show keyboard shortcuts', key:'?', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>', run: toggleHelp }
+];
+let cmdkSel = 0, cmdkFiltered = [];
+function openCmdk(){
+  $('cmdk-overlay').classList.add('show');
+  const inp = $('cmdk-input'); inp.value=''; inp.focus();
+  cmdkSel = 0; renderCmdk('');
+}
+function closeCmdk(){ $('cmdk-overlay').classList.remove('show'); }
+function renderCmdk(q){
+  q = (q||'').toLowerCase();
+  const list = $('cmdk-list');
+  cmdkFiltered = CMDK_COMMANDS.filter(c => !q || c.label.toLowerCase().indexOf(q) >= 0);
+  if (cmdkFiltered.length === 0) { list.innerHTML = '<div class="cmdk-empty">No matching commands</div>'; return; }
+  if (cmdkSel >= cmdkFiltered.length) cmdkSel = 0;
+  list.innerHTML = cmdkFiltered.map((c, i) =>
+    '<div class="cmdk-item'+(i===cmdkSel?' sel':'')+'">'+c.icon+'<span>'+c.label+'</span>'+(c.key?'<span class="cmdk-key">'+c.key+'</span>':'')+'</div>'
+  ).join('');
+  // attach click handlers
+  list.querySelectorAll('.cmdk-item').forEach((el, i) => {
+    el.onclick = () => { closeCmdk(); cmdkFiltered[i].run(); };
+  });
+}
+
 /* ---------- TASK-COMPLETION PROMPT ---------- */
 // After a focus session, if a task was focused, prompt to mark it complete.
 function maybePromptTaskComplete(){
@@ -2553,6 +2683,20 @@ function bindEvents() {
   };
   // keyboard shortcuts
   document.addEventListener('keydown', (e) => {
+    // Command palette: Ctrl/Cmd+K
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      if ($('cmdk-overlay').classList.contains('show')) closeCmdk(); else openCmdk();
+      return;
+    }
+    // Command palette navigation when open
+    if ($('cmdk-overlay').classList.contains('show')) {
+      if (e.key === 'Escape') { e.preventDefault(); closeCmdk(); return; }
+      if (e.key === 'ArrowDown') { e.preventDefault(); cmdkSel = Math.min(cmdkFiltered.length-1, cmdkSel+1); renderCmdk($('cmdk-input').value); return; }
+      if (e.key === 'ArrowUp') { e.preventDefault(); cmdkSel = Math.max(0, cmdkSel-1); renderCmdk($('cmdk-input').value); return; }
+      if (e.key === 'Enter' && cmdkFiltered[cmdkSel]) { e.preventDefault(); closeCmdk(); cmdkFiltered[cmdkSel].run(); return; }
+      // let other keystrokes flow to the input
+    }
     // ignore when typing in inputs/textareas
     const tag = e.target.tagName;
     if (e.code === 'Space' && tag !== 'INPUT' && tag !== 'TEXTAREA' && !e.target.isContentEditable) {
@@ -2562,7 +2706,7 @@ function bindEvents() {
     const k = e.key.toLowerCase();
     if (e.key === 'Escape') {
       if (document.body.classList.contains('distraction-free')) toggleZen();
-      closeSettings(); closeJournal(); $('help-overlay').classList.remove('show'); hideBreathing();
+      closeSettings(); closeJournal(); closeCmdk(); $('help-overlay').classList.remove('show'); hideBreathing();
       return;
     }
     if (k === 'r') resetTimer();
@@ -2575,6 +2719,9 @@ function bindEvents() {
     else if (k === 'z') toggleZen();
     else if (e.key === '?' || (e.shiftKey && k === '/')) { e.preventDefault(); toggleHelp(); }
   });
+  // command palette input + click-outside
+  $('cmdk-input').addEventListener('input', (e) => { cmdkSel = 0; renderCmdk(e.target.value); });
+  $('cmdk-overlay').addEventListener('click', (e) => { if (e.target.id === 'cmdk-overlay') closeCmdk(); });
   // mobile tasks toggle
   if (window.matchMedia('(max-width: 640px)').matches) {
     $('btn-tasks-mobile').style.display = 'flex';
