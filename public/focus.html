@@ -306,7 +306,9 @@
   .focusing-label b { font-weight: 600; }
 
   .ring-wrap { position: relative; display: flex; align-items: center; justify-content: center; }
-  .ring-svg { width: clamp(260px, 38vw, 380px); height: clamp(260px, 38vw, 380px); transform: rotate(-90deg); filter: drop-shadow(0 4px 30px rgba(0,0,0,0.15)); }
+  .ring-svg { width: clamp(260px, 38vw, 380px); height: clamp(260px, 38vw, 380px); transform: rotate(-90deg); filter: drop-shadow(0 4px 30px rgba(0,0,0,0.15)); transition: filter .5s ease; }
+  .ring-svg.idle { animation: ringBreathe 4.5s ease-in-out infinite; }
+  @keyframes ringBreathe { 0%,100% { transform: rotate(-90deg) scale(1); opacity: 0.96; } 50% { transform: rotate(-90deg) scale(1.015); opacity: 1; } }
   .ring-track { fill: none; stroke: var(--ring-track); stroke-width: 5; }
   .ring-progress { fill: none; stroke: url(#ringGrad); stroke-width: 7; stroke-linecap: round; transition: stroke-dashoffset .5s linear; filter: drop-shadow(0 0 8px rgba(255,209,102,0.6)); }
   .timer-text {
@@ -322,20 +324,29 @@
   .controls { display: flex; align-items: center; gap: 16px; }
   .ctrl-btn {
     width: 54px; height: 54px; border-radius: var(--radius-pill);
-    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    background: linear-gradient(180deg, var(--glass-bg-strong), var(--glass-bg)); border: 1px solid var(--glass-border);
     backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
     display: flex; align-items: center; justify-content: center;
-    transition: transform .18s ease, background .18s ease;
-    box-shadow: var(--glass-shadow);
+    transition: transform .22s cubic-bezier(.34,1.56,.64,1), background .18s ease, box-shadow .22s ease;
+    box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.2);
   }
-  .ctrl-btn:hover { background: var(--glass-bg-strong); transform: translateY(-1px); }
-  .ctrl-btn:active { transform: scale(0.93); }
-  .ctrl-btn svg { width: 22px; height: 22px; }
+  .ctrl-btn:hover { background: var(--glass-bg-strong); transform: translateY(-2px); box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.25), 0 6px 20px rgba(0,0,0,0.18); }
+  .ctrl-btn:active { transform: scale(0.92); transition: transform .08s ease; }
+  .ctrl-btn svg { width: 22px; height: 22px; transition: transform .2s ease; }
   .ctrl-btn.primary {
-    width: 72px; height: 72px; background: rgba(255,255,255,0.95); border-color: rgba(255,255,255,0.95);
+    width: 72px; height: 72px; background: linear-gradient(180deg, #fff, #f0f0f0); border-color: rgba(255,255,255,0.95);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.25), inset 0 2px 0 rgba(255,255,255,0.8), inset 0 -2px 0 rgba(0,0,0,0.06);
   }
   .ctrl-btn.primary svg { width: 30px; height: 30px; color: #2b2d42; }
   .ctrl-btn.primary:active svg { width: 26px; height: 26px; }
+  /* Running state: play button takes on the warm focus glow */
+  .ctrl-btn.primary.running {
+    background: linear-gradient(180deg, var(--accent), #ff9a56);
+    border-color: rgba(255,209,102,0.6);
+    animation: playPulse 2.4s ease-in-out infinite;
+  }
+  .ctrl-btn.primary.running svg { color: #2b2d42; }
+  @keyframes playPulse { 0%,100% { box-shadow: 0 8px 30px rgba(255,154,86,0.35), inset 0 2px 0 rgba(255,255,255,0.5); } 50% { box-shadow: 0 10px 40px rgba(255,154,86,0.6), inset 0 2px 0 rgba(255,255,255,0.5); } }
 
   .auto-toggle {
     display: flex; align-items: center; gap: 8px;
@@ -368,7 +379,7 @@
   .panel-title { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.9; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
   .panel-title svg { width: 16px; height: 16px; }
 
-  /* Right side column */
+  /* Side panels — beveled glass with inner highlight */
   .side-right {
     position: fixed; top: calc(86px + var(--safe-top)); right: calc(20px + var(--safe-right));
     width: 300px; max-width: calc(100vw - 40px);
@@ -378,6 +389,13 @@
   }
   .side-right::-webkit-scrollbar { width: 6px; }
   .side-right::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.25); border-radius: 3px; }
+  /* Beveled glass: inset top highlight + outer drop shadow for premium thickness */
+  .panel {
+    box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.22), inset 0 -1px 0 rgba(0,0,0,0.08);
+  }
+  html.theme-dark .panel {
+    box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.5), inset 0 -1px 0 rgba(0,0,0,0.05);
+  }
 
   /* Task list */
   .task-input-row { display: flex; gap: 8px; margin-bottom: 10px; }
@@ -400,23 +418,27 @@
   .task-item {
     display: flex; align-items: center; gap: 10px; padding: 7px 10px;
     background: rgba(255,255,255,0.08); border-radius: var(--radius-sm);
-    font-size: 0.84rem; transition: background .15s; cursor: pointer;
+    font-size: 0.84rem; transition: background .15s, transform .25s cubic-bezier(.34,1.56,.64,1), opacity .25s; cursor: pointer;
     border: 1px solid transparent;
+    animation: taskSlideIn .35s cubic-bezier(.34,1.56,.64,1);
   }
-  .task-item:hover { background: rgba(255,255,255,0.14); }
-  .task-item.focusing { border-color: var(--accent); background: rgba(255,209,102,0.18); }
+  @keyframes taskSlideIn { from { opacity: 0; transform: translateX(-12px) scale(0.96); } to { opacity: 1; transform: translateX(0) scale(1); } }
+  .task-item:hover { background: rgba(255,255,255,0.14); transform: translateX(2px); }
+  .task-item.focusing { border-color: var(--accent); background: rgba(255,209,102,0.18); box-shadow: 0 0 14px rgba(255,209,102,0.25); }
   .task-check {
     width: 20px; height: 20px; border-radius: 6px; border: 2px solid rgba(255,255,255,0.5);
-    flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all .15s;
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all .2s cubic-bezier(.34,1.56,.64,1);
   }
-  .task-item.done .task-check { background: var(--accent); border-color: var(--accent); }
-  .task-item.done .task-check svg { display: block; }
+  .task-item.done .task-check { background: var(--accent); border-color: var(--accent); transform: scale(1.1); }
+  .task-item.done .task-check svg { display: block; animation: checkPop .3s cubic-bezier(.34,1.56,.64,1); }
+  @keyframes checkPop { 0% { transform: scale(0); } 60% { transform: scale(1.3); } 100% { transform: scale(1); } }
   .task-check svg { width: 12px; height: 12px; color: #2b2d42; display: none; }
-  .task-text { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .task-item.done .task-text { text-decoration: line-through; opacity: 0.55; }
-  .task-del { opacity: 0; transition: opacity .15s; padding: 2px; }
+  .task-text { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; transition: opacity .3s; }
+  .task-item.done .task-text { text-decoration: line-through; opacity: 0.5; }
+  .task-item.removing { opacity: 0; transform: translateX(20px) scale(0.9); }
+  .task-del { opacity: 0; transition: opacity .15s, transform .15s; padding: 2px; }
   .task-item:hover .task-del { opacity: 0.7; }
-  .task-del:hover { opacity: 1; }
+  .task-del:hover { opacity: 1; transform: rotate(90deg); }
   .task-del svg { width: 14px; height: 14px; }
   .task-empty { font-size: 0.8rem; opacity: 0.5; text-align: center; padding: 12px 0; }
 
@@ -619,6 +641,44 @@
 
   .hidden { display: none !important; }
 
+  /* Breathing exercise overlay (post-session mindfulness) */
+  .breath-overlay {
+    position: fixed; inset: 0; z-index: 40; background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px;
+    opacity: 0; pointer-events: none; transition: opacity .6s ease;
+  }
+  .breath-overlay.show { opacity: 1; pointer-events: auto; }
+  .breath-circle {
+    width: 220px; height: 220px; border-radius: 50%;
+    background: radial-gradient(circle at 40% 40%, rgba(255,209,102,0.85), rgba(255,154,86,0.5) 50%, rgba(255,154,86,0.15) 80%);
+    box-shadow: 0 0 80px 20px rgba(255,209,102,0.35);
+    animation: breathe 8s ease-in-out infinite;
+  }
+  @keyframes breathe { 0%,100% { transform: scale(0.7); opacity: 0.85; } 50% { transform: scale(1.1); opacity: 1; } }
+  .breath-text { font-family: var(--font-logo); font-size: 2.2rem; opacity: 0.95; }
+  .breath-sub { font-size: 0.85rem; opacity: 0.65; letter-spacing: 0.15em; text-transform: uppercase; }
+  .breath-skip { margin-top: 8px; font-size: 0.8rem; opacity: 0.5; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 8px 18px; border-radius: var(--radius-pill); transition: opacity .15s; }
+  .breath-skip:hover { opacity: 1; }
+
+  /* Cycle progress dots (Pomodoro set tracking) */
+  .cycle-dots { display: flex; align-items: center; gap: 7px; justify-content: center; }
+  .cycle-dots .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.25); transition: all .3s ease; }
+  .cycle-dots .dot.done { background: var(--accent); box-shadow: 0 0 8px rgba(255,209,102,0.5); }
+  .cycle-dots .dot.next { background: rgba(255,255,255,0.5); transform: scale(1.25); }
+  .cycle-dots .dot.long { width: 16px; border-radius: 4px; }
+  .cycle-dots .sep { width: 14px; height: 1px; background: rgba(255,255,255,0.2); }
+
+  /* Streak garden — a tiny growing plant in stats */
+  .garden { display: flex; align-items: flex-end; justify-content: center; gap: 6px; height: 46px; margin-top: 10px; padding: 0 4px; }
+  .garden .pot { width: 26px; height: 14px; background: linear-gradient(180deg, #c08552, #8a5a32); border-radius: 0 0 6px 6px; flex-shrink: 0; position: relative; }
+  .garden .pot::before { content: ''; position: absolute; top: -3px; left: -2px; right: -2px; height: 4px; background: #a07040; border-radius: 4px; }
+  .garden .plant { position: relative; width: 26px; height: 100%; display: flex; align-items: flex-end; justify-content: center; }
+  .garden .stem { position: absolute; bottom: 14px; width: 3px; background: linear-gradient(180deg, #6cc05a, #4a9c3e); border-radius: 2px; transform-origin: bottom; animation: sway 5s ease-in-out infinite alternate; }
+  @keyframes sway { from { transform: rotate(-3deg); } to { transform: rotate(3deg); } }
+  .garden .leaf { position: absolute; width: 10px; height: 7px; background: #6cc05a; border-radius: 50% 0 50% 0; }
+  .garden .bloom { position: absolute; width: 12px; height: 12px; border-radius: 50%; background: radial-gradient(circle, var(--accent), #ff9a56); box-shadow: 0 0 8px rgba(255,209,102,0.6); }
+
   /* Keyboard shortcuts / help overlay */
   .help-overlay {
     position: fixed; inset: 0; z-index: 32; background: rgba(0,0,0,0.45);
@@ -774,6 +834,7 @@
       <div class="timer-text" id="timer-text">90:00</div>
     </div>
     <div class="mode-label" id="mode-label">DEEP FOCUS</div>
+    <div class="cycle-dots" id="cycle-dots"></div>
     <div class="quote" id="quote"></div>
     <div class="controls">
       <button class="ctrl-btn" id="btn-reset" title="Reset">
@@ -819,6 +880,7 @@
       <span class="flame"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2s4 3.5 4 8a4 4 0 0 1-8 0c0-1 .5-2 .5-2S6 11 6 14a6 6 0 0 0 12 0c0-5.5-6-12-6-12z"/></svg></span>
       <span><b id="stat-streak">0</b> day streak</span>
     </div>
+    <div class="garden" id="garden"></div>
     <div class="chart" id="weekly-chart"></div>
   </div>
 </aside>
@@ -869,6 +931,14 @@
 </button>
 
 <input type="file" id="wallpaper-input" accept="image/*" class="hidden" />
+
+<!-- BREATHING EXERCISE OVERLAY -->
+<div class="breath-overlay" id="breath-overlay">
+  <div class="breath-sub" id="breath-sub">session complete</div>
+  <div class="breath-circle"></div>
+  <div class="breath-text" id="breath-text">breathe in…</div>
+  <button class="breath-skip" id="breath-skip">skip</button>
+</div>
 
 <!-- HELP / SHORTCUTS OVERLAY -->
 <div class="help-overlay" id="help-overlay">
@@ -938,6 +1008,10 @@
       <div class="m-row">
         <div class="m-label">Break-time stretch & water reminder<small>shows during breaks</small></div>
         <span class="switch"><input type="checkbox" id="reminder-toggle" checked /><span class="slider"></span></span>
+      </div>
+      <div class="m-row">
+        <div class="m-label">Post-session breathing exercise<small>a 30s mindfulness pause after focus</small></div>
+        <span class="switch"><input type="checkbox" id="breathing-toggle" checked /><span class="slider"></span></span>
       </div>
     </div>
 
@@ -1010,7 +1084,8 @@ function defaultStore() {
     theme: 'light',
     ambientVols: {},
     journal: [],
-    focusCount: 0
+    focusCount: 0,
+    breathingEnabled: true
   };
 }
 
@@ -1410,8 +1485,11 @@ function startTimer() {
   state.endTime = Date.now() + state.remaining * 1000;
   state.running = true;
   playIcon.classList.add('hidden'); pauseIcon.classList.remove('hidden');
+  document.querySelector('.ring-svg').classList.remove('idle');
+  document.getElementById('btn-play').classList.add('running');
   clearInterval(state.ticker);
   state.ticker = setInterval(tick, 250);
+  resetIdleTimer();
   tick();
 }
 function pauseTimer() {
@@ -1420,6 +1498,9 @@ function pauseTimer() {
   state.running = false;
   clearInterval(state.ticker);
   playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden');
+  document.querySelector('.ring-svg').classList.add('idle');
+  document.getElementById('btn-play').classList.remove('running');
+  clearIdleTimer();
   renderTimer();
 }
 function toggleTimer() { state.running ? pauseTimer() : startTimer(); }
@@ -1428,6 +1509,9 @@ function resetTimer() {
   clearInterval(state.ticker);
   state.remaining = getDuration(state.mode);
   playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden');
+  document.querySelector('.ring-svg').classList.add('idle');
+  document.getElementById('btn-play').classList.remove('running');
+  clearIdleTimer();
   renderTimer();
 }
 function tick() {
@@ -1443,9 +1527,14 @@ function finishSession() {
   state.running = false;
   clearInterval(state.ticker);
   playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden');
+  document.querySelector('.ring-svg').classList.add('idle');
+  document.getElementById('btn-play').classList.remove('running');
+  clearIdleTimer();
   playChime();
   // record stats + journal for focus sessions (deep & quick count)
+  let wasFocus = false;
   if (state.mode !== 'break') {
+    wasFocus = true;
     const mins = getDuration(state.mode) / 60;
     recordSession(mins);
     recordJournal(state.mode, mins);
@@ -1463,8 +1552,13 @@ function finishSession() {
     showReminder();
   }
   renderStats();
+  renderCycleDots();
   // reminder during breaks
   if (nextMode === 'break' && state.store.reminderEnabled && !isLongBreakDue()) showReminder();
+  // breathing exercise after a focus session (if enabled & not auto-starting immediately)
+  if (wasFocus && state.store.breathingEnabled && !state.store.autoStart) {
+    showBreathing();
+  }
   if (state.store.autoStart) {
     setTimeout(startTimer, 1200);
   } else {
@@ -1508,6 +1602,8 @@ function renderStats() {
   $('stat-goal').textContent = goalPct + '%';
   // weekly chart
   renderWeeklyChart();
+  // streak garden
+  renderGarden();
 }
 function renderWeeklyChart() {
   const chart = $('weekly-chart');
@@ -1533,6 +1629,78 @@ function renderWeeklyChart() {
     chart.appendChild(col);
   });
 }
+
+/* ---------- CYCLE DOTS (Pomodoro-set progress) ---------- */
+// Shows 4 dots: ● ○ ○ ○ → ● ● ○ ○ … representing focusCount within the current set toward the long break (every 3rd).
+function renderCycleDots(){
+  const el = $('cycle-dots'); if(!el) return;
+  const fc = (state.store.focusCount || 0) % 3; // completed in current set
+  const inSet = [0,1,2];
+  el.innerHTML = inSet.map(i => {
+    const done = i < fc;
+    const next = i === fc;
+    return '<span class="dot'+(done?' done':'')+(next?' next':'')+'"></span>';
+  }).join('<span class="sep"></span>') + '<span class="sep"></span><span class="dot long" title="long break"></span>';
+}
+
+/* ---------- STREAK GARDEN ---------- */
+// A small plant that grows with the streak: more streak = taller stem + more leaves + blooms.
+function renderGarden(){
+  const el = $('garden'); if(!el) return;
+  const streak = state.store.streak || 0;
+  const plants = Math.min(5, Math.max(1, Math.ceil(streak / 2))); // 1 plant per 2 days, max 5
+  let html = '';
+  for (let p = 0; p < plants; p++) {
+    const growth = Math.min(1, (streak - p*2) / 2); // 0..1 for this plant
+    const stemH = 12 + growth * 26;
+    const leaves = growth > 0.3 ? 2 : 0;
+    const bloom = growth >= 1;
+    let plant = '<div class="plant"><div class="pot"></div><div class="stem" style="height:'+stemH+'px; animation-delay:'+(p*0.4)+'s"></div>';
+    if (leaves >= 1) plant += '<div class="leaf" style="bottom:'+(14+stemH*0.4)+'px; left:calc(50% - 12px); transform:rotate(-25deg)"></div>';
+    if (leaves >= 2) plant += '<div class="leaf" style="bottom:'+(14+stemH*0.55)+'px; left:calc(50% + 2px); transform:rotate(25deg) scaleX(-1)"></div>';
+    if (bloom) plant += '<div class="bloom" style="bottom:'+(14+stemH-4)+'px; left:calc(50% - 6px)"></div>';
+    plant += '</div>';
+    html += plant;
+  }
+  el.innerHTML = html;
+}
+
+/* ---------- BREATHING EXERCISE ---------- */
+let breathTimer = null, breathPhase = 0;
+function showBreathing(){
+  const ov = $('breath-overlay'); if(!ov) return;
+  ov.classList.add('show');
+  breathPhase = 0;
+  const text = $('breath-text');
+  const phases = ['breathe in…', 'hold…', 'breathe out…', 'rest…'];
+  text.textContent = phases[0];
+  function next(){
+    breathPhase = (breathPhase + 1) % 4;
+    text.textContent = phases[breathPhase];
+  }
+  // 8s breath cycle → 2s per phase (visual circle is 8s)
+  breathTimer = setInterval(next, 2000);
+  setTimeout(next, 2000);
+}
+function hideBreathing(){
+  const ov = $('breath-overlay'); if(!ov) return;
+  ov.classList.remove('show');
+  if (breathTimer) { clearInterval(breathTimer); breathTimer = null; }
+}
+
+/* ---------- IDLE NUDGE ---------- */
+// During a running focus session, if no mouse/keyboard activity for 2 min, show a gentle nudge.
+let idleTimer = null;
+function resetIdleTimer(){
+  clearIdleTimer();
+  if (!state.running) return;
+  idleTimer = setTimeout(() => {
+    if (!state.running) return;
+    // gentle nudge: a one-time reminder encouraging re-engagement
+    showReminder();
+  }, 120000);
+}
+function clearIdleTimer(){ if (idleTimer) { clearTimeout(idleTimer); idleTimer = null; } }
 
 /* ---------- TASKS ---------- */
 function renderTasks() {
@@ -1720,6 +1888,7 @@ function openSettings() {
   $('scene-interval').value = state.store.sceneInterval;
   $('goal-mins').value = state.store.goalMins;
   $('reminder-toggle').checked = state.store.reminderEnabled;
+  $('breathing-toggle').checked = state.store.breathingEnabled !== false;
   $('auto-start').checked = state.store.autoStart !== false;
   // theme segmented highlight
   document.querySelectorAll('[data-theme]').forEach(b => b.classList.toggle('active', b.dataset.theme === (state.store.theme || 'light')));
@@ -1741,6 +1910,7 @@ function saveSettings() {
   state.store.sceneInterval = clampInt($('scene-interval').value, 0, 120, 10);
   state.store.goalMins = clampInt($('goal-mins').value, 10, 600, 120);
   state.store.reminderEnabled = $('reminder-toggle').checked;
+  state.store.breathingEnabled = $('breathing-toggle').checked;
   state.store.autoStart = $('auto-start').checked;
   state.store.embedUrl = $('embed-input').value.trim();
   saveStore();
@@ -1975,6 +2145,9 @@ function bindEvents() {
   $('journal-modal').onclick = (e) => { if (e.target.id === 'journal-modal') closeJournal(); };
   $('journal-clear').onclick = () => { state.store.journal = []; state.store.focusCount = 0; saveStore(); renderJournal(); };
   $('help-overlay').onclick = (e) => { if (e.target.id === 'help-overlay') toggleHelp(); };
+  // breathing exercise
+  $('breath-skip').onclick = hideBreathing;
+  $('breath-overlay').onclick = (e) => { if (e.target.id === 'breath-overlay') hideBreathing(); };
   $('exit-zen').onclick = toggleZen;
   $('btn-wallpaper').onclick = () => $('wallpaper-input').click();
   $('wallpaper-input').onchange = (e) => handleWallpaper(e.target.files[0]);
@@ -2034,7 +2207,7 @@ function bindEvents() {
     const k = e.key.toLowerCase();
     if (e.key === 'Escape') {
       if (document.body.classList.contains('distraction-free')) toggleZen();
-      closeSettings(); closeJournal(); $('help-overlay').classList.remove('show');
+      closeSettings(); closeJournal(); $('help-overlay').classList.remove('show'); hideBreathing();
       return;
     }
     if (k === 'r') resetTimer();
@@ -2054,6 +2227,8 @@ function bindEvents() {
   }
   // first user gesture -> resume audio context
   document.addEventListener('click', () => ensureAudio(), { once: true });
+  // reset idle nudge on activity during a running focus session
+  ['mousemove','keydown','click'].forEach(ev => document.addEventListener(ev, () => { if (state.running) resetIdleTimer(); }, { passive: true }));
 }
 
 /* ---------- INIT ---------- */
@@ -2066,6 +2241,9 @@ function init() {
   startParallax();
   // restore durations into mode defaults
   setMode('deep', false);
+  // initial UI states
+  document.querySelector('.ring-svg').classList.add('idle');
+  renderCycleDots();
   // scene
   const startScene = state.store.currentScene && state.store.currentScene !== 'custom'
     ? SCENES.indexOf(state.store.currentScene)

@@ -3,8 +3,8 @@
 ## Project Overview
 A single-file HTML/CSS/JS focus & study app inspired by studywithme.io, served via a Next.js 16 project. The actual app lives at `public/focus.html` (fully self-contained — only Google Fonts loaded externally) and is embedded full-viewport via `src/app/page.tsx` (server component rendering an iframe with `allow="autoplay; fullscreen; encrypted-media"` + `allowFullScreen`).
 
-## Current Project Status (Phase 3 — COMPLETE)
-The app is **fully functional and verified** via agent-browser (desktop + mobile/iPhone 14 emulation). All core requirements plus Phase 2 user-requested enhancements and Phase 3 QA-driven fixes + styling/feature upgrades are implemented and working:
+## Current Project Status (Phase 4 — COMPLETE)
+The app is **fully functional and verified** via agent-browser (desktop + mobile/iPhone 14 emulation). All core requirements plus Phases 2–4 of enhancements are implemented and working:
 
 ### Implemented Features
 - **Timer**: 3 pill modes (Deep Focus 90 / Break 20 / Quick 40, all editable). End-timestamp timing (accurate in background tabs). Auto-cycle deep→break→quick→break→deep. Auto-start toggle. Chime on session end (Web Audio bell chord). Tab-title countdown (`▶ 89:58 · Sunny Meadow · focus`). Spacebar toggle. Goal/progress SVG ring around the timer.
@@ -32,7 +32,28 @@ The app is **fully functional and verified** via agent-browser (desktop + mobile
 - Tab title showed "undefined" for the scene name — `currentSceneClass()` returned the data-name string but was used to index `SCENE_NAMES`. Renamed to `currentSceneName()` and used the value directly. Verified: title now "▶ 24:58 · Sunny Meadow · focus".
 
 ## Current Goals / Completed
-Phase 1 (core build) + Phase 2 (user-requested enhancements) + Phase 3 (QA fixes + styling/features) are all **complete and verified**.
+Phase 1 (core build) + Phase 2 (user-requested enhancements) + Phase 3 (QA fixes + styling/features) + Phase 4 (micro-interactions + mindfulness features) are all **complete and verified**.
+
+### Phase 4 — Micro-Interactions + Mindfulness Features (DONE)
+QA confirmed the app was stable (no bugs). Vision-model feedback pushed toward "premium cozy sanctuary" — implemented 8 upgrades focused on tactile feedback + emotional/mindful touches. All browser-verified.
+
+#### QA Results (no bugs found)
+- Timer countdown accurate (89:59 → 89:56 over 3s). Reset works (90:00).
+- Ambient toggle + count correct (3 on); volume persists (70 stored, --fill=70%).
+- Music plays + progress smooth (00:03 after 3s).
+- Dark mode toggles cleanly; mobile (390px) layout intact (timer, cycle dots, music visible).
+
+#### Styling Polish (4 upgrades) — vision-model confirmed
+1. **Beveled glass panels** — all `.panel`s now have `inset 0 1px 0 rgba(255,255,255,0.22)` top highlight + `inset 0 -1px 0 rgba(0,0,0,0.08)` bottom shadow, giving a premium "thick glass tile" look (intensified in dark-text mode).
+2. **Timer idle breathing** — the `.ring-svg` gets a `.idle` class triggering a 4.5s `ringBreathe` keyframe (subtle scale + opacity pulse) when the timer is paused; removed when running.
+3. **Play button running state** — when running, `.ctrl-btn.primary.running` switches to a warm gold→orange gradient with a 2.4s `playPulse` glow animation. Verified: running=true, idle=false on start; reversed on pause.
+4. **Task slide-in + check-pop animations** — new tasks animate in with a spring (`taskSlideIn` cubic-bezier with overshoot); checking a task pops the checkmark (`checkPop` 0→1.3→1) + scales the checkbox; delete buttons rotate 90° on hover; removing tasks slide out.
+
+#### New Features (4)
+5. **Cycle progress dots** — a row of dots below the mode label tracks Pomodoro-set progress: ● ○ ○ ○ → ● ● ○ ○ → ● ● ● ○ (then the long break fires). The 4th dot is a wider "long break" indicator. `renderCycleDots()` reads `focusCount % 3`. Verified: 0→next, 1→done+next, 2→done+done+next.
+6. **Post-session breathing exercise** — after a focus session completes (when auto-start is off), a full-screen `.breath-overlay` appears with a glowing warm circle that expands/contracts on an 8s `breathe` cycle, cycling "breathe in… / hold… / breathe out… / rest…" text every 2s. Skippable via button, click-outside, or Esc. Toggle in Settings → Reminders ("Post-session breathing exercise"). Verified: shows "breathe in…" after skip with auto-start off; skip button hides it.
+7. **Streak garden** — in the stats panel, a tiny garden of CSS plants grows with the streak: 1 plant per 2 days (max 5), each with a terracotta pot, a swaying green stem (`sway` keyframe), leaves that appear at 30% growth, and a glowing bloom at full growth. `renderGarden()` reads `state.store.streak`. Verified: streak=0 → 1 plant, 0 blooms; streak=5 → 3 plants, 2 blooms.
+8. **Idle nudge** — during a running focus session, a 120s idle timer (`resetIdleTimer`/`clearIdleTimer`) triggers a gentle reminder toast if there's no mouse/keyboard/click activity, encouraging re-engagement. Reset on any activity listener. Wired in startTimer/pauseTimer/resetTimer/finishSession.
 
 ### Phase 3 — QA-Driven Bug Fixes + Styling & Feature Upgrades (DONE)
 Ran comprehensive agent-browser QA, found and fixed 3 bugs, then added major styling polish + 5 new features. All browser-verified.
@@ -86,18 +107,30 @@ Responded to user feedback with four changes, all browser-verified:
 - **Visual (vision model, 8.5/10)**: confirmed film-grain noise, vignette, warm spotlight, rich layered scenes, custom glowing ambient sliders, warm gold→orange ring gradient (visible when running).
 - ESLint clean; no runtime errors in dev.log.
 
+### Phase 4 Verification Results (agent-browser)
+- **No bugs found** in QA: timer accurate, ambient/music/stats all stable.
+- **New elements present**: `.ring-svg.idle`, `#cycle-dots` (4 dots), `#garden`, `#breath-overlay`, `#breath-toggle` all in DOM.
+- **Cycle dots progression**: 0→[next,empty,empty]; skip→[done,next,empty]; skip×2→[done,done,next].
+- **Play button running state**: start → `running=true, idle=false`; pause → `running=false, idle=true`.
+- **Breathing exercise**: with auto-start off, skip a focus session → overlay shows "breathe in…"; skip button hides it.
+- **Streak garden**: streak=0 → 1 plant, 0 blooms; streak=5 → 3 plants, 2 blooms.
+- **Visual (vision model)**: confirmed warm gold/orange pulsing play button when running, warm gradient ring arc, beveled premium-thickness glass panels, cycle dots below mode label, spotlight glow behind timer.
+- **Mobile (iPhone 14, 390px)**: timer, cycle dots, music player all visible; no overflow.
+- ESLint clean; no runtime errors in dev.log.
+
 ## Unresolved Issues / Risks / Next-Phase Recommendations
-- **No known bugs.** App is stable across desktop + mobile.
+- **No known bugs.** App is stable across desktop + mobile, light + dark themes.
 - **Potential enhancements for future phases** (for the recurring webDevReview cron):
-  - Persist music playback state + ambient on-state across reloads (currently audio restarts on refresh).
+  - Persist music playback state + ambient on-state across reloads (audio restarts on refresh).
   - Add a "today's timeline" visualization (sessions laid out on a 24h bar).
   - Add a configurable long-break interval (currently hardcoded to every 3rd focus session).
   - Add a "focus mode" color tint per scene (warm/cool) that shifts the glass accent.
   - Add PWA manifest + service worker for offline use (still single-file friendly).
   - Add subtle entrance animations for panels on first load.
   - The `scene-custom` wallpaper is excluded from auto-rotation; consider a "pin custom wallpaper" toggle.
+  - Add a co-view/presence feature (share timer status link) — bigger scope, needs a backend.
 
 ## Architecture Notes
-- `public/focus.html` — the entire self-contained app (HTML + CSS + vanilla JS, ~2080 lines). Only external dependency: Google Fonts (Poppins + Caveat).
+- `public/focus.html` — the entire self-contained app (HTML + CSS + vanilla JS, ~2250 lines). Only external dependency: Google Fonts (Poppins + Caveat).
 - `src/app/page.tsx` — server component, renders a full-viewport `<iframe src="/focus.html">` so the single-file constraint is preserved while remaining previewable at `/`.
 - No Next.js API routes, no database, no external images/audio — fully client-side.
