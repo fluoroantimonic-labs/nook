@@ -354,32 +354,6 @@
   .stats-ticker b { font-weight: 600; opacity: 0.9; }
   .stats-ticker .sep { opacity: 0.4; margin: 0 8px; }
 
-  /* Brain-dump scratchpad button */
-  .brain-btn { position: fixed; bottom: calc(80px + var(--safe-bottom)); left: 50%; transform: translateX(-50%); z-index: 4; display: flex; align-items: center; gap: 7px; font-size: 0.74rem; padding: 7px 14px; border-radius: var(--radius-pill); background: var(--glass-bg-strong); border: 1px solid var(--glass-border); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.2); color: var(--text-soft); transition: all .2s ease; }
-  .brain-btn:hover { transform: translateX(-50%) translateY(-2px); color: var(--text); background: var(--glass-bg-strong); box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.3), 0 0 16px rgba(255,209,102,0.15); }
-  .brain-btn svg { width: 16px; height: 16px; transition: transform .3s ease; }
-  .brain-btn:hover svg { transform: rotate(-8deg) scale(1.1); }
-  .brain-btn .brain-count { background: var(--accent); color: #2b2d42; font-size: 0.6rem; font-weight: 700; border-radius: 10px; padding: 1px 6px; min-width: 16px; text-align: center; }
-  /* Brain dump panel */
-  .brain-panel { position: fixed; bottom: 130px; left: 50%; transform: translateX(-50%) translateY(10px); z-index: 4; width: 360px; max-width: calc(100vw - 32px); background: var(--glass-bg-strong); border: 1px solid var(--glass-border); backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px); border-radius: var(--radius-lg); box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.22); padding: 14px; opacity: 0; pointer-events: none; transition: all .25s cubic-bezier(.34,1.2,.5,1); }
-  .brain-panel.show { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
-  .brain-panel h4 { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.85; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
-  .brain-panel h4 svg { width: 14px; height: 14px; }
-  .brain-input { width: 100%; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); border-radius: var(--radius-sm); padding: 8px 12px; color: var(--text); font-size: 0.82rem; outline: none; resize: vertical; min-height: 60px; max-height: 160px; font-family: inherit; }
-  .brain-input::placeholder { color: var(--text-dim); }
-  .brain-input:focus { border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.2); }
-  .brain-list { margin-top: 8px; max-height: 180px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.3) transparent; display: flex; flex-direction: column; gap: 4px; }
-  .brain-list::-webkit-scrollbar { width: 5px; }
-  .brain-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.25); border-radius: 3px; }
-  .brain-item { display: flex; align-items: flex-start; gap: 8px; padding: 6px 9px; background: rgba(255,255,255,0.07); border-radius: var(--radius-sm); font-size: 0.78rem; line-height: 1.35; animation: taskSlideIn .3s cubic-bezier(.34,1.56,.64,1); }
-  .brain-item .bi-text { flex: 1; word-break: break-word; }
-  .brain-item .bi-del { opacity: 0.4; padding: 2px; flex-shrink: 0; transition: opacity .15s; }
-  .brain-item:hover .bi-del { opacity: 0.8; }
-  .brain-item .bi-del:hover { opacity: 1; }
-  .brain-item .bi-del svg { width: 12px; height: 12px; }
-  .brain-empty { font-size: 0.76rem; opacity: 0.45; text-align: center; padding: 10px 0; }
-  .brain-hint { font-size: 0.62rem; opacity: 0.45; margin-top: 6px; text-align: center; }
-
   .controls { display: flex; align-items: center; gap: 16px; }
   .ctrl-btn {
     width: 54px; height: 54px; border-radius: var(--radius-pill);
@@ -780,7 +754,6 @@
   body.distraction-free .music-player,
   body.distraction-free .ambient-mixer,
   body.distraction-free .modes,
-  body.distraction-free .brain-btn,
   body.distraction-free .shortcut-hint { opacity: 0 !important; pointer-events: none !important; transition: opacity .4s ease; }
   body.distraction-free .timer-wrap { transform: scale(1.08); transition: transform .5s ease; }
   .exit-df {
@@ -1067,7 +1040,6 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4" fill="currentColor"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
       </button>
     </div>
-    <div class="shortcut-hint" id="shortcut-hint">Press <kbd>Space</kbd> to start &middot; <kbd>⌘K</kbd> command palette &middot; <kbd>?</kbd> all shortcuts</div>
   </main>
 </div>
 
@@ -1181,19 +1153,6 @@
 <button class="icon-btn exit-df" id="exit-zen" title="Exit zen mode">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.9" y1="4.9" x2="19.1" y2="19.1"/></svg>
 </button>
-
-<!-- BRAIN DUMP SCRATCHPAD -->
-<button class="brain-btn" id="brain-btn" data-tip="Brain dump">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg>
-  <span>Brain dump</span>
-  <span class="brain-count" id="brain-count" style="display:none">0</span>
-</button>
-<div class="brain-panel" id="brain-panel">
-  <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/></svg> Brain dump</h4>
-  <textarea class="brain-input" id="brain-input" placeholder="Jot down a quick thought… (Enter to save, Shift+Enter for newline)"></textarea>
-  <div class="brain-list" id="brain-list"></div>
-  <div class="brain-hint">Capture distractions without leaving your flow.</div>
-</div>
 
 <input type="file" id="wallpaper-input" accept="image/*" class="hidden" />
 
@@ -1390,7 +1349,7 @@ function defaultStore() {
     focusCount: 0,
     breathingEnabled: true,
     longBreakEvery: 3,
-    brainDump: [],
+
     binauralBase: 200,
     binauralBeat: 10,
     customPresets: []
@@ -1898,33 +1857,6 @@ function updateStatsTicker(){
   el.innerHTML = '<b>'+today.count+'</b> today<span class="sep">·</span><b>'+today.mins+'</b> min today<span class="sep">·</span><b>'+(allMins/60).toFixed(1)+'</b> hrs all-time<span class="sep">·</span><b>'+streak+'</b> day streak';
   el.classList.add('show');
 }
-/* Brain dump scratchpad */
-function renderBrainDump(){
-  const list = $('brain-list'); if(!list) return;
-  const notes = state.store.brainDump || [];
-  const count = $('brain-count');
-  if (count) { count.textContent = notes.length; count.style.display = notes.length > 0 ? 'inline-block' : 'none'; }
-  if (notes.length === 0) { list.innerHTML = '<div class="brain-empty">No quick notes yet.</div>'; return; }
-  list.innerHTML = notes.map(n =>
-    '<div class="brain-item"><span class="bi-text"></span><button class="bi-del" data-id="'+n.id+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>'
-  ).join('');
-  list.querySelectorAll('.brain-item').forEach((el, i) => {
-    el.querySelector('.bi-text').textContent = notes[i].text;
-    el.querySelector('.bi-del').onclick = () => deleteBrainDump(notes[i].id);
-  });
-}
-function addBrainDump(text){
-  text = (text||'').trim(); if(!text) return;
-  if (!state.store.brainDump) state.store.brainDump = [];
-  state.store.brainDump.unshift({ id: 'b'+Date.now(), text: text.slice(0,300) });
-  if (state.store.brainDump.length > 50) state.store.brainDump.length = 50;
-  saveStore(); renderBrainDump();
-}
-function deleteBrainDump(id){
-  state.store.brainDump = (state.store.brainDump||[]).filter(n => n.id !== id);
-  saveStore(); renderBrainDump();
-}
-function toggleBrainPanel(){ $('brain-panel').classList.toggle('show'); if($('brain-panel').classList.contains('show')) $('brain-input').focus(); }
 /* Data export / import / reset */
 function exportData(){
   try {
@@ -2616,7 +2548,6 @@ const SHORTCUTS = [
   { key:'F', desc:'Toggle fullscreen' },
   { key:'Z', desc:'Toggle distraction-free mode' },
   { key:'⌘K', desc:'Open command palette' },
-  { key:'D', desc:'Open brain dump' },
   { key:'?', desc:'Show this shortcuts panel' }
 ];
 function buildShortcutList(){
@@ -2874,9 +2805,7 @@ const CMDK_COMMANDS = [
   { label:'Toggle zen mode', key:'Z', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/></svg>', run: toggleZen },
   { label:'Open settings', key:'', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"/></svg>', run: openSettings },
   { label:'Open focus journal', key:'', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>', run: openJournal },
-  { label:'Show keyboard shortcuts', key:'?', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>', run: toggleHelp },
-  { label:'Open brain dump', key:'D', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/></svg>', run: toggleBrainPanel },
-  { label:'Export data backup', key:'', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>', run: exportData }
+  { label:'Show keyboard shortcuts', key:'?', icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>', run: toggleHelp }
 ];
 let cmdkSel = 0, cmdkFiltered = [];
 function openCmdk(){
@@ -2942,11 +2871,7 @@ function bindEvents() {
   $('journal-modal').onclick = (e) => { if (e.target.id === 'journal-modal') closeJournal(); };
   $('journal-clear').onclick = () => { state.store.journal = []; state.store.focusCount = 0; saveStore(); renderJournal(); };
   $('help-overlay').onclick = (e) => { if (e.target.id === 'help-overlay') toggleHelp(); };
-  // brain dump
-  $('brain-btn').onclick = toggleBrainPanel;
-  $('brain-input').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); addBrainDump(e.target.value); e.target.value=''; }
-  });
+  // brain dump removed
   // data backup
   $('data-export').onclick = exportData;
   $('data-import').onclick = () => $('data-import-file').click();
@@ -3058,7 +2983,6 @@ function bindEvents() {
     else if (k === 'b') nextScene();
     else if (k === 'f') toggleFullscreen();
     else if (k === 'z') toggleZen();
-    else if (k === 'd') toggleBrainPanel();
     else if (e.key === '?' || (e.shiftKey && k === '/')) { e.preventDefault(); toggleHelp(); }
   });
   // command palette input + click-outside
@@ -3091,7 +3015,6 @@ function init() {
   document.querySelector('.ring-svg').classList.add('idle');
   renderCycleDots();
   updateSessionCounter();
-  renderBrainDump();
   // position the modes indicator after layout settles
   setTimeout(updateModesIndicator, 60);
   // scene
