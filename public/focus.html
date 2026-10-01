@@ -650,10 +650,10 @@
   .volume-slider:hover::-webkit-slider-thumb { transform: scale(1.15); }
   .volume-slider::-moz-range-thumb { width: 16px; height: 16px; border: none; border-radius: 50%; background: #ede4d8; cursor: pointer; }
 
-  /* Ambient mixer panel — hidden by default, toggled via btn-ambient */
+  /* Ambient mixer panel — hidden by default, opens above the music player (bottom-left) */
   .ambient-mixer {
-    position: fixed; bottom: calc(16px + var(--safe-bottom)); right: calc(20px + var(--safe-right));
-    width: 252px; max-width: calc(100vw - 40px); z-index: 6;
+    position: fixed; bottom: calc(228px + var(--safe-bottom)); left: calc(20px + var(--safe-left));
+    width: 340px; max-width: calc(100vw - 40px); z-index: 7;
     background: var(--glass-bg-strong); border: 1px solid var(--glass-border);
     backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
     border-radius: var(--radius-lg); box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.22), inset 0 -1px 0 rgba(0,0,0,0.08);
@@ -802,7 +802,7 @@
     .top-actions { flex-wrap: wrap; justify-content: center; }
     .mode-pill { padding: 7px 14px; font-size: 0.78rem; }
     .music-player { width: calc(100vw - 28px); left: 14px; right: 14px; }
-    .ambient-mixer { left: 14px; right: 14px; width: auto; bottom: calc(172px + var(--safe-bottom)); max-height: 34vh; }
+    .ambient-mixer { left: 14px; right: 14px; width: auto; bottom: calc(228px + var(--safe-bottom)); max-height: 34vh; }
     .amb-list { max-height: 26vh; }
     .side-right { display: none; }
     .ctrl-btn.primary { width: 62px; height: 62px; }
