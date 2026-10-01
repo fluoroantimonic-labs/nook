@@ -440,11 +440,12 @@
   .panel-title { font-size: 0.74rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.9; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
   .panel-title svg { width: 16px; height: 16px; }
 
-  /* Side panels — always visible, sized to fit without scroll */
+  /* Side panels — scrollable, full stats */
   .side-right {
     position: fixed; top: calc(86px + var(--safe-top)); right: calc(20px + var(--safe-right));
     width: 280px; max-width: calc(100vw - 40px);
     display: flex; flex-direction: column; gap: 10px; z-index: 5;
+    max-height: calc(100vh - 110px); overflow-y: auto;
     scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.3) transparent;
   }
   .side-right::-webkit-scrollbar { width: 6px; }
@@ -1087,6 +1088,7 @@
       <span class="flame"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2s4 3.5 4 8a4 4 0 0 1-8 0c0-1 .5-2 .5-2S6 11 6 14a6 6 0 0 0 12 0c0-5.5-6-12-6-12z"/></svg></span>
       <span><b id="stat-streak">0</b> day streak</span>
     </div>
+    <div class="garden" id="garden"></div>
     <div class="focus-gauge" id="focus-gauge">
       <svg viewBox="0 0 60 60">
         <circle class="gauge-track" cx="30" cy="30" r="24"></circle>
@@ -1105,6 +1107,19 @@
       <div class="mood-bars" id="mood-bars"></div>
     </div>
     <div class="chart" id="weekly-chart"></div>
+    <div class="heatmap-section">
+      <div class="timeline-label">Last 7 weeks</div>
+      <div class="heatmap" id="heatmap"></div>
+    </div>
+    <div class="achievements-section">
+      <div class="timeline-label">Achievements</div>
+      <div class="achievements" id="achievements"></div>
+    </div>
+    <div class="timeline" id="timeline">
+      <div class="timeline-label">Today's timeline</div>
+      <div class="timeline-bar" id="timeline-bar"></div>
+      <div class="timeline-hours"><span>00</span><span>06</span><span>12</span><span>18</span><span>24</span></div>
+    </div>
   </div>
 </aside>
 
